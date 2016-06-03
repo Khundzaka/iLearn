@@ -1,0 +1,38 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">ჩემი ანგარიშები</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">ლოკალური</h3>
+                    </div>
+                    <div class="panel-body">
+                        email: {{local.email}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Facebook</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div ng-show="hasFacebook">
+                            <div>სტატუსი: <span class="text-success">დაკავშირებული</span></div>
+                            <div>ანგარიში: {{facebookName}}</div>
+                        </div>
+                        <div ng-hide="hasFacebook">
+                            <div class="text-center">
+                                <a href="/connect/facebook/" class="btn btn-lg btn-primary">დავაკავშიროთ FACEBOOK</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

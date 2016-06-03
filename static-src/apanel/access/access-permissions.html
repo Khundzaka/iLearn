@@ -1,0 +1,61 @@
+<script type="text/ng-template" id="custom/tpl/permissionModalContent">
+    <div class="modal-header">
+        <h3 class="modal-title">უფლება: {{ permission.name }}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="permissionname1">სახელი :</label>
+            <input type="text" class="form-control" id="permissionname1" ng-model="permissionName">
+        </div>
+        <div class="form-group">
+            <label for="permissionkey1">გასაღები :</label>
+            <input type="text" class="form-control" id="permissionkey1" ng-model="permissionKey" disabled>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="save()">შენახვა</button>
+        <button class="btn btn-primary" type="button" ng-click="close()">დახურვა</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="custom/tpl/createPermissionModalContent">
+    <div class="modal-header">
+        <h3 class="modal-title">ახალი უფლება</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="permissionName">სახელი :</label>
+            <input type="text" class="form-control" id="permissionName" ng-model="permissionName">
+        </div>
+        <div class="form-group">
+            <label for="permissionKey">გასაღები :</label>
+            <input type="text" class="form-control" id="permissionKey" ng-model="permissionKey">
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="create()">შექმნა</button>
+        <button class="btn btn-primary" type="button" ng-click="close()">დახურვა</button>
+    </div>
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">უფლებები</h3>
+    </div>
+    <div class="panel-body">
+        <button class="btn btn-success" type="button" ng-click="create()">ახალი</button>
+        <div class="form-group">
+            <label for="searchfield">უფლება :</label>
+            <input type="text" class="form-control" id="searchfield" ng-model="search.name">
+        </div>
+    </div>
+
+
+    <div class="list-group">
+        <a href="javascript:void(0)" ng-click="view(permission._id)" class="list-group-item"
+           ng-repeat="permission in permissions | filter : search">{{ permission.name }}</a>
+    </div>
+
+</div>

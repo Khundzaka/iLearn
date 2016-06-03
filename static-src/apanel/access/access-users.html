@@ -1,0 +1,57 @@
+<script type="text/ng-template" id="custom/tpl/userModalContent">
+    <div class="modal-header">
+        <h3 class="modal-title">მომხმარებელი: {{ user.local.email }}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">ჯგუფები</h3>
+            </div>
+            <table class="table table-striped">
+                <tr>
+                    <th>ჯგუფი</th>
+                    <th>სტატუსი</th>
+                    <th>###</th>
+                </tr>
+                <tr ng-repeat="group in groups">
+                    <td>{{ group.name }}</td>
+                    <td>
+                        <span class="text-success" ng-show="hasGroup(group._id)">ჩართული</span>
+                        <span class="text-danger" ng-show="!hasGroup(group._id)">გამორთული</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-success" ng-click="addToGroup(group._id)"
+                                ng-show="!hasGroup(group._id)">ჩართვა
+                        </button>
+                        <button class="btn btn-danger" ng-click="removeFromGroup(group._id)"
+                                ng-show="hasGroup(group._id)">გამორთვა
+                        </button>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="close()">დახურვა</button>
+    </div>
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">მომხმარებლები</h3>
+    </div>
+    <div class="panel-body">
+        <div class="form-group">
+            <label for="searchField">მომხმარებელი :</label>
+            <input type="text" class="form-control" id="searchField" ng-model="search.local.email">
+        </div>
+    </div>
+
+
+    <div class="list-group">
+        <a href="javascript:void(0)" ng-click="view(user._id)" class="list-group-item"
+           ng-repeat="user in users_list | filter : search">{{ user.local.email }}</a>
+    </div>
+
+</div>

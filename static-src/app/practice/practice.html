@@ -1,0 +1,64 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">პრაქტიკა</h3>
+    </div>
+
+    <div class="panel-body">
+
+
+        <div ng-show="currentStage===0">
+            <div class="well">
+                კოლექცია: {{collectionName}}
+                <br>
+                <span class="glyphicon glyphicon-time"></span> {{practiceTime}}
+                <br>
+            </div>
+            <button class="btn btn-primary" ng-click="start()">დავიწყოთ</button>
+        </div>
+
+        <div ng-show="currentStage===1" style="text-align: center;font-weight: bold;font-size:24px;">
+            მოემზადეთ
+            <br>
+            <p style="font-size: 30px;" class="text-danger">{{countDown}}</p>
+        </div>
+
+        <div ng-show="currentStage===2">
+            <br><span class="glyphicon glyphicon-time"></span> <strong>{{remainingTime}}</strong>
+            <br>
+            <!--<button ng-click="destroy()">გაუქმება</button>-->
+            <br> სიტყვა: <strong>{{currentWord}}</strong>
+            <br>
+            <div class="row">
+                <div class="col-md-8">
+                    <form ng-submit="checkWord()" autocomplete="off" class="form-inline">
+                        <div class="form-group">
+                            <label>
+                                <input type="text" class="form-control" ng-model="inputWord" id="inputWord">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <button class="btn btn-primary" type="submit">დადასტურება</button>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div ng-show="currentStage===3">
+            <div class="well">
+                <br> <strong>ტესტირება დასრულებულია.</strong>
+                <br>
+                <br> სტატისტიკა:
+                <br> სწორი პასუხები - {{correct}}
+                <br> შეცდომა - {{wrong}}
+                <br> შეფასება - {{getPoints()}} (100-დან)
+            </div>
+            <button class="btn btn-default" ng-click="again()">თავიდან</button>
+        </div>
+
+    </div>
+</div>

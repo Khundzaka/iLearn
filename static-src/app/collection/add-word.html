@@ -1,0 +1,44 @@
+<div class="modal-header">
+    <h3 class="modal-title">სიტყვის დამატება</h3>
+</div>
+<div class="modal-body">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">ახალი სიტყვა</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="wordName">სიტყვა :</label>
+                <input type="text" class="form-control" id="wordName" ng-model="wordName">
+            </div>
+            <div class="form-group">
+                <label for="wordDescription">განმარტება (ქართული/ინგლისური):</label>
+                <input type="text" class="form-control" id="wordDescription" ng-model="wordDescription">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-success" ng-click="addNewWord()">დამატება</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">სიტყვის ძებნა</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="wordName1">სიტყვა :</label>
+                <input type="text" class="form-control" id="wordName1" ng-model="findInput">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-success" ng-click="find()">ძიება</button>
+            </div>
+        </div>
+        <div class="list-group">
+            <a ng-click="addWord(word._id)" class="list-group-item"
+               ng-repeat="word in words">{{word.value}} - {{word.description}}</a>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="close()">დახურვა</button>
+    </div>

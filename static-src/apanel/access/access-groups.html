@@ -1,0 +1,89 @@
+<script type="text/ng-template" id="custom/tpl/groupModalContent">
+    <div class="modal-header">
+        <h3 class="modal-title">ჯგუფი: {{ group.name }}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">უფლებები</h3>
+            </div>
+            <table class="table table-striped">
+                <tr>
+                    <th>უფლება</th>
+                    <th>სტატუსი</th>
+                    <th>###</th>
+                </tr>
+                <tr ng-repeat="permission in permissions">
+                    <td>{{ permission.name }}</td>
+                    <td>
+                        <span class="text-success" ng-show="hasPermission(permission._id)">ჩართული</span>
+                        <span class="text-danger" ng-show="!hasPermission(permission._id)">გამორთული</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-success" ng-click="addPermission(permission._id)"
+                                ng-show="!hasPermission(permission._id)">ჩართვა
+                        </button>
+                        <button class="btn btn-danger" ng-click="removePermission(permission._id)"
+                                ng-show="hasPermission(permission._id)">გამორთვა
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">რედაქტირება</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="groupname1">სახელი :</label>
+                    <input type="text" class="form-control" id="groupname1" ng-model="groupName">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-success" type="button" ng-click="save()">შენახვა</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="close()">დახურვა</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="custom/tpl/createGroupModalContent">
+    <div class="modal-header">
+        <h3 class="modal-title">ახალი ჯგუფი</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="groupname">სახელი :</label>
+            <input type="text" class="form-control" id="groupname" ng-model="groupName">
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="create()">შექმნა</button>
+        <button class="btn btn-primary" type="button" ng-click="close()">დახურვა</button>
+    </div>
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">ჯგუფები</h3>
+    </div>
+    <div class="panel-body">
+        <button class="btn btn-success" type="button" ng-click="create()">ახალი</button>
+        <div class="form-group">
+            <label for="searchfield">ჯგუფი :</label>
+            <input type="text" class="form-control" id="searchfield" ng-model="search.name">
+        </div>
+    </div>
+
+
+    <div class="list-group">
+        <a href="javascript:void(0)" ng-click="view(group._id)" class="list-group-item"
+           ng-repeat="group in groups | filter : search">{{ group.name }}</a>
+    </div>
+
+</div>

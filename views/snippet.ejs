@@ -1,0 +1,9 @@
+<% include ./partials/header.ejs %>
+<% if(user){ %>
+<%= user.username %>
+<br>
+<a href="/logout">Logout</a>
+<% } else { %>
+<a href="/login">Login</a>
+<% } %>
+<% include ./partials/footer.ejs %>

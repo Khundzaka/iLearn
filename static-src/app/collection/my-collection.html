@@ -1,0 +1,31 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">კოლექციები</h3>
+    </div>
+    <!--<div class="panel-body">-->
+    <!--<div class="form-group">-->
+    <!--<label for="searchField">მომხმარებელი :</label>-->
+    <!--<input type="text" class="form-control" id="searchField" ng-model="search.local.email">-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <table class="table">
+        <tr>
+            <th><span class="glyphicon glyphicon-lock"></span></th>
+            <th>კოლექცია</th>
+            <th><span class="glyphicon glyphicon-pencil"></span></th>
+        </tr>
+        <tr ng-repeat="collection in collections">
+            <td><span title="{{collection.is_public?'ღია':'პირადი'}}"
+                      ng-class="{'glyphicon':true, 'glyphicon-eye-open':collection.is_public, 'glyphicon-eye-close':!collection.is_public}">
+            </span></td>
+            <td><a ui-sref="collection.view({collection:collection._id})">{{collection.name}}</a>
+            </td>
+            <td>
+                <a ui-sref="collection.edit({collection:collection._id})" class="btn btn-xs btn-warning"><span
+                        class="glyphicon glyphicon-pencil"></span></a>
+            </td>
+        </tr>
+    </table>
+
+</div>

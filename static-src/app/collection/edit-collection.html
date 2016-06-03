@@ -1,0 +1,80 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">კოლექცია: {{collection.name}}</h3>
+    </div>
+
+    <div class="panel-body">
+        <form class="form-horizontal" ng-submit="update()" autocomplete="off">
+            <fieldset>
+                <div class="form-group">
+                    <label for="inputName" class="col-lg-2 control-label">სახელი</label>
+                    <div class="col-lg-10">
+                        <input type="text" ng-model="collectionName" class="form-control" id="inputName"
+                               placeholder="სახელი">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputDescription" class="col-lg-2 control-label">აღწერა</label>
+                    <div class="col-lg-10">
+                        <textarea class="form-control" id="inputDescription" ng-model="collectionDescription"
+                                  rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!--radio-->
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">ტიპი</label>
+                    <div class="col-lg-10">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" class="disabled" ng-model="collectionType" id="optionsRadios1"
+                                       value="public" disabled>
+                                ღია კოლექცია
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" class="disabled" ng-model="collectionType" id="optionsRadios2"
+                                       value="private" disabled>
+                                პირადი კოლექცია
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-10 col-lg-offset-2">
+                        <button type="submit" class="btn btn-primary">დადასტურება</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">სიტყვები</h3>
+            </div>
+            <div class="panel-body">
+                <button ng-click="addNewWord()" class="btn btn-success"><span
+                        class="glyphicon glyphicon-plus"></span> დამატება
+                </button>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>სიტყვა</th>
+                    <th>მნიშვნელობა</th>
+                    <th>###</th>
+                </tr>
+                <tr ng-repeat="word in collection.words">
+                    <td>{{word.value}}</td>
+                    <td>{{word.description}}</td>
+                    <td>
+                        <button ng-click="removeWord(word._id)" class="btn btn-xs btn-danger"><span
+                                class="glyphicon glyphicon-remove"></span></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>

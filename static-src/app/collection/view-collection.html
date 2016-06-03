@@ -1,0 +1,27 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">კოლექცია: {{collection.name}}</h3>
+    </div>
+
+    <div class="panel-body">
+        <div class="well"><strong>აღწერა:</strong><br> {{collection.description}}</div>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <a ui-sref="practice({collection:collection._id})" class="btn btn-success">პრაქტიკა</a>
+                <a ui-sref="practice({collection:collection._id})" class="btn btn-default disabled">ტრენინგი (მალე)</a>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">სიტყვები (დააწკაპეთ მნიშვნელობისთვის)</h3>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="word in collection.words">{{word.value}} - {{word.description}}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>

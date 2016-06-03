@@ -1,0 +1,26 @@
+@font-face {
+    font-family: bpg_mrgvlovani_caps_2010;
+    src: url(/static/fonts/font.eot);
+    src: url(/static/fonts/font.otf) format("opentype"), url(/static/fonts/font.ttf) format("truetype")
+}
+
+/*@font-face {*/
+/*font-family: bpg_mrgvlovani_caps_2010_small;*/
+/*src: url(/static/fonts/bpg_mrgvlovani_caps_2010.eot);*/
+/*src: url(/static/fonts/bpg_mrgvlovani_caps_2010.ttf) format("truetype"), url(/static/fonts/bpg_mrgvlovani_caps_2010.otf) format("opentype")*/
+/*}*/
+
+.nav, .pagination, .carousel, .panel-title a {
+    cursor: pointer;
+}
+
+.nav {
+    font-family: bpg_mrgvlovani_caps_2010, serif;
+}
+
+.row-eq-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
