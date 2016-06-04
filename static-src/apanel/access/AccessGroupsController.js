@@ -59,7 +59,7 @@ apanelApp.controller("CreateGroupModalController", function ($scope, $uibModalIn
 
 apanelApp.controller("GroupModalController", function ($scope, $uibModalInstance, GroupAccess, group_id) {
     var getOne = function () {
-        GroupAccess.getOne({collectionId: group_id}).then(function (data) {
+        GroupAccess.getOne({user_id: {collectionId: group_id}}).then(function (data) {
             $scope.group = data.group;
             $scope.permissions = data.permissions;
             $scope.groupName = $scope.group.name;

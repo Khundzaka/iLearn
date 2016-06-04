@@ -118,6 +118,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 app.run(["AuthService", "$rootScope", "$state",
     function (AuthService, $rootScope, $state) {
         AuthService.startUp();
+        console.log("hey");
         //$rootScope.title = "მთავარი"
 
 

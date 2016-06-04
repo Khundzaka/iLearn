@@ -60,7 +60,7 @@ apanelApp.controller("CreatePermissionModalController", function ($scope, $uibMo
 
 apanelApp.controller("PermissionModalController", function ($scope, $uibModalInstance, PermissionAccess, permission_id) {
     var getOne = function () {
-        PermissionAccess.getOne({collectionId: permission_id}).then(function (data) {
+        PermissionAccess.getOne({user_id: {collectionId: permission_id}}).then(function (data) {
             $scope.permission = data.permission;
             $scope.permissionName = $scope.permission.name;
             $scope.permissionKey = $scope.permission._id;
