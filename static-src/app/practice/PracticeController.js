@@ -34,7 +34,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$ht
             resetWordList();
         }
 
-        Collection.getOne($stateParams.collection).then(function (data) {
+        Collection.getOne({user_id: $stateParams.collection}).then(function (data) {
             $scope.collection = data.collection;
             $scope.collectionName = data.collection.name;
             console.log(data.collection);

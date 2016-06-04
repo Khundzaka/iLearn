@@ -17,7 +17,7 @@ app.factory("AuthService", ['$http',
                 if (res.data._id) {
                     var userData = res.data;
                     if (userData.local) this.local = userData.local;
-                    if (userData.facebook) this.local = userData.facebook;
+                    if (userData.facebook) this.facebook = userData.facebook;
                     AuthService.authenticated = true;
                     //console.log("aqac var");
                     callback(true);
@@ -51,9 +51,12 @@ app.factory("AuthService", ['$http',
         AuthService.startUp = function () {
             if (typeof startUpUserData === 'undefined') startUpUserData = false;
             var userData = startUpUserData;
+            console.log("eh");
             if (userData) {
                 userData = JSON.parse(userData);
-                console.log(userData.facebook);
+                // console.log(userData.facebook);
+                console.log(userData);
+                console.log("wtf");
                 if (userData.local) this.local = userData.local;
                 if (userData.facebook) this.facebook = userData.facebook;
                 AuthService.authenticated = true;

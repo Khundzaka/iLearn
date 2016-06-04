@@ -151,7 +151,7 @@ apanelApp.controller("CreateGroupModalController", function ($scope, $uibModalIn
 
 apanelApp.controller("GroupModalController", function ($scope, $uibModalInstance, GroupAccess, group_id) {
     var getOne = function () {
-        GroupAccess.getOne({collectionId: group_id}).then(function (data) {
+        GroupAccess.getOne({user_id: {collectionId: group_id}}).then(function (data) {
             $scope.group = data.group;
             $scope.permissions = data.permissions;
             $scope.groupName = $scope.group.name;
@@ -267,7 +267,7 @@ apanelApp.controller("CreatePermissionModalController", function ($scope, $uibMo
 
 apanelApp.controller("PermissionModalController", function ($scope, $uibModalInstance, PermissionAccess, permission_id) {
     var getOne = function () {
-        PermissionAccess.getOne({collectionId: permission_id}).then(function (data) {
+        PermissionAccess.getOne({user_id: {collectionId: permission_id}}).then(function (data) {
             $scope.permission = data.permission;
             $scope.permissionName = $scope.permission.name;
             $scope.permissionKey = $scope.permission._id;
@@ -321,7 +321,7 @@ apanelApp.controller("AccessUsersController", function ($scope, UserAccess, $uib
 
 apanelApp.controller("UserModalController", function ($scope, $uibModalInstance, UserAccess, user_id) {
     var getOne = function () {
-        UserAccess.getOne({collectionId: user_id}).then(function (data) {
+        UserAccess.getOne({userId: user_id}).then(function (data) {
             $scope.user = data.user;
             $scope.groups = data.groups;
         });
@@ -452,8 +452,10 @@ apanelApp.factory("UserAccess", function ($http) {
         });
     };
 
-    UserAccess.getOne = function (user_id) {
-        return $http.get(user_access_endp + user_id).then(function (response) {
+    UserAccess.getOne = function (params) {
+        console.log(params);
+        var userId = params.userId;
+        return $http.get(user_access_endp + userId).then(function (response) {
             console.log(response);
             return response.data.data;
         });

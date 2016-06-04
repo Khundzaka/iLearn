@@ -118,6 +118,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 app.run(["AuthService", "$rootScope", "$state",
     function (AuthService, $rootScope, $state) {
         AuthService.startUp();
+        console.log("hey");
         //$rootScope.title = "მთავარი"
 
 
@@ -160,7 +161,7 @@ app.factory("AuthService", ['$http',
                 if (res.data._id) {
                     var userData = res.data;
                     if (userData.local) this.local = userData.local;
-                    if (userData.facebook) this.local = userData.facebook;
+                    if (userData.facebook) this.facebook = userData.facebook;
                     AuthService.authenticated = true;
                     //console.log("aqac var");
                     callback(true);
@@ -194,9 +195,12 @@ app.factory("AuthService", ['$http',
         AuthService.startUp = function () {
             if (typeof startUpUserData === 'undefined') startUpUserData = false;
             var userData = startUpUserData;
+            console.log("eh");
             if (userData) {
                 userData = JSON.parse(userData);
-                console.log(userData.facebook);
+                // console.log(userData.facebook);
+                console.log(userData);
+                console.log("wtf");
                 if (userData.local) this.local = userData.local;
                 if (userData.facebook) this.facebook = userData.facebook;
                 AuthService.authenticated = true;
@@ -369,7 +373,7 @@ app.controller("CollectionController", ["$scope","Collection",
         console.log("fuck");
     }
 ]);
-app.controller("CreateCollectionController", ["$scope", "Collection",
+app.controller("CreateCollectionController", ["$scope", "Collection", "$state",
     function ($scope, Collection, $state) {
         $scope.collectionType = 'public';
         $scope.collectionName = '';
@@ -383,8 +387,8 @@ app.controller("CreateCollectionController", ["$scope", "Collection",
                 description: $scope.collectionDescription
             }).then(function (data) {
                 var collectionId = data.id;
-                //$state.go('app', {collection: collectionId});
-                console.log(collectionId);
+                $state.go('collection.edit', {collection: collectionId});
+                // console.log(collectionId);
             });
         };
 
@@ -396,7 +400,7 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
         console.log($stateParams.collection);
 
         function fetchCollection() {
-            Collection.getOne($stateParams.collection).then(function (data) {
+            Collection.getOne({user_id: $stateParams.collection}).then(function (data) {
                 $scope.collection = data.collection;
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;
@@ -456,7 +460,7 @@ app.controller("MyCollectionController", ["$scope","Collection",
 ]);
 app.controller("ViewCollectionController", ["$scope", "Collection", "$stateParams",
     function ($scope, Collection, $stateParams) {
-        Collection.getOne($stateParams.collection).then(function (data) {
+        Collection.getOne({user_id: $stateParams.collection}).then(function (data) {
             $scope.collection = data.collection;
             console.log(data.collection);
         });
@@ -466,6 +470,10 @@ app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$roo
     function ($scope, AuthService, $location, $rootScope) {
         $scope.hasFacebook = AuthService.facebook.name !== null;
         $scope.facebookName = AuthService.facebook.name;
+        console.log(AuthService.local);
+        console.log("aaa");
+        $scope.localEmail = AuthService.local.email;
+        $scope.localUserName = AuthService.local.username;
     }
 ]);
 app.controller('HeaderController', function ($scope, $rootScope, AuthService, $state) {
@@ -536,7 +544,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$ht
             resetWordList();
         }
 
-        Collection.getOne($stateParams.collection).then(function (data) {
+        Collection.getOne({user_id: $stateParams.collection}).then(function (data) {
             $scope.collection = data.collection;
             $scope.collectionName = data.collection.name;
             console.log(data.collection);

@@ -1,4 +1,4 @@
-app.controller("CreateCollectionController", ["$scope", "Collection",
+app.controller("CreateCollectionController", ["$scope", "Collection", "$state",
     function ($scope, Collection, $state) {
         $scope.collectionType = 'public';
         $scope.collectionName = '';
@@ -12,8 +12,8 @@ app.controller("CreateCollectionController", ["$scope", "Collection",
                 description: $scope.collectionDescription
             }).then(function (data) {
                 var collectionId = data.id;
-                //$state.go('app', {collection: collectionId});
-                console.log(collectionId);
+                $state.go('collection.edit', {collection: collectionId});
+                // console.log(collectionId);
             });
         };
 
