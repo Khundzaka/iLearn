@@ -175,7 +175,7 @@ app.factory("AuthService", ['$http',
             console.log("aq var");
             $http.post("/local/login", {email: email, password: password}).then(function (res) {
                 if (res.data._id) {
-                    console.log(res.data);
+                    // console.log(res.data);
                     var userData = res.data;
                     if (userData.local) AuthService.local = userData.local;
                     if (userData.facebook) AuthService.facebook = userData.facebook;
@@ -190,7 +190,7 @@ app.factory("AuthService", ['$http',
             console.log("aq var");
             $http.post("/local/register", {email: email, password: password, username: username}).then(function (res) {
                 if (res.data._id) {
-                    console.log(res.data);
+                    // console.log(res.data);
                     var userData = res.data;
                     if (userData.local) AuthService.local = userData.local;
                     if (userData.facebook) AuthService.facebook = userData.facebook;
@@ -488,8 +488,8 @@ app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$roo
     function ($scope, AuthService, $location, $rootScope) {
         console.log(AuthService);
         $scope.hasFacebook = AuthService.facebook.name !== null;
-        console.log($scope.hasFacebook);
-        console.log(AuthService.facebook.name);
+        // console.log($scope.hasFacebook);
+        // console.log(AuthService.facebook.name);
         $scope.facebookName = AuthService.facebook.name;
         $scope.localEmail = AuthService.local.email;
         $scope.localUserName = AuthService.local.username;
@@ -497,6 +497,7 @@ app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$roo
 ]);
 app.controller('HeaderController', function ($scope, $rootScope, AuthService, $state) {
     $scope.authenticated = AuthService.authenticated;
+    $scope.navCollapsed = true;
     $scope.$on('authentication', function () {
         $scope.authenticated = AuthService.authenticated;
     });
@@ -512,6 +513,11 @@ app.controller('HeaderController', function ($scope, $rootScope, AuthService, $s
             $scope.headerLinks[i].active = $scope.headerLinks[i].state === toState.name;
         }
     });
+
+    $scope.goToState = function (state) {
+        $scope.navCollapsed = !$scope.navCollapsed;
+        $state.go(state);
+    };
 
     $scope.logOut = function () {
         AuthService.logOut(function (status) {

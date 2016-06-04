@@ -1,5 +1,6 @@
 app.controller('HeaderController', function ($scope, $rootScope, AuthService, $state) {
     $scope.authenticated = AuthService.authenticated;
+    $scope.navCollapsed = true;
     $scope.$on('authentication', function () {
         $scope.authenticated = AuthService.authenticated;
     });
@@ -15,6 +16,11 @@ app.controller('HeaderController', function ($scope, $rootScope, AuthService, $s
             $scope.headerLinks[i].active = $scope.headerLinks[i].state === toState.name;
         }
     });
+
+    $scope.goToState = function (state) {
+        $scope.navCollapsed = !$scope.navCollapsed;
+        $state.go(state);
+    };
 
     $scope.logOut = function () {
         AuthService.logOut(function (status) {
