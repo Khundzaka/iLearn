@@ -29,7 +29,7 @@ apanelApp.controller("AccessUsersController", function ($scope, UserAccess, $uib
 
 apanelApp.controller("UserModalController", function ($scope, $uibModalInstance, UserAccess, user_id) {
     var getOne = function () {
-        UserAccess.getOne({collectionId: user_id}).then(function (data) {
+        UserAccess.getOne(user_id).then(function (data) {
             $scope.user = data.user;
             $scope.groups = data.groups;
         });
