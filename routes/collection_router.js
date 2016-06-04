@@ -31,7 +31,7 @@ collectionRouter.get("/my", function (req, res) {
 });
 
 collectionRouter.get("/:collection", function (req, res) {
-    CollectionRepository.getOne({user_id: {collectionId: req.params.collection}}, function (err, data) {
+    CollectionRepository.getOne({collectionId: req.params.collection}, function (err, data) {
         if (err) {
             console.log(err);
             return res.json(defaultFailResponse);

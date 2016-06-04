@@ -11,9 +11,7 @@ apanelApp.factory("UserAccess", function ($http) {
         });
     };
 
-    UserAccess.getOne = function (params) {
-        console.log(params);
-        var userId = params.userId;
+    UserAccess.getOne = function (userId) {
         return $http.get(user_access_endp + userId).then(function (response) {
             console.log(response);
             return response.data.data;

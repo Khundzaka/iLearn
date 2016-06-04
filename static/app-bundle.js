@@ -400,7 +400,7 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
         console.log($stateParams.collection);
 
         function fetchCollection() {
-            Collection.getOne({user_id: $stateParams.collection}).then(function (data) {
+            Collection.getOne($stateParams.collection).then(function (data) {
                 $scope.collection = data.collection;
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;
@@ -460,7 +460,7 @@ app.controller("MyCollectionController", ["$scope","Collection",
 ]);
 app.controller("ViewCollectionController", ["$scope", "Collection", "$stateParams",
     function ($scope, Collection, $stateParams) {
-        Collection.getOne({user_id: $stateParams.collection}).then(function (data) {
+        Collection.getOne($stateParams.collection).then(function (data) {
             $scope.collection = data.collection;
             console.log(data.collection);
         });
@@ -470,8 +470,6 @@ app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$roo
     function ($scope, AuthService, $location, $rootScope) {
         $scope.hasFacebook = AuthService.facebook.name !== null;
         $scope.facebookName = AuthService.facebook.name;
-        console.log(AuthService.local);
-        console.log("aaa");
         $scope.localEmail = AuthService.local.email;
         $scope.localUserName = AuthService.local.username;
     }
@@ -544,7 +542,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$ht
             resetWordList();
         }
 
-        Collection.getOne({user_id: $stateParams.collection}).then(function (data) {
+        Collection.getOne($stateParams.collection).then(function (data) {
             $scope.collection = data.collection;
             $scope.collectionName = data.collection.name;
             console.log(data.collection);
