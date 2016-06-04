@@ -1,5 +1,5 @@
-app.controller("RegisterController", ['$scope', 'AuthService', '$location', '$rootScope',
-    function ($scope, AuthService, $location, $rootScope) {
+app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootScope',
+    function ($scope, AuthService, $state, $rootScope) {
         $scope.username = "";
         $scope.email = "";
         $scope.password = "";
@@ -12,7 +12,7 @@ app.controller("RegisterController", ['$scope', 'AuthService', '$location', '$ro
             }, function (success) {
                 if (success) {
                     $rootScope.$broadcast('authentication', 'login');
-                    $location.path("/");
+                    $state.go("dashboard.profile");
                 }
             });
         }

@@ -7,17 +7,34 @@ app.factory("AuthService", ['$http',
                 email: null
             },
             facebook: {
-                fullName: null,
+                name: null,
                 email: null
             }
         };
+
+        AuthService.setDefault = function () {
+
+            AuthService.authenticated = false;
+
+            AuthService.local = {
+                username: null,
+                email: null
+            };
+
+            AuthService.facebook = {
+                name: null,
+                email: null
+            };
+        };
+
         AuthService.logIn = function (email, password, callback) {
             console.log("aq var");
             $http.post("/local/login", {email: email, password: password}).then(function (res) {
                 if (res.data._id) {
+                    // console.log(res.data);
                     var userData = res.data;
-                    if (userData.local) this.local = userData.local;
-                    if (userData.facebook) this.facebook = userData.facebook;
+                    if (userData.local) AuthService.local = userData.local;
+                    if (userData.facebook) AuthService.facebook = userData.facebook;
                     AuthService.authenticated = true;
                     //console.log("aqac var");
                     callback(true);
@@ -29,9 +46,10 @@ app.factory("AuthService", ['$http',
             console.log("aq var");
             $http.post("/local/register", {email: email, password: password, username: username}).then(function (res) {
                 if (res.data._id) {
+                    // console.log(res.data);
                     var userData = res.data;
-                    if (userData.local) this.local = userData.local;
-                    if (userData.facebook) this.local = userData.facebook;
+                    if (userData.local) AuthService.local = userData.local;
+                    if (userData.facebook) AuthService.facebook = userData.facebook;
                     AuthService.authenticated = true;
                     //console.log("aqac var");
                     callback(true);
@@ -42,7 +60,7 @@ app.factory("AuthService", ['$http',
         AuthService.logOut = function (callback) {
             $http.get("/local/logout").then(function (res) {
                 if (res.data.status === "ok") {
-                    AuthService.authenticated = false;
+                    AuthService.setDefault();
                     return callback(true);
                 }
             });

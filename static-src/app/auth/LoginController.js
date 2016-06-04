@@ -1,5 +1,5 @@
-app.controller("LoginController", ['$scope', 'AuthService', '$location', '$rootScope',
-    function ($scope, AuthService, $location, $rootScope) {
+app.controller("LoginController", ['$scope', 'AuthService', '$state', '$rootScope',
+    function ($scope, AuthService, $state, $rootScope) {
         $scope.username = "";
         $scope.password = "";
 
@@ -7,7 +7,7 @@ app.controller("LoginController", ['$scope', 'AuthService', '$location', '$rootS
             AuthService.logIn($scope.username, $scope.password, function (success) {
                 if (success) {
                     $rootScope.$broadcast('authentication', 'login');
-                    $location.path("/");
+                    $state.go("dashboard.profile");
                 }
             });
         }

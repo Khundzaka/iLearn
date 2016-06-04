@@ -151,17 +151,34 @@ app.factory("AuthService", ['$http',
                 email: null
             },
             facebook: {
-                fullName: null,
+                name: null,
                 email: null
             }
         };
+
+        AuthService.setDefault = function () {
+
+            AuthService.authenticated = false;
+
+            AuthService.local = {
+                username: null,
+                email: null
+            };
+
+            AuthService.facebook = {
+                name: null,
+                email: null
+            };
+        };
+
         AuthService.logIn = function (email, password, callback) {
             console.log("aq var");
             $http.post("/local/login", {email: email, password: password}).then(function (res) {
                 if (res.data._id) {
+                    console.log(res.data);
                     var userData = res.data;
-                    if (userData.local) this.local = userData.local;
-                    if (userData.facebook) this.facebook = userData.facebook;
+                    if (userData.local) AuthService.local = userData.local;
+                    if (userData.facebook) AuthService.facebook = userData.facebook;
                     AuthService.authenticated = true;
                     //console.log("aqac var");
                     callback(true);
@@ -173,9 +190,10 @@ app.factory("AuthService", ['$http',
             console.log("aq var");
             $http.post("/local/register", {email: email, password: password, username: username}).then(function (res) {
                 if (res.data._id) {
+                    console.log(res.data);
                     var userData = res.data;
-                    if (userData.local) this.local = userData.local;
-                    if (userData.facebook) this.local = userData.facebook;
+                    if (userData.local) AuthService.local = userData.local;
+                    if (userData.facebook) AuthService.facebook = userData.facebook;
                     AuthService.authenticated = true;
                     //console.log("aqac var");
                     callback(true);
@@ -186,7 +204,7 @@ app.factory("AuthService", ['$http',
         AuthService.logOut = function (callback) {
             $http.get("/local/logout").then(function (res) {
                 if (res.data.status === "ok") {
-                    AuthService.authenticated = false;
+                    AuthService.setDefault();
                     return callback(true);
                 }
             });
@@ -210,8 +228,8 @@ app.factory("AuthService", ['$http',
         return AuthService;
     }
 ]);
-app.controller("LoginController", ['$scope', 'AuthService', '$location', '$rootScope',
-    function ($scope, AuthService, $location, $rootScope) {
+app.controller("LoginController", ['$scope', 'AuthService', '$state', '$rootScope',
+    function ($scope, AuthService, $state, $rootScope) {
         $scope.username = "";
         $scope.password = "";
 
@@ -219,14 +237,14 @@ app.controller("LoginController", ['$scope', 'AuthService', '$location', '$rootS
             AuthService.logIn($scope.username, $scope.password, function (success) {
                 if (success) {
                     $rootScope.$broadcast('authentication', 'login');
-                    $location.path("/");
+                    $state.go("dashboard.profile");
                 }
             });
         }
     }
 ]);
-app.controller("RegisterController", ['$scope', 'AuthService', '$location', '$rootScope',
-    function ($scope, AuthService, $location, $rootScope) {
+app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootScope',
+    function ($scope, AuthService, $state, $rootScope) {
         $scope.username = "";
         $scope.email = "";
         $scope.password = "";
@@ -239,7 +257,7 @@ app.controller("RegisterController", ['$scope', 'AuthService', '$location', '$ro
             }, function (success) {
                 if (success) {
                     $rootScope.$broadcast('authentication', 'login');
-                    $location.path("/");
+                    $state.go("dashboard.profile");
                 }
             });
         }
@@ -468,7 +486,10 @@ app.controller("ViewCollectionController", ["$scope", "Collection", "$stateParam
 ]);
 app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope',
     function ($scope, AuthService, $location, $rootScope) {
+        console.log(AuthService);
         $scope.hasFacebook = AuthService.facebook.name !== null;
+        console.log($scope.hasFacebook);
+        console.log(AuthService.facebook.name);
         $scope.facebookName = AuthService.facebook.name;
         $scope.localEmail = AuthService.local.email;
         $scope.localUserName = AuthService.local.username;
