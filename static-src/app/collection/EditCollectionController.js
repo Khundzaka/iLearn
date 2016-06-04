@@ -3,7 +3,7 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
         console.log($stateParams.collection);
 
         function fetchCollection() {
-            Collection.getOne({user_id: $stateParams.collection}).then(function (data) {
+            Collection.getOne($stateParams.collection).then(function (data) {
                 $scope.collection = data.collection;
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;

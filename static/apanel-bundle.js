@@ -321,7 +321,7 @@ apanelApp.controller("AccessUsersController", function ($scope, UserAccess, $uib
 
 apanelApp.controller("UserModalController", function ($scope, $uibModalInstance, UserAccess, user_id) {
     var getOne = function () {
-        UserAccess.getOne({userId: user_id}).then(function (data) {
+        UserAccess.getOne(user_id).then(function (data) {
             $scope.user = data.user;
             $scope.groups = data.groups;
         });
@@ -452,9 +452,7 @@ apanelApp.factory("UserAccess", function ($http) {
         });
     };
 
-    UserAccess.getOne = function (params) {
-        console.log(params);
-        var userId = params.userId;
+    UserAccess.getOne = function (userId) {
         return $http.get(user_access_endp + userId).then(function (response) {
             console.log(response);
             return response.data.data;
