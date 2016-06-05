@@ -1,6 +1,7 @@
 app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$http", "Collection",
     function ($scope, $timeout, $stateParams, $http, Collection) {
         var words = [];
+        $scope.isCapital = false; //todo: for future addons...
 
         var currentWordPair = null, wordList = [];
 
@@ -126,6 +127,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$ht
             }
             if ($scope.currentStage === 2) {
                 roundStart();
+                document.getElementById("inputWord").focus();
             }
             if ($scope.currentStage === 3) {
                 timeIsUp();

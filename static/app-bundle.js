@@ -142,6 +142,27 @@ app.run(["AuthService", "$rootScope", "$state",
     }
 ]);
 
+app.directive('capitalize', function () {
+    return {
+        require: 'ngModel',
+        link: function (scope, element, attrs, modelCtrl) {
+            var capitalize = function (inputValue) {
+                if (inputValue == undefined) inputValue = '';
+                var capitalized = inputValue.toLowerCase();
+                if (scope.isCapital) {
+                    capitalized = capitalized.substring(0, 1).toUpperCase() + capitalized.substring(1);
+                }
+                if (capitalized !== inputValue) {
+                    modelCtrl.$setViewValue(capitalized);
+                    modelCtrl.$render();
+                }
+                return capitalized;
+            };
+            modelCtrl.$parsers.push(capitalize);
+            capitalize(scope[attrs.ngModel]); // capitalize initial value
+        }
+    };
+});
 app.factory("AuthService", ['$http',
     function ($http) {
         var AuthService = {
@@ -533,9 +554,23 @@ app.controller('HomeController', ['$scope', '$uibModal', '$log',
 
     }
 ]);
+app.factory("WordService", ["$http",
+    function ($http) {
+        var wordPath = "/api/word/";
+        var WordService = {};
+        WordService.find = function (word) {
+            return $http.post(wordPath + "find", {value: word}).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return WordService;
+    }
+]);
 app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$http", "Collection",
     function ($scope, $timeout, $stateParams, $http, Collection) {
         var words = [];
+        $scope.isCapital = false; //todo: for future addons...
 
         var currentWordPair = null, wordList = [];
 
@@ -661,6 +696,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$ht
             }
             if ($scope.currentStage === 2) {
                 roundStart();
+                document.getElementById("inputWord").focus();
             }
             if ($scope.currentStage === 3) {
                 timeIsUp();
@@ -686,18 +722,5 @@ app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$ht
             resetScope();
         };
 
-    }
-]);
-app.factory("WordService", ["$http",
-    function ($http) {
-        var wordPath = "/api/word/";
-        var WordService = {};
-        WordService.find = function (word) {
-            return $http.post(wordPath + "find", {value: word}).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        return WordService;
     }
 ]);
