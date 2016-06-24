@@ -9,10 +9,13 @@ app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootS
                 username: $scope.username,
                 password: $scope.password,
                 email: $scope.email
-            }, function (success) {
-                if (success) {
+            }, function (err, flash) {
+                if (!err) {
                     $rootScope.$broadcast('authentication', 'login');
                     $state.go("dashboard.profile");
+                }
+                else{
+
                 }
             });
         }

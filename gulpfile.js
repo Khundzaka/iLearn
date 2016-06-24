@@ -33,7 +33,7 @@ gulp.task('concat-apanel-app', function () {
 
 gulp.task('copy-apanel-templates', function () {
     gulp.src('static-src/apanel/**/*.html')
-        .pipe(templateCache('apanel-templates.js',{root: '/static/apanel/', standalone: true}))
+        .pipe(templateCache('apanel-templates.js', {root: '/static/apanel/', standalone: true}))
         .pipe(gulp.dest('static/')).pipe(livereload());
 });
 
@@ -51,3 +51,5 @@ gulp.task('dev-env', function () {
     gulp.watch('static-src/app/**/*.js', ['concat-main-app']);
     gulp.watch('static-src/apanel/**/*.js', ['concat-apanel-app']);
 });
+
+gulp.task('build-dev', ['concat-main-app', 'concat-apanel-app', 'copy-app-templates', 'copy-apanel-templates']);

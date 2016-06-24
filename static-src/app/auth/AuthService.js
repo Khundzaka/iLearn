@@ -30,14 +30,17 @@ app.factory("AuthService", ['$http',
         AuthService.logIn = function (email, password, callback) {
             console.log("aq var");
             $http.post("/local/login", {email: email, password: password}).then(function (res) {
-                if (res.data._id) {
+                if (res.data.status != "failed") {
                     // console.log(res.data);
-                    var userData = res.data;
+                    var userData = res.data.user;
                     if (userData.local) AuthService.local = userData.local;
                     if (userData.facebook) AuthService.facebook = userData.facebook;
                     AuthService.authenticated = true;
                     //console.log("aqac var");
-                    callback(true);
+                    callback(null);
+                }
+                else {
+                    callback(true, res.data.info);
                 }
             });
         };
@@ -45,14 +48,14 @@ app.factory("AuthService", ['$http',
             var email = params.email, password = params.password, username = params.username;
             console.log("aq var");
             $http.post("/local/register", {email: email, password: password, username: username}).then(function (res) {
-                if (res.data._id) {
+                if (res.data.status != "failed") {
                     // console.log(res.data);
-                    var userData = res.data;
+                    var userData = res.data.user;
                     if (userData.local) AuthService.local = userData.local;
                     if (userData.facebook) AuthService.facebook = userData.facebook;
                     AuthService.authenticated = true;
                     //console.log("aqac var");
-                    callback(true);
+                    callback(null);
                 }
             });
         };

@@ -7,18 +7,23 @@ module.exports = function (app) {
     });
 
     app.post('/local/register', function (req, res, next) {
-        passport.authenticate('local-register', function (err, user, info) {
+        passport.authenticate('local-register', function (err, user) {
+            // console.log(info);
+            // console.log(err);
+            // console.log(user);
+            // console.log(req.flash("signupMessage"));
             if (err) {
-                return res.json({status: "failed"});
+                return res.json({status: "failed", error: true});
             }
             if (!user) {
-                return res.json({status: "failed"});
+                return res.json({status: "failed", error: false, info: req.flash("signupMessage")});
             }
             req.logIn(user, function (err) {
                 if (err) {
+                    console.log(err);
                     return res.json({status: "failed"});
                 }
-                return res.json(req.user);
+                return res.json({status: "ok", user: req.user});
             });
         })(req, res, next);
     });
@@ -31,16 +36,16 @@ module.exports = function (app) {
     app.post('/local/login', function (req, res, next) {
         passport.authenticate('local-login', function (err, user, info) {
             if (err) {
-                return res.json({status: "failed"});
+                return res.json({status: "failed", error: true});
             }
             if (!user) {
-                return res.json({status: "failed"});
+                return res.json({status: "failed", error: false});
             }
             req.logIn(user, function (err) {
                 if (err) {
-                    return res.json({status: "failed"});
+                    return res.json({status: "failed", error: true});
                 }
-                return res.json(req.user);
+                return res.json({"status": "ok", "user": req.user});
             });
         })(req, res, next);
     });

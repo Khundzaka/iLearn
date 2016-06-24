@@ -195,14 +195,17 @@ app.factory("AuthService", ['$http',
         AuthService.logIn = function (email, password, callback) {
             console.log("aq var");
             $http.post("/local/login", {email: email, password: password}).then(function (res) {
-                if (res.data._id) {
+                if (res.data.status != "failed") {
                     // console.log(res.data);
-                    var userData = res.data;
+                    var userData = res.data.user;
                     if (userData.local) AuthService.local = userData.local;
                     if (userData.facebook) AuthService.facebook = userData.facebook;
                     AuthService.authenticated = true;
                     //console.log("aqac var");
-                    callback(true);
+                    callback(null);
+                }
+                else {
+                    callback(true, res.data.info);
                 }
             });
         };
@@ -210,14 +213,14 @@ app.factory("AuthService", ['$http',
             var email = params.email, password = params.password, username = params.username;
             console.log("aq var");
             $http.post("/local/register", {email: email, password: password, username: username}).then(function (res) {
-                if (res.data._id) {
+                if (res.data.status != "failed") {
                     // console.log(res.data);
-                    var userData = res.data;
+                    var userData = res.data.user;
                     if (userData.local) AuthService.local = userData.local;
                     if (userData.facebook) AuthService.facebook = userData.facebook;
                     AuthService.authenticated = true;
                     //console.log("aqac var");
-                    callback(true);
+                    callback(null);
                 }
             });
         };
@@ -249,16 +252,19 @@ app.factory("AuthService", ['$http',
         return AuthService;
     }
 ]);
-app.controller("LoginController", ['$scope', 'AuthService', '$state', '$rootScope',
-    function ($scope, AuthService, $state, $rootScope) {
+app.controller("LoginController", ['$scope', 'AuthService', '$state', '$rootScope', 'InfoModal',
+    function ($scope, AuthService, $state, $rootScope, InfoModal) {
         $scope.username = "";
         $scope.password = "";
 
         $scope.loginSubmit = function () {
-            AuthService.logIn($scope.username, $scope.password, function (success) {
-                if (success) {
+            AuthService.logIn($scope.username, $scope.password, function (error) {
+                if (!error) {
                     $rootScope.$broadcast('authentication', 'login');
                     $state.go("dashboard.profile");
+                }
+                else {
+                    InfoModal.show({message: "ელ.ფოსტა ან პაროლი არასწორია"});
                 }
             });
         }
@@ -275,28 +281,41 @@ app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootS
                 username: $scope.username,
                 password: $scope.password,
                 email: $scope.email
-            }, function (success) {
-                if (success) {
+            }, function (err, flash) {
+                if (!err) {
                     $rootScope.$broadcast('authentication', 'login');
                     $state.go("dashboard.profile");
+                }
+                else{
+
                 }
             });
         }
     }
 ]);
-app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance",
-    function ($scope, Collection, WordService, collectionId, $uibModalInstance) {
+app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance", "InfoModal",
+    function ($scope, Collection, WordService, collectionId, $uibModalInstance, InfoModal) {
+        $scope.wordName = "";
+        $scope.wordDescription = "";
+        $scope.words = [];
+        $scope.noWordsFound = false;
         //console.log(collectionId);
         $scope.findInput = "";
         $scope.addNewWord = function () {
-            Collection.addNewWord({
-                collectionId: collectionId,
-                wordName: $scope.wordName,
-                wordDescription: $scope.wordDescription
-            }).then(function (data) {
-                console.log(data);
-                $uibModalInstance.close();
-            });
+            var valid = $scope.wordName != "" && $scope.wordDescription != "";
+            if (valid) {
+                Collection.addNewWord({
+                    collectionId: collectionId,
+                    wordName: $scope.wordName,
+                    wordDescription: $scope.wordDescription
+                }).then(function (data) {
+                    console.log(data);
+                    $uibModalInstance.close();
+                });
+            }
+            else {
+                InfoModal.show({message: "შეავსეთ ყველა ველი"});
+            }
         };
 
         $scope.addWord = function (wordId) {
@@ -309,8 +328,14 @@ app.controller("AddWordController", ["$scope", "Collection", "WordService", "col
         $scope.find = function () {
             WordService.find($scope.findInput).then(function (data) {
                 $scope.words = data.words;
+                // check words count
+                $scope.noWordsFound = $scope.words.length == 0;
             });
         };
+
+        $scope.close = function () {
+            $uibModalInstance.close();
+        }
     }
 ]);
 app.factory("Collection", ["$http",
@@ -437,13 +462,14 @@ app.controller("CreateCollectionController", ["$scope", "Collection", "$state",
 app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal", "Collection",
     function ($scope, $stateParams, $uibModal, Collection) {
         console.log($stateParams.collection);
+        $scope.collectionTypeText = "";
 
         function fetchCollection() {
             Collection.getOne($stateParams.collection).then(function (data) {
                 $scope.collection = data.collection;
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;
-                $scope.collectionType = data.collection.is_public ? "public" : "private";
+                $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
                 console.log(data.collection);
             });
         }
@@ -552,19 +578,6 @@ app.controller('HeaderController', function ($scope, $rootScope, AuthService, $s
 app.controller('HomeController', ['$scope', '$uibModal', '$log',
     function ($scope, $uibModal, $log) {
 
-    }
-]);
-app.factory("WordService", ["$http",
-    function ($http) {
-        var wordPath = "/api/word/";
-        var WordService = {};
-        WordService.find = function (word) {
-            return $http.post(wordPath + "find", {value: word}).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        return WordService;
     }
 ]);
 app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$http", "Collection",
@@ -722,5 +735,47 @@ app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$ht
             resetScope();
         };
 
+    }
+]);
+app.service("InfoModal", ["$uibModal", function ($uibModal) {
+    return {
+        show: function (passedData) {
+            var message = passedData.message || "";
+            var title = passedData.title || false;
+            var size = passedData.size || "sm";
+
+            $uibModal.open({
+                animation: true,
+                templateUrl: '/static/app/services/info-modal.html',
+                controller: ["$scope", "passedObject", "$uibModalInstance",
+                    function ($scope, passedObject, $uibModalInstance) {
+                        $scope.message = passedObject.message;
+                        $scope.title = passedObject.title;
+                        $scope.close = function () {
+                            $uibModalInstance.close();
+                        }
+                    }
+                ],
+                size: size,
+                resolve: {
+                    passedObject: function () {
+                        return {message: message, title: title};
+                    }
+                }
+            });
+        }
+    };
+}]);
+app.factory("WordService", ["$http",
+    function ($http) {
+        var wordPath = "/api/word/";
+        var WordService = {};
+        WordService.find = function (word) {
+            return $http.post(wordPath + "find", {value: word}).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return WordService;
     }
 ]);

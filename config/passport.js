@@ -2,6 +2,8 @@
 var LocalStrategy = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 
+var async = require("async");
+
 // load up the user model
 var Account = require('../models/account');
 
@@ -68,54 +70,78 @@ module.exports = function (passport) {
         },
         function (req, email, password, done) {
 
-            // asynchronous
+            // asynchronous 
             process.nextTick(function () {
+                async.waterfall([
 
-                //  Whether we're signing up or connecting an account, we'll need
-                //  to know if the email address is in use.
-                Account.findOne({'local.email': email}, "+local.password", function (err, existingUser) {
+                        // check if username exists
+                        function (cbck) {
+                            Account.findOne({'local.username': req.body.username}, function (err, existing) {
+                                console.log(existing);
+                                if (existing) {
+                                    req.flash('signupMessage', 'username_exists');
+                                }
+                                cbck(err, existing);
+                            });
+                        },
 
-                    // if there are any errors, return the error
-                    if (err)
-                        return done(err);
-
-                    // check to see if there's already a user with that email
-                    if (existingUser)
-                        return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-
-                    //  If we're logged in, we're connecting a new local account.
-                    if (req.user) {
-                        if (typeof req.user.local.email !== 'undefined') {
-                            return done(null, false, req.flash('signupMessage', 'That user is already logged in.'));
+                        // check if mail exists
+                        function (existing, cbck) {
+                            if (existing) {
+                                return cbck(null, existing);
+                            }
+                            Account.findOne({'local.email': email}, "+local.password", function (err, existingUser) {
+                                if (existingUser) {
+                                    req.flash('signupMessage', 'email_exists');
+                                }
+                                cbck(err, existingUser);
+                            });
                         }
-                        var user = req.user;
-                        user.local.email = email;
-                        user.local.username = req.body.username;
-                        user.local.password = user.generateHash(password);
-                        user.save(function (err) {
-                            if (err)
-                                throw err;
-                            return done(null, user);
-                        });
-                    }
-                    //  We're not logged in, so we're creating a brand new user.
-                    else {
-                        // create the user
-                        var newUser = new Account();
+                    ],
 
-                        newUser.local.email = email;
-                        newUser.local.username = req.body.username;
-                        newUser.local.password = newUser.generateHash(password);
+                    //last callback
+                    function (err, existing) {
+                        if (err) {
+                            return done(err);
+                        }
+                        if (existing) {
+                            return done(null, false);
+                        }
 
-                        newUser.save(function (err) {
-                            if (err)
-                                throw err;
-                            newUser.local.password = null;
-                            return done(null, newUser);
-                        });
-                    }
+                        //  If we're logged in, we're connecting a new local account.
+                        if (req.user) {
+                            if (typeof req.user.local.email !== 'undefined') {
+                                return done(null, false, req.flash('signupMessage', 'logged_in'));
+                            }
+                            var user = req.user;
+                            user.local.email = email;
+                            user.local.username = req.body.username;
+                            user.local.password = user.generateHash(password);
+                            user.save(function (err) {
+                                if (err)
+                                    throw err;
+                                user.local.password = null;
+                                return done(null, user);
+                            });
+                        }
+                        //  We're not logged in, so we're creating a brand new user.
+                        else {
+                            // create the user
+                            var newUser = new Account();
 
-                });
+                            newUser.local.email = email;
+                            newUser.local.username = req.body.username;
+                            newUser.local.password = newUser.generateHash(password);
+
+                            newUser.save(function (err) {
+                                if (err)
+                                    throw err;
+                                newUser.local.password = null;
+                                return done(null, newUser);
+                            });
+                        }
+                    });
+
             });
 
         }));

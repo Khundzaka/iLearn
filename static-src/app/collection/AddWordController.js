@@ -1,16 +1,26 @@
-app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance",
-    function ($scope, Collection, WordService, collectionId, $uibModalInstance) {
+app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance", "InfoModal",
+    function ($scope, Collection, WordService, collectionId, $uibModalInstance, InfoModal) {
+        $scope.wordName = "";
+        $scope.wordDescription = "";
+        $scope.words = [];
+        $scope.noWordsFound = false;
         //console.log(collectionId);
         $scope.findInput = "";
         $scope.addNewWord = function () {
-            Collection.addNewWord({
-                collectionId: collectionId,
-                wordName: $scope.wordName,
-                wordDescription: $scope.wordDescription
-            }).then(function (data) {
-                console.log(data);
-                $uibModalInstance.close();
-            });
+            var valid = $scope.wordName != "" && $scope.wordDescription != "";
+            if (valid) {
+                Collection.addNewWord({
+                    collectionId: collectionId,
+                    wordName: $scope.wordName,
+                    wordDescription: $scope.wordDescription
+                }).then(function (data) {
+                    console.log(data);
+                    $uibModalInstance.close();
+                });
+            }
+            else {
+                InfoModal.show({message: "შეავსეთ ყველა ველი"});
+            }
         };
 
         $scope.addWord = function (wordId) {
@@ -23,7 +33,13 @@ app.controller("AddWordController", ["$scope", "Collection", "WordService", "col
         $scope.find = function () {
             WordService.find($scope.findInput).then(function (data) {
                 $scope.words = data.words;
+                // check words count
+                $scope.noWordsFound = $scope.words.length == 0;
             });
         };
+
+        $scope.close = function () {
+            $uibModalInstance.close();
+        }
     }
 ]);
