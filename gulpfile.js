@@ -2,6 +2,7 @@ var gulp = require('gulp'),
     gutil = require('gulp-util'),
     gulpConcat = require('gulp-concat'),
     nodemon = require('gulp-nodemon'),
+    less = require('gulp-less'),
     livereload = require('gulp-livereload');
 
 var templateCache = require('gulp-angular-templatecache');
@@ -37,6 +38,23 @@ gulp.task('copy-apanel-templates', function () {
         .pipe(gulp.dest('static/')).pipe(livereload());
 });
 
+gulp.task('copy-app-styles', function () {
+    gulp.src('static-src/styles/**/*.css')
+        .pipe(gulp.dest('static/css/')).pipe(livereload());
+});
+
+// gulp.task('copy-app-styles', function () {
+//     gulp.src('static-src/styles/**/*.css')
+//         .pipe(gulp.dest('static/css/')).pipe(livereload());
+// });
+
+gulp.task('compile-less', function() {
+    gulp.src('static-src/styles/app.less')
+        .pipe(less())
+        .pipe(gulp.dest('static/css/'))
+        .pipe(livereload());
+});
+
 gulp.task('dev-env', function () {
     nodemon({
         script: 'app.js'
@@ -50,6 +68,7 @@ gulp.task('dev-env', function () {
     gulp.watch('static-src/apanel/**/*.{html,css}', ['copy-apanel-templates']);
     gulp.watch('static-src/app/**/*.js', ['concat-main-app']);
     gulp.watch('static-src/apanel/**/*.js', ['concat-apanel-app']);
+    gulp.watch('static-src/styles/**/*.less', ['compile-less']);
 });
 
 gulp.task('build-dev', ['concat-main-app', 'concat-apanel-app', 'copy-app-templates', 'copy-apanel-templates']);

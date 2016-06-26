@@ -22,10 +22,11 @@
   },
   "devDependencies": {
     "gulp": "latest",
-    "gulp-util": "latest",
+    "gulp-angular-templatecache": "latest",
     "gulp-concat": "latest",
-    "gulp-nodemon": "latest",
+    "gulp-less": "^3.1.0",
     "gulp-livereload": "latest",
-    "gulp-angular-templatecache": "latest"
+    "gulp-nodemon": "latest",
+    "gulp-util": "latest"
   }
 }

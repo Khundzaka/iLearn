@@ -1,9 +1,13 @@
-app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$http", "Collection",
-    function ($scope, $timeout, $stateParams, $http, Collection) {
+app.controller("PracticeController", ["$scope", "$timeout", "$state", "$stateParams", "$http", "Collection",
+    function ($scope, $timeout, $state, $stateParams, $http, Collection) {
         var words = [];
         $scope.isCapital = false; //todo: for future addons...
 
         var currentWordPair = null, wordList = [];
+
+        $scope.goToCollection = function () {
+            $state.go("collection.view", {collection: $stateParams.collection});
+        };
 
 
         function timeString(time) {
@@ -107,7 +111,6 @@ app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$ht
         function roundStart() {
             timeTicker();
             getRandomWord();
-
         }
 
         function timeIsUp() {
@@ -127,7 +130,6 @@ app.controller("PracticeController", ["$scope", "$timeout", "$stateParams", "$ht
             }
             if ($scope.currentStage === 2) {
                 roundStart();
-                document.getElementById("inputWord").focus();
             }
             if ($scope.currentStage === 3) {
                 timeIsUp();

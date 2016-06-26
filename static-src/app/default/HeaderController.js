@@ -18,7 +18,7 @@ app.controller('HeaderController', function ($scope, $rootScope, AuthService, $s
     });
 
     $scope.goToState = function (state) {
-        $scope.navCollapsed = !$scope.navCollapsed;
+        $scope.navCollapsed = true;
         $state.go(state);
     };
 

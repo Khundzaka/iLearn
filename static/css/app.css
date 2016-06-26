@@ -1,0 +1,121 @@
+@font-face {
+  font-family: bpg_mrgvlovani_caps_2010;
+  src: url(/static/fonts/font.eot);
+  src: url(/static/fonts/font.otf) format("opentype"), url(/static/fonts/font.ttf) format("truetype");
+}
+/*@font-face {*/
+/*font-family: bpg_mrgvlovani_caps_2010_small;*/
+/*src: url(/static/fonts/bpg_mrgvlovani_caps_2010.eot);*/
+/*src: url(/static/fonts/bpg_mrgvlovani_caps_2010.ttf) format("truetype"), url(/static/fonts/bpg_mrgvlovani_caps_2010.otf) format("opentype")*/
+/*}*/
+.nav,
+.pagination,
+.carousel,
+.panel-title a {
+  cursor: pointer;
+}
+.nav {
+  font-family: bpg_mrgvlovani_caps_2010, serif;
+}
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 48px;
+  background-color: #f5f5f5;
+  margin: 0;
+}
+.footer-text {
+  margin: 12px 0;
+  color: #999;
+}
+.pr-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  font-size: 28px;
+  cursor: pointer;
+  transition: 0.5s ease;
+  color: #ccc;
+}
+.pr-close:hover {
+  color: #ff8888;
+}
+.practice {
+  z-index: 9999;
+  background: #FFFFFF;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  zoom: 1;
+  filter: alpha(opacity=100);
+  -webkit-opacity: 1;
+  -moz-opacity: 1;
+  opacity: 1;
+}
+.practice-inner {
+  position: absolute;
+  margin: 5% auto;
+  max-width: 80%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.practice p {
+  color: #888;
+  font-size: 16px;
+}
+.pr-info {
+  padding: 14px;
+  border: #2196f3 1px solid;
+  -webkit-border-radius: 10px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 10px;
+  -moz-background-clip: padding;
+  border-radius: 10px;
+  background-clip: padding-box;
+}
+.pr-start-btn {
+  -webkit-border-radius: 20px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 20px;
+  -moz-background-clip: padding;
+  border-radius: 20px;
+  background-clip: padding-box;
+  padding: 10px;
+  margin: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+.pr-clock {
+  font-size: 16px;
+  font-weight: bold;
+}
+.pr-input {
+  border: #2196f3 1px solid !important;
+  -webkit-border-radius: 3px !important;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 3px !important;
+  -moz-background-clip: padding;
+  border-radius: 3px !important;
+  background-clip: padding-box;
+  padding: 4px !important;
+}
