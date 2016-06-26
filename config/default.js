@@ -1,3 +1,3 @@
-/**
- * Created by george on 26.06.2016.
- */
+module.exports = {
+    version: "0.0.1"
+};

@@ -61,7 +61,7 @@ body {
   margin: 10px;
   font-size: 28px;
   cursor: pointer;
-  transition: 0.5s ease;
+  .lh-transition(0.5s ease);
   color: #ccc;
 }
 
@@ -79,15 +79,6 @@ body {
   right: 0;
   .lh-opacity(1);
 }
-
-//.practice.ng-enter {
-//  .lh-transition(0.5s ease all);
-//  .lh-opacity(0);
-//}
-//
-//.practice.ng-enter-active {
-//  .lh-opacity(1);
-//}
 
 .practice-inner {
   position: absolute;
@@ -128,4 +119,23 @@ body {
   border: @primary-color 1px solid !important;
   .lh-border-radius(~'3px !important');
   padding: 4px !important;
+}
+
+.pr-msg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 10px;
+  font-size: 28px;
+  cursor: default;
+  line-height:0;
+  //.lh-transition(0.5s ease);
+}
+
+.pr-msg-s {
+  color: #2ab316;
+}
+
+.pr-msg-f {
+  color: #ff333d;
 }

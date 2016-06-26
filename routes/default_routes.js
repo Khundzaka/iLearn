@@ -1,3 +1,5 @@
+var defaultConfig = require("../config/default");
+
 module.exports = function (app) {
 
     app.get('/', function (req, res) {
@@ -7,7 +9,11 @@ module.exports = function (app) {
         } else {
             serialized = null;
         }
-        res.render('index', {user: req.user, serialized: serialized});
+        res.render('index', {
+            user: req.user,
+            serialized: serialized,
+            appVersion: defaultConfig.version
+        });
     });
 
 };

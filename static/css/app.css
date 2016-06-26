@@ -49,6 +49,9 @@ body {
   margin: 10px;
   font-size: 28px;
   cursor: pointer;
+  -webkit-transition: 0.5s ease;
+  -moz-transition: 0.5s ease;
+  -o-transition: 0.5s ease;
   transition: 0.5s ease;
   color: #ccc;
 }
@@ -118,4 +121,19 @@ body {
   border-radius: 3px !important;
   background-clip: padding-box;
   padding: 4px !important;
+}
+.pr-msg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 10px;
+  font-size: 28px;
+  cursor: default;
+  line-height: 0;
+}
+.pr-msg-s {
+  color: #2ab316;
+}
+.pr-msg-f {
+  color: #ff333d;
 }

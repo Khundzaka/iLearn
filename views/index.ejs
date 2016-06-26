@@ -9,8 +9,8 @@
     <title ng-bind="title"></title>
 
     <!-- Bootstrap -->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/app.css">
+    <link href="/static/css/bootstrap.min.css?<%- appVersion %>" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/app.css?<%- appVersion %>">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -64,9 +64,9 @@
                 </div>
                 <div ng-show="authenticated" class="nav navbar-nav navbar-right visible-xs">
                     <a ui-sref="dashboard.profile" ng-click="navCollapsed = !navCollapsed">
-                    <span class="glyphicon glyphicon-dashboard"></span> ჩემი პანელი</a>
+                        <span class="glyphicon glyphicon-dashboard"></span> ჩემი პანელი</a>
                     <a ng-click="logOut(); navCollapsed = true"><span class="glyphicon glyphicon-off"></span>
-                            გამოსვლა</a>
+                        გამოსვლა</a>
                 </div>
 
                 <ul ng-show="!authenticated" class="nav navbar-nav navbar-right">
@@ -96,20 +96,12 @@
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="/static/js/angular.min.js"></script>
-<script src="/static/js/angular-animate.min.js"></script>
-<script src="/static/js/ui-bootstrap-tpls-1.2.4.min.js"></script>
-<script src="/static/js/angular-ui-router.min.js"></script>
-<script src="/static/templates.js"></script>
-<script src="/static/app-bundle.js"></script>
-<!--<script src="/static/app/myapp.js"></script>-->
-<!--<script src="/static/app/home/HomeController.js"></script>-->
-<!--<script src="/static/app/auth/LoginController.js"></script>-->
-<!--<script src="/static/app/auth/RegisterController.js"></script>-->
-<!--<script src="/static/app/auth/AuthService.js"></script>-->
-<!--<script src="/static/app/collection/CollectionController.js"></script>-->
-<!--<script src="/static/app/collection/CreateCollectionController.js"></script>-->
-<!--<script src="/static/app/collection/ViewCollectionController.js"></script>-->
+<script src="/static/js/angular.min.js?<%- appVersion %>"></script>
+<script src="/static/js/angular-animate.min.js?<%- appVersion %>"></script>
+<script src="/static/js/ui-bootstrap-tpls-1.2.4.min.js?<%- appVersion %>"></script>
+<script src="/static/js/angular-ui-router.min.js?<%- appVersion %>"></script>
+<script src="/static/templates.js?<%- appVersion %>"></script>
+<script src="/static/app-bundle.js?<%- appVersion %>"></script>
 
 </body>
 

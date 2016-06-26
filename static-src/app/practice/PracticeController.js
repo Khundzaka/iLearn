@@ -1,6 +1,12 @@
 app.controller("PracticeController", ["$scope", "$timeout", "$state", "$stateParams", "$http", "Collection",
     function ($scope, $timeout, $state, $stateParams, $http, Collection) {
         var words = [];
+        var mistakesList = [];
+        $scope.message = {
+            show:false,
+            correct:0,
+            timeout:null
+        };
         $scope.isCapital = false; //todo: for future addons...
 
         var currentWordPair = null, wordList = [];
@@ -9,6 +15,16 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
             $state.go("collection.view", {collection: $stateParams.collection});
         };
 
+        function showMessage(isCorrect){
+            $scope.message.correct = isCorrect;
+            $scope.message.show = true;
+            if($scope.message.timeout){
+                $timeout.cancel($scope.message.timeout);
+            }
+            $scope.message.timeout = $timeout(function () {
+                $scope.message.show = false;
+            }, 600);
+        }
 
         function timeString(time) {
             var minutes = Math.floor(time / 60);
@@ -23,6 +39,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
             wordList.forEach(function (e) {
                 words.push(e);
             });
+            mistakesList = [];
         }
 
         function initScope() {
@@ -61,14 +78,20 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
         }
 
         $scope.getPoints = function () {
-            var cw = $scope.correct + $scope.wrong;
-            if (cw == 0) {
+            var allWords = wordList.length;
+            // console.log(allWords - $scope.correct, $scope.correct);
+            var allAnswer = $scope.correct + $scope.wrong;
+            if (allAnswer == 0) {
                 return 0;
             }
             if ($scope.correct == 0) {
                 return 0;
             }
-            return Math.floor($scope.correct / cw * 1000) / 10;
+            var skipped = allWords - $scope.correct;
+            if(skipped<0){
+                skipped = 0;
+            }
+            return Math.floor($scope.correct / (allAnswer+skipped) * 1000) / 10;
         };
 
         function getRandomWord() {
@@ -83,9 +106,16 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
         $scope.checkWord = function () {
             if ($scope.inputWord === currentWordPair.value) {
                 $scope.correct += 1;
+                showMessage(true);
             } else {
+                showMessage(false);
                 $scope.wrong += 1;
-                words.push(currentWordPair);
+                //check if word is already in mistakes
+                if(mistakesList.indexOf(currentWordPair._id)<0){
+                    mistakesList.push(currentWordPair._id);
+                    words.push(currentWordPair);
+                }
+                console.log(words.length);
             }
 
             if (words.length === 0) {
