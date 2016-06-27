@@ -62,12 +62,12 @@
                         </li>
                     </ul>
                 </div>
-                <div ng-show="authenticated" class="nav navbar-nav navbar-right visible-xs">
-                    <a ui-sref="dashboard.profile" ng-click="navCollapsed = !navCollapsed">
-                        <span class="glyphicon glyphicon-dashboard"></span> ჩემი პანელი</a>
-                    <a ng-click="logOut(); navCollapsed = true"><span class="glyphicon glyphicon-off"></span>
-                        გამოსვლა</a>
-                </div>
+                <ul ng-show="authenticated" class="nav navbar-nav navbar-right visible-xs">
+                    <li><a ui-sref="dashboard.profile" ng-click="navCollapsed = !navCollapsed">
+                        <span class="glyphicon glyphicon-dashboard"></span> ჩემი პანელი</a></li>
+                    <li><a ng-click="logOut(); navCollapsed = true"><span class="glyphicon glyphicon-off"></span>
+                        გამოსვლა</a></li>
+                </ul>
 
                 <ul ng-show="!authenticated" class="nav navbar-nav navbar-right">
                     <li><a ui-sref="login" ng-click="navCollapsed = true">შესვლა</a></li>

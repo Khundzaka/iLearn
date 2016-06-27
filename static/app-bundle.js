@@ -584,6 +584,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
     function ($scope, $timeout, $state, $stateParams, $http, Collection) {
         var words = [];
         var mistakesList = [];
+        // $scope.focused = true;
         $scope.message = {
             show:false,
             correct:0,
@@ -685,6 +686,10 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
             $scope.currentWord = currentWordPair.description;
         }
 
+        function setFocus(){
+            $timeout(function(){document.getElementById("inputWord").focus(); console.log("why")});
+        }
+
         $scope.checkWord = function () {
             if ($scope.inputWord === currentWordPair.value) {
                 $scope.correct += 1;
@@ -706,8 +711,8 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
                 stageLoop();
             } else {
                 getRandomWord();
+                setFocus();
                 $scope.inputWord = "";
-                document.getElementById("inputWord").focus();
             }
         };
 
@@ -723,6 +728,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
         function roundStart() {
             timeTicker();
             getRandomWord();
+            setFocus();
         }
 
         function timeIsUp() {
