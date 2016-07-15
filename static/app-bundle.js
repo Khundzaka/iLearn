@@ -167,6 +167,7 @@ app.factory("AuthService", ['$http',
     function ($http) {
         var AuthService = {
             authenticated: false,
+            uid: null,
             local: {
                 username: null,
                 email: null
@@ -190,6 +191,8 @@ app.factory("AuthService", ['$http',
                 name: null,
                 email: null
             };
+
+            AuthService.uid = null;
         };
 
         AuthService.logIn = function (email, password, callback) {
@@ -201,6 +204,7 @@ app.factory("AuthService", ['$http',
                     if (userData.local) AuthService.local = userData.local;
                     if (userData.facebook) AuthService.facebook = userData.facebook;
                     AuthService.authenticated = true;
+                    AuthService.uid = userData._id;
                     //console.log("aqac var");
                     callback(null);
                 }
@@ -219,8 +223,11 @@ app.factory("AuthService", ['$http',
                     if (userData.local) AuthService.local = userData.local;
                     if (userData.facebook) AuthService.facebook = userData.facebook;
                     AuthService.authenticated = true;
+                    AuthService.uid = userData._id;
                     //console.log("aqac var");
                     callback(null);
+                } else {
+                    callback(true, res.data.info);
                 }
             });
         };
@@ -246,6 +253,7 @@ app.factory("AuthService", ['$http',
                 if (userData.local) this.local = userData.local;
                 if (userData.facebook) this.facebook = userData.facebook;
                 AuthService.authenticated = true;
+                AuthService.uid = userData._id;
             }
         };
 
@@ -270,13 +278,17 @@ app.controller("LoginController", ['$scope', 'AuthService', '$state', '$rootScop
         }
     }
 ]);
-app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootScope',
-    function ($scope, AuthService, $state, $rootScope) {
+app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootScope', 'InfoModal',
+    function ($scope, AuthService, $state, $rootScope, InfoModal) {
         $scope.username = "";
         $scope.email = "";
         $scope.password = "";
 
         $scope.register = function () {
+            if (!($scope.username.length && $scope.email.length && $scope.password.length)) {
+                InfoModal.show({message: "გთხოვთ შეავსოთ ყველა ველი"});
+                return;
+            }
             AuthService.register({
                 username: $scope.username,
                 password: $scope.password,
@@ -285,9 +297,26 @@ app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootS
                 if (!err) {
                     $rootScope.$broadcast('authentication', 'login');
                     $state.go("dashboard.profile");
-                }
-                else{
 
+                }
+                else {
+                    if (flash.length == 0) {
+                        InfoModal.show({message: "გთხოვთ შეამოწმოთ შეყვანილი ინფორმაციის სიზუსტე", size: "md"});
+                        return;
+                    }
+                    var messageCode = flash[0];
+                    if (messageCode == "email_exists") {
+                        return InfoModal.show({
+                            message: "მომხმარებელი მითითებული ელ. ფოსტით უკვე არსებობს",
+                            size: "md"
+                        });
+                    }
+                    if (messageCode == "username_exists") {
+                        return InfoModal.show({
+                            message: "მომხმარებელი მითითებული მეტსახელით უკვე არსებობს",
+                            size: "md"
+                        });
+                    }
                 }
             });
         }
@@ -459,13 +488,20 @@ app.controller("CreateCollectionController", ["$scope", "Collection", "$state",
 
     }
 ]);
-app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal", "Collection",
-    function ($scope, $stateParams, $uibModal, Collection) {
+app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal", "Collection", "$state", "AuthService",
+    function ($scope, $stateParams, $uibModal, Collection, $state, AuthService) {
         console.log($stateParams.collection);
         $scope.collectionTypeText = "";
 
         function fetchCollection() {
             Collection.getOne($stateParams.collection).then(function (data) {
+                if(data.collection.author._id != AuthService.uid){
+                    $state.go("collection.list");
+                    // console.log(data.collection.author._id);
+                    // console.log(AuthService.uid);
+                }
+                // console.log(data.collection.author._id);
+                // console.log(AuthService.uid);
                 $scope.collection = data.collection;
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;
@@ -535,8 +571,7 @@ app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$roo
     function ($scope, AuthService, $location, $rootScope) {
         console.log(AuthService);
         $scope.hasFacebook = AuthService.facebook.name !== null;
-        // console.log($scope.hasFacebook);
-        // console.log(AuthService.facebook.name);
+        $scope.hasLocal = AuthService.local.email !== null;
         $scope.facebookName = AuthService.facebook.name;
         $scope.localEmail = AuthService.local.email;
         $scope.localUserName = AuthService.local.username;

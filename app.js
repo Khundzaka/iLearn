@@ -51,14 +51,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'static')));
 
-if (process.env.NODE_ENV === 'development') {
-    app.use(errorHandler({dumpExceptions: true, showStack: true}));
-}
-
-if (process.env.NODE_ENV === 'production') {
-    app.use(errorHandler());
-}
-
 
 require('./config/passport')(passport);
 //// passport config
@@ -76,6 +68,40 @@ var collectionRouter = require('./routes/collection_router');
 var wordRouter = require('./routes/word_router');
 app.use('/api/collection', collectionRouter);
 app.use('/api/word', wordRouter);
+
+
+if (process.env.NODE_ENV === 'development') {
+    app.use(errorHandler({dumpExceptions: true, showStack: true}));
+}
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(errorHandler());
+}
+
+//error handling
+
+// if (process.env.NODE_ENV === 'development') {
+//
+//     app.use(function (err, req, res, next) {
+//         res.status(err.status || 500);
+//         res.json({
+//             status: "failed",
+//             message: err.message,
+//             error: err
+//         });
+//     });
+//
+// }
+//
+// if (process.env.NODE_ENV === 'production') {
+//     app.use(function (err, req, res, next) {
+//         res.status(err.status || 500).json({
+//             status: "failed",
+//             message: err.message,
+//             error: {}
+//         });
+//     });
+// }
 
 
 app.listen(app.get('port'), function () {

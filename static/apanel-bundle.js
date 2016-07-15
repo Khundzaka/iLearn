@@ -22,6 +22,7 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
     $urlRouterProvider
         .when('/access', '/access/users')
+        .when('/word', '/word/pending')
         .otherwise('/home');
 
     $stateProvider
@@ -83,8 +84,27 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             url: "/permissions",
             views: {
                 "": {
-                    templateUrl: _st + "access/access-permissions.html",
+                    templateUrl: _st + "word/access-permissions.html",
                     controller: "AccessPermissionsController"
+                }
+            }
+        })
+        .state("app.word", {
+            url: "/word",
+            //abstract: true,
+            views: {
+                "": {
+                    templateUrl: _st + "word/word.html",
+                    controller: "WordController"
+                }
+            }
+        })
+        .state("app.word.pending", {
+            url: "/pending",
+            views: {
+                "": {
+                    templateUrl: _st + "word/pending-word.html",
+                    controller: "PendingWordController"
                 }
             }
         })
@@ -471,3 +491,134 @@ apanelApp.factory("UserAccess", function ($http) {
 
     return UserAccess;
 });
+
+/**
+ * Created by george on 10.07.2016.
+ */
+
+apanelApp.controller("ModifyWordController", ["$scope", "WordService", "wordId", "$uibModalInstance",
+    function ($scope, WordService, WordId, $uibModalInstance) {
+        $scope.wordName = "";
+        $scope.wordDescription = "";
+        $scope.addNewWord = function () {
+            var valid = $scope.wordName != "" && $scope.wordDescription != "";
+            if (valid) {
+                WordService.modify({
+                    uid: WordId,
+                    value: $scope.wordName,
+                    description: $scope.wordDescription
+                }).then(function () {
+                    $uibModalInstance.close();
+                });
+            }
+            else {
+                alert("შეავსეთ ყველა ველი");
+            }
+        };
+
+        function fetchWord() {
+            WordService.one(WordId).then(function (data) {
+                console.log(data);
+                $scope.wordName = data.word.value;
+                // check words count
+                $scope.wordDescription = data.word.description;
+            });
+        }
+
+        fetchWord();
+
+
+        $scope.close = function () {
+            $uibModalInstance.close();
+        }
+    }
+]);
+apanelApp.controller("PendingWordController", ["$scope", "$uibModal", "WordService", "$state",
+    function ($scope, $uibModal, WordService, $state) {
+        $scope.collectionTypeText = "";
+
+        function fetchPending() {
+            WordService.pendingList().then(function (data) {
+                $scope.words = data.words;
+            });
+        }
+
+        fetchPending();
+
+        $scope.modify = function (wordId) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/word/modify-word.html',
+                controller: 'ModifyWordController',
+                size: "lg",
+                resolve: {
+                    wordId: function () {
+                        return wordId;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                console.log("Done");
+                fetchPending();
+            });
+        };
+
+        $scope.approve = function (wordId) {
+            WordService.validate({uid: wordId, accepted:true}).then(function (data) {
+                fetchPending();
+            });
+        };
+
+        $scope.reject = function (wordId) {
+            WordService.validate({uid: wordId, accepted:false}).then(function (data) {
+                fetchPending();
+            });
+        };
+    }
+]);
+apanelApp.controller("WordController", ["$scope", "$stateParams", "$uibModal", "$state",
+    function ($scope, $stateParams, $uibModal, $state) {
+        
+    }
+]);
+apanelApp.factory("WordService", ['$http',
+    function ($http) {
+        var WordService = {};
+
+        var WordApiEndpoint = "/apanel/api/word/";
+
+        WordService.pendingList = function () {
+            return $http.get(WordApiEndpoint + "pending").then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        WordService.one = function (wordId) {
+            return $http.get(WordApiEndpoint + "one/" + wordId).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        WordService.validate = function (params) {
+            return $http.post(WordApiEndpoint + "validate", {
+                uid: params.uid,
+                accepted: params.accepted
+            }).then(function (resp) {
+                return resp.data.status;
+            });
+        };
+
+        WordService.modify = function (params) {
+            return $http.post(WordApiEndpoint + "modify", {
+                uid: params.uid,
+                value: params.value,
+                description: params.description
+            }).then(function (resp) {
+                return resp.data.status;
+            });
+        };
+        return WordService;
+    }
+]);

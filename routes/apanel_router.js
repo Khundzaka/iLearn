@@ -1,6 +1,8 @@
 var Router = require("express").Router;
 var AccessControl = require("../app/access_control");
 var requiresPermission = require("../app/middleware").requiresPermission;
+var apanelWordRouter = require("./apanel/apanel_word_router");
+
 var apanelRouter = Router();
 
 var defaultFailResponse = {status: "failed"};
@@ -132,5 +134,7 @@ apanelRouter.put("/api/permission/", function (req, res) {
         }
     });
 });
+
+apanelRouter.use("/api/word", apanelWordRouter);
 
 module.exports = apanelRouter;

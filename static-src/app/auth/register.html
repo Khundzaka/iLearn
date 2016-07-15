@@ -5,29 +5,38 @@
                 <h3 class="panel-title">რეგისტრაცია</h3>
             </div>
             <div class="panel-body">
-                <form class="form-horizontal" role="form" ng-submit="register()" method="post" autocomplete="off">
-                    <div class="form-group">
+                <form class="form-horizontal" name="registerForm" role="form" ng-submit="register()" method="post"
+                      autocomplete="off"
+                      novalidate>
+                    <div ng-class="{'form-group':1, 'has-warning':registerForm.email.$error.email}">
                         <label for="inputUserEmail" class="col-md-2 control-label">ელ. ფოსტა</label>
 
                         <div class="col-md-10">
-                            <input type="text" name="email" ng-model="email" class="form-control" id="inputUserEmail"
-                                   placeholder="Email">
+                            <input type="email" ng-model-options="{ debounce: 500 }" name="email" ng-model="email"
+                                   class="form-control" id="inputUserEmail"
+                                   placeholder="Email"
+                                   required>
+                            <span class="help-inline" ng-show="registerForm.email.$error.email">გთხოვთ მიუთითოთ ელ. ფოსტა სწორად</span>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div ng-class="{'form-group':1, 'has-warning':registerForm.username.$error.minlength}">
                         <label for="inputUserName" class="col-md-2 control-label">მომხმარებელი</label>
 
                         <div class="col-md-10">
-                            <input type="text" name="username" class="form-control" id="inputUserName"
-                                   ng-model="username" placeholder="Username">
+                            <input type="text" ng-model-options="{ debounce: 500 }" name="username" class="form-control"
+                                   id="inputUserName"
+                                   ng-model="username" placeholder="Username" ng-minlength="4">
+                            <span class="help-inline" ng-show="registerForm.username.$error.minlength">უნდა შეიცავდეს მინიმუმ 4 სიმბოლოს</span>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div ng-class="{'form-group':1, 'has-warning':registerForm.password.$error.minlength}">
                         <label for="inputPassword" class="col-md-2 control-label">პაროლი</label>
 
                         <div class="col-md-10">
-                            <input type="password" name="password" ng-model="password" class="form-control"
+                            <input type="password" ng-model-options="{ debounce: 500 }" name="password"
+                                   ng-model="password" class="form-control" ng-minlength="4"
                                    id="inputPassword" placeholder="Password">
+                            <span class="help-inline" ng-show="registerForm.password.$error.minlength">უნდა შეიცავდეს მინიმუმ 4 სიმბოლოს</span>
                         </div>
                     </div>
                     <div class="form-group">

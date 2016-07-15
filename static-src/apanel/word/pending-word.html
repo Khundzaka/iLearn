@@ -1,0 +1,23 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">სიტყვები</h3>
+    </div>
+    <table class="table">
+        <tr>
+            <th>სიტყვა</th>
+            <th>მნიშვნელობა</th>
+            <th>###</th>
+        </tr>
+        <tr ng-repeat="word in words">
+            <td>{{word.value}}</td>
+            <td>{{word.description}}</td>
+            <td>
+                <button ng-click="approve(word._id)" class="btn btn-xs btn-success"><span
+                        class="glyphicon glyphicon-ok"></span></button>
+                <button ng-click="reject(word._id)" class="btn btn-xs btn-warning"><span
+                        class="glyphicon glyphicon-ban-circle"></span></button>
+                <button ng-click="modify(word._id)" class="btn btn-xs btn-primary">ჩასწორება</button>
+            </td>
+        </tr>
+    </table>
+</div>

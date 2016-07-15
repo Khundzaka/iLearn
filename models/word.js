@@ -6,6 +6,7 @@ var Word = new Schema({
     value: String,
     author: {type: Schema.Types.ObjectId, ref: 'Account'},
     accepted: Boolean,
+    checked: Boolean,
     created_at: Date,
     updated_at: Date
 });

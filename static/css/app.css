@@ -81,6 +81,28 @@ body {
   left: 0;
   right: 0;
 }
+.lesshat-selector {
+  border: 0; } 
+@-webkit-keyframes fadeAnim{ 0%{  } 100%{ background-color: white }}
+@-moz-keyframes fadeAnim{ 0%{  } 100%{ background-color: white }}
+@-o-keyframes fadeAnim{ 0%{  } 100%{ background-color: white }}
+@keyframes fadeAnim{ 0%{  } 100%{ background-color: white }} 
+.lesshat-selector { border: 0;
+}
+.practice-correct {
+  -webkit-animation: fadeAnim 0.6s ease;
+  -moz-animation: fadeAnim 0.6s ease;
+  -o-animation: fadeAnim 0.6s ease;
+  animation: fadeAnim 0.6s ease;
+  background-color: #8af882;
+}
+.practice-mistake {
+  -webkit-animation: fadeAnim 0.6s ease;
+  -moz-animation: fadeAnim 0.6s ease;
+  -o-animation: fadeAnim 0.6s ease;
+  animation: fadeAnim 0.6s ease;
+  background-color: #f8a9a2;
+}
 .practice p {
   color: #888;
   font-size: 16px;
@@ -136,4 +158,12 @@ body {
 }
 .pr-msg-f {
   color: #ff333d;
+}
+.custom-logo-img {
+  width: 60px;
+  height: 60px;
+}
+.navbar-brand-logo {
+  padding-top: 2px;
+  padding-bottom: 2px;
 }

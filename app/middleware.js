@@ -6,7 +6,7 @@ function requiresPermission(permissionKey) {
         }
         else {
             req.user.loadPermissions(function () {
-                console.log(req.user.permissions);
+                // console.log(req.user.permissions);
                 if (req.user.hasPermission(permissionKey)) {
                     next();
                 }

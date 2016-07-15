@@ -22,6 +22,7 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
     $urlRouterProvider
         .when('/access', '/access/users')
+        .when('/word', '/word/pending')
         .otherwise('/home');
 
     $stateProvider
@@ -83,8 +84,27 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             url: "/permissions",
             views: {
                 "": {
-                    templateUrl: _st + "access/access-permissions.html",
+                    templateUrl: _st + "word/access-permissions.html",
                     controller: "AccessPermissionsController"
+                }
+            }
+        })
+        .state("app.word", {
+            url: "/word",
+            //abstract: true,
+            views: {
+                "": {
+                    templateUrl: _st + "word/word.html",
+                    controller: "WordController"
+                }
+            }
+        })
+        .state("app.word.pending", {
+            url: "/pending",
+            views: {
+                "": {
+                    templateUrl: _st + "word/pending-word.html",
+                    controller: "PendingWordController"
                 }
             }
         })

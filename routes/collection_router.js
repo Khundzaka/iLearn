@@ -66,7 +66,7 @@ collectionRouter.put("/", function (req, res) {
 collectionRouter.post("/word/add", function (req, res) {
     var collectionId = req.body.collectionId;
     var wordId = req.body.wordId;
-    CollectionRepository.addWord({collectionId: collectionId, wordId: wordId}, function (err) {
+    CollectionRepository.addWord({collectionId: collectionId, wordId: wordId, user: req.user}, function (err) {
         return res.json({status: "ok"});
     });
 });
@@ -74,7 +74,7 @@ collectionRouter.post("/word/add", function (req, res) {
 collectionRouter.post("/word/remove", function (req, res) {
     var collectionId = req.body.collectionId;
     var wordId = req.body.wordId;
-    CollectionRepository.removeWord({collectionId: collectionId, wordId: wordId}, function (err) {
+    CollectionRepository.removeWord({collectionId: collectionId, wordId: wordId, user: req.user}, function (err) {
         return res.json({status: "ok"});
     });
 });

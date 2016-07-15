@@ -4,6 +4,23 @@ var async = require("async");
 
 var CollectionRepository = {};
 
+CollectionRepository.getCollection = function (params) {
+    var user = params.user;
+    var collectionId = params.collectionId;
+    return function (cb) {
+        Collection.findById(collectionId).exec(function (err, collection) {
+            if (!err) {
+                if (!collection.author.equals(params.user._id)) {
+                    console.dir(collection.author);
+                    console.dir(params.user._id);
+                    return cb(new Error("user doesn't match", "user_not_match"));
+                }
+            }
+            return cb(err, collection);
+        });
+    };
+};
+
 CollectionRepository.getAll = function (callback) {
     Collection.find({is_public: true}).exec(function (err, collections) {
         if (err) {
@@ -62,6 +79,11 @@ CollectionRepository.update = function (params, callback) {
         if (err) {
             return callback(err);
         }
+
+        if (!collection.author.equals(user._id)) {
+            return callback(new Error("user doesn't match", "user_not_match"));
+        }
+
         collection.name = name;
         collection.description = description;
         collection.save(function (error) {
@@ -73,12 +95,7 @@ CollectionRepository.update = function (params, callback) {
 CollectionRepository.addWord = function (params, callback) {
     var wordId = params.wordId;
     var collectionId = params.collectionId;
-
-    function getCollection(cb) {
-        Collection.findById(collectionId).exec(function (err, collection) {
-            return cb(err, collection);
-        });
-    }
+    var user = params.user;
 
     function getWord(collection, cb) {
         Word.findById(wordId).exec(function (err, word) {
@@ -99,18 +116,16 @@ CollectionRepository.addWord = function (params, callback) {
         });
     }
 
-    async.waterfall([getCollection, getWord], processData);
+    async.waterfall([
+        CollectionRepository.getCollection({user: user, collectionId: collectionId}),
+        getWord
+    ], processData);
 };
 
 CollectionRepository.removeWord = function (params, callback) {
     var wordId = params.wordId;
     var collectionId = params.collectionId;
-
-    function getCollection(cb) {
-        Collection.findById(collectionId).exec(function (err, collection) {
-            return cb(err, collection);
-        });
-    }
+    var user = params.user;
 
     function getWord(collection, cb) {
         Word.findById(wordId).exec(function (err, word) {
@@ -138,7 +153,10 @@ CollectionRepository.removeWord = function (params, callback) {
         });
     }
 
-    async.waterfall([getCollection, getWord], processData);
+    async.waterfall([
+        CollectionRepository.getCollection({user: user, collectionId: collectionId}),
+        getWord
+    ], processData);
 };
 
 
@@ -146,12 +164,9 @@ CollectionRepository.addNewWord = function (params, callback) {
     var passedWord = params.word;
     var collectionId = params.collectionId;
     passedWord.author = params.user._id;
-
-    function getCollection(cb) {
-        Collection.findById(collectionId).exec(function (err, collection) {
-            return cb(err, collection);
-        });
-    }
+    passedWord.checked = false;
+    passedWord.accepted = false;
+    var user = params.user;
 
     function createWord(collection, cb) {
         var word = new Word(passedWord);
@@ -174,7 +189,10 @@ CollectionRepository.addNewWord = function (params, callback) {
         });
     }
 
-    async.waterfall([getCollection, createWord], processData);
+    async.waterfall([
+        CollectionRepository.getCollection({user: user, collectionId: collectionId}),
+        createWord
+    ], processData);
 };
 
 

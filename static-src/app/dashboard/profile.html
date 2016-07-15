@@ -10,8 +10,15 @@
                         <h3 class="panel-title">ლოკალური</h3>
                     </div>
                     <div class="panel-body">
-                        email: {{localEmail}} <br>
-                        user: {{localUserName}}
+                        <div ng-show="hasLocal">
+                            <div>email: {{localEmail}}</div>
+                            <div>user: {{localUserName}}</div>
+                        </div>
+                        <div ng-hide="hasLocal">
+                            <div class="text-center">
+                                <a ui-sref="register" class="btn btn-lg btn-primary" disabled="">ელ. ფოსტის მიბმა</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -27,7 +34,7 @@
                         </div>
                         <div ng-hide="hasFacebook">
                             <div class="text-center">
-                                <a href="/connect/facebook/" class="btn btn-lg btn-primary">დავაკავშიროთ FACEBOOK</a>
+                                <a href="/connect/facebook/" class="btn btn-lg btn-primary">FACEBOOK-ის დაკავშირება</a>
                             </div>
                         </div>
                     </div>

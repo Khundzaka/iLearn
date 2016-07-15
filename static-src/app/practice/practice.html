@@ -5,7 +5,7 @@
 
 <!--<div class="panel-body">-->
 
-<div class="practice">
+<div ng-class="{'practice':1,'practice-correct':message.correct&&message.show, 'practice-mistake':!message.correct&&message.show}">
     <div ng-class="{'pr-msg':1, 'pr-msg-f':!message.correct, 'pr-msg-s':message.correct}" ng-show="message.show">
         <span ng-class="{glyphicon:1, 'glyphicon-remove-sign':!message.correct, 'glyphicon-ok-sign':message.correct}"></span>
     </div>

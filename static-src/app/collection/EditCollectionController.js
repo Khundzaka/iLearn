@@ -1,10 +1,17 @@
-app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal", "Collection",
-    function ($scope, $stateParams, $uibModal, Collection) {
+app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal", "Collection", "$state", "AuthService",
+    function ($scope, $stateParams, $uibModal, Collection, $state, AuthService) {
         console.log($stateParams.collection);
         $scope.collectionTypeText = "";
 
         function fetchCollection() {
             Collection.getOne($stateParams.collection).then(function (data) {
+                if(data.collection.author._id != AuthService.uid){
+                    $state.go("collection.list");
+                    // console.log(data.collection.author._id);
+                    // console.log(AuthService.uid);
+                }
+                // console.log(data.collection.author._id);
+                // console.log(AuthService.uid);
                 $scope.collection = data.collection;
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;

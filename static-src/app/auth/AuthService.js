@@ -2,6 +2,7 @@ app.factory("AuthService", ['$http',
     function ($http) {
         var AuthService = {
             authenticated: false,
+            uid: null,
             local: {
                 username: null,
                 email: null
@@ -25,6 +26,8 @@ app.factory("AuthService", ['$http',
                 name: null,
                 email: null
             };
+
+            AuthService.uid = null;
         };
 
         AuthService.logIn = function (email, password, callback) {
@@ -36,6 +39,7 @@ app.factory("AuthService", ['$http',
                     if (userData.local) AuthService.local = userData.local;
                     if (userData.facebook) AuthService.facebook = userData.facebook;
                     AuthService.authenticated = true;
+                    AuthService.uid = userData._id;
                     //console.log("aqac var");
                     callback(null);
                 }
@@ -54,8 +58,11 @@ app.factory("AuthService", ['$http',
                     if (userData.local) AuthService.local = userData.local;
                     if (userData.facebook) AuthService.facebook = userData.facebook;
                     AuthService.authenticated = true;
+                    AuthService.uid = userData._id;
                     //console.log("aqac var");
                     callback(null);
+                } else {
+                    callback(true, res.data.info);
                 }
             });
         };
@@ -81,6 +88,7 @@ app.factory("AuthService", ['$http',
                 if (userData.local) this.local = userData.local;
                 if (userData.facebook) this.facebook = userData.facebook;
                 AuthService.authenticated = true;
+                AuthService.uid = userData._id;
             }
         };
 
