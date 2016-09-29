@@ -1,0 +1,14 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">ფორუმის თემები</h3>
+    </div>
+
+
+    <div class="list-group">
+        <a ui-sref="forum.topic({TopicId:topic._id})" class="list-group-item" ng-repeat="topic in topics">
+            <h4 class="list-group-item-heading">{{topic.title}}</h4>
+            <p class="list-group-item-text">{{topic.description}}</p>
+        </a>
+    </div>
+
+</div>

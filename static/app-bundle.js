@@ -42,11 +42,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller: "HomeController",
             data: {requireLogin: false, pageTitle: "მთავარი"}
         })
-        .state("how-it-works", {
-            url: "/how-it-works",
-            templateUrl: _st + "home/how-it-works.html",
-            data: {requireLogin: false, pageTitle: "როგორ მუშაობს"}
-        })
         .state("contact", {
             url: "/contact",
             templateUrl: _st + "home/contact.html"
@@ -112,6 +107,22 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             data: {requireLogin: true, pageTitle: "პრაქტიკა"},
             templateUrl: _st + "practice/practice.html",
             controller: "PracticeController"
+        })
+        .state("forum", {
+            abstract: true,
+            templateUrl: _st + "forum/forum.html"
+        })
+        .state("forum.index", {
+            url: "/forum",
+            data: {requireLogin: true, pageTitle: "ფორუმი"},
+            templateUrl: _st + "forum/index.html",
+            controller: "ForumIndexController"
+        })
+        .state("forum.topic", {
+            url: "/forum/topic/:topicId",
+            data: {requireLogin: true, pageTitle: "ფორუმი"},
+            templateUrl: _st + "forum/topic.html",
+            controller: "TopicController"
         });
 });
 
@@ -585,7 +596,7 @@ app.controller('HeaderController', function ($scope, $rootScope, AuthService, $s
     });
     $scope.headerLinks = [
         {title: "მთავარი", state: "app", active: false},
-        {title: "როგორ მუშაობს", state: "how-it-works", active: false},
+        {title: "ფორუმი", state: "forum", active: false},
         {title: "კოლექციები", state: "collection.list", active: false}
     ];
     $rootScope.$on('$stateChangeSuccess', function (event, toState) {
@@ -610,6 +621,145 @@ app.controller('HeaderController', function ($scope, $rootScope, AuthService, $s
         });
     };
 });
+app.factory("Forum", ["$http",
+    function ($http) {
+        var forumPath = "/api/forum/";
+        var Forum = {};
+        Forum.getTopicList = function () {
+            return $http.get(forumPath).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+        Forum.getTopicPosts = function (topicId) {
+            return $http.get(forumPath + topicId).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        Forum.createPost = function (params) {
+
+            return $http.post(forumPath, {
+                topicId: params.topicId,
+                text: params.text
+            }).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        Forum.create = function (params) {
+            var name = params.name;
+            var description = params.description;
+            var isPublic = params.isPublic;
+
+            return $http.post(forumPath, {
+                name: name,
+                isPublic: isPublic,
+                description: description
+            }).then(function (resp) {
+                return resp.data.data;
+            });
+
+        };
+
+        Forum.update = function (params) {
+            var name = params.name;
+            var description = params.description;
+            var collectionId = params.collectionId;
+
+            return $http.put(forumPath, {
+                name: name,
+                description: description,
+                collectionId: collectionId
+            }).then(function (resp) {
+                return resp.data.status;
+            });
+
+        };
+
+        Forum.addWord = function (params) {
+            var collectionId = params.collectionId;
+            var wordId = params.wordId;
+            console.log(params);
+            return $http.post(forumPath + "word/add", {
+                collectionId: collectionId,
+                wordId: wordId
+            }).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        Forum.removeWord = function (params) {
+            var collectionId = params.collectionId;
+            var wordId = params.wordId;
+            return $http.post(forumPath + "word/remove", {
+                collectionId: collectionId,
+                wordId: wordId
+            }).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        Forum.addNewWord = function (params) {
+            var collectionId = params.collectionId;
+            var wordName = params.wordName;
+            var wordDescription = params.wordDescription;
+            return $http.post(forumPath + "word/new", {
+                collectionId: collectionId,
+                wordName: wordName,
+                wordDescription: wordDescription
+            }).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return Forum;
+    }
+]);
+app.controller('ForumIndexController', ['$scope', '$uibModal', '$state',
+    function ($scope, $uibModal, $state) {
+        $scope.topics = [{
+
+            "title": "კითხვები ადმინისტრატორთან",
+            "description": "აქ შეგიძლიათ დასვათ ნებისმიერი კითხვა და ადმინისტრაცია გაგცემთ პასუხს"
+        }, {
+
+            "title": "ტექნიკური ხარვეზები",
+            "description": "თუ რაიმე პრობლემა შეგემნათ სერვისითსარგებლობისას, დაწერეთ აქ"
+        }
+
+        ];
+        //
+        // $scope.view = function (topicId) {
+        //     $state.go("forum.topic", {topicId: topicId});
+        // }
+    }
+]);
+app.controller('TopicController', ['$scope', '$uibModal', '$log',
+    function ($scope, $uibModal, $log) {
+        $scope.topics = [{
+            "_id": "123",
+            "title": "კითხვები ადმინისტრატორთან",
+            "description": "აქ შეგიძლიათ დასვათ ნებისმიერი კითხვა და ადმინისტრაცია გაგცემთ პასუხს"
+        }, {
+            "_id": "456",
+            "title": "ტექნიკური ხარვეზები",
+            "description": "თუ რაიმე პრობლემა შეგემნათ სერვისითსარგებლობისას, დაწერეთ აქ"
+        }
+        ];
+        $scope.posts = [
+            {
+                author: "jemali",
+                text: "klaviatura kompiuters sad aqvs?",
+                date: new Date()
+            },
+            {
+                author: "nodari",
+                text: "kompiuters adiela rom gadavafaro da uknidan shevubero, interneti achqardeba?",
+                date: new Date()
+            }
+        ]
+    }
+]);
 app.controller('HomeController', ['$scope', '$uibModal', '$log',
     function ($scope, $uibModal, $log) {
 

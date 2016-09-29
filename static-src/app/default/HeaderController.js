@@ -6,7 +6,7 @@ app.controller('HeaderController', function ($scope, $rootScope, AuthService, $s
     });
     $scope.headerLinks = [
         {title: "მთავარი", state: "app", active: false},
-        {title: "როგორ მუშაობს", state: "how-it-works", active: false},
+        {title: "ფორუმი", state: "forum", active: false},
         {title: "კოლექციები", state: "collection.list", active: false}
     ];
     $rootScope.$on('$stateChangeSuccess', function (event, toState) {

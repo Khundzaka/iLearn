@@ -1,0 +1,15 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">სათაური</h3>
+    </div>
+
+
+    <div class="list-group">
+        <div class="list-group-item" ng-repeat="post in posts">
+            <span style="font-weight: bold;" class="list-group-item-heading">{{post.author}}</span>&nbsp;&nbsp;<span>{{post.date}}</span>
+            <hr>
+            <p class="list-group-item-text" style="color:black; font-size:14px;">{{post.text}}</p>
+        </div>
+    </div>
+
+</div>

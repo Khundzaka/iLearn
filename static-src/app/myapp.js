@@ -42,11 +42,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller: "HomeController",
             data: {requireLogin: false, pageTitle: "მთავარი"}
         })
-        .state("how-it-works", {
-            url: "/how-it-works",
-            templateUrl: _st + "home/how-it-works.html",
-            data: {requireLogin: false, pageTitle: "როგორ მუშაობს"}
-        })
         .state("contact", {
             url: "/contact",
             templateUrl: _st + "home/contact.html"
@@ -112,6 +107,22 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             data: {requireLogin: true, pageTitle: "პრაქტიკა"},
             templateUrl: _st + "practice/practice.html",
             controller: "PracticeController"
+        })
+        .state("forum", {
+            abstract: true,
+            templateUrl: _st + "forum/forum.html"
+        })
+        .state("forum.index", {
+            url: "/forum",
+            data: {requireLogin: true, pageTitle: "ფორუმი"},
+            templateUrl: _st + "forum/index.html",
+            controller: "ForumIndexController"
+        })
+        .state("forum.topic", {
+            url: "/forum/topic/:topicId",
+            data: {requireLogin: true, pageTitle: "ფორუმი"},
+            templateUrl: _st + "forum/topic.html",
+            controller: "TopicController"
         });
 });
 
