@@ -174,165 +174,6 @@ app.directive('capitalize', function () {
         }
     };
 });
-app.factory("AuthService", ['$http',
-    function ($http) {
-        var AuthService = {
-            authenticated: false,
-            uid: null,
-            local: {
-                username: null,
-                email: null
-            },
-            facebook: {
-                name: null,
-                email: null
-            }
-        };
-
-        AuthService.setDefault = function () {
-
-            AuthService.authenticated = false;
-
-            AuthService.local = {
-                username: null,
-                email: null
-            };
-
-            AuthService.facebook = {
-                name: null,
-                email: null
-            };
-
-            AuthService.uid = null;
-        };
-
-        AuthService.logIn = function (email, password, callback) {
-            console.log("aq var");
-            $http.post("/local/login", {email: email, password: password}).then(function (res) {
-                if (res.data.status != "failed") {
-                    // console.log(res.data);
-                    var userData = res.data.user;
-                    if (userData.local) AuthService.local = userData.local;
-                    if (userData.facebook) AuthService.facebook = userData.facebook;
-                    AuthService.authenticated = true;
-                    AuthService.uid = userData._id;
-                    //console.log("aqac var");
-                    callback(null);
-                }
-                else {
-                    callback(true, res.data.info);
-                }
-            });
-        };
-        AuthService.register = function (params, callback) {
-            var email = params.email, password = params.password, username = params.username;
-            console.log("aq var");
-            $http.post("/local/register", {email: email, password: password, username: username}).then(function (res) {
-                if (res.data.status != "failed") {
-                    // console.log(res.data);
-                    var userData = res.data.user;
-                    if (userData.local) AuthService.local = userData.local;
-                    if (userData.facebook) AuthService.facebook = userData.facebook;
-                    AuthService.authenticated = true;
-                    AuthService.uid = userData._id;
-                    //console.log("aqac var");
-                    callback(null);
-                } else {
-                    callback(true, res.data.info);
-                }
-            });
-        };
-
-        AuthService.logOut = function (callback) {
-            $http.get("/local/logout").then(function (res) {
-                if (res.data.status === "ok") {
-                    AuthService.setDefault();
-                    return callback(true);
-                }
-            });
-        };
-
-        AuthService.startUp = function () {
-            if (typeof startUpUserData === 'undefined') startUpUserData = false;
-            var userData = startUpUserData;
-            console.log("eh");
-            if (userData) {
-                userData = JSON.parse(userData);
-                // console.log(userData.facebook);
-                console.log(userData);
-                console.log("wtf");
-                if (userData.local) this.local = userData.local;
-                if (userData.facebook) this.facebook = userData.facebook;
-                AuthService.authenticated = true;
-                AuthService.uid = userData._id;
-            }
-        };
-
-        return AuthService;
-    }
-]);
-app.controller("LoginController", ['$scope', 'AuthService', '$state', '$rootScope', 'InfoModal',
-    function ($scope, AuthService, $state, $rootScope, InfoModal) {
-        $scope.username = "";
-        $scope.password = "";
-
-        $scope.loginSubmit = function () {
-            AuthService.logIn($scope.username, $scope.password, function (error) {
-                if (!error) {
-                    $rootScope.$broadcast('authentication', 'login');
-                    $state.go("dashboard.profile");
-                }
-                else {
-                    InfoModal.show({message: "ელ.ფოსტა ან პაროლი არასწორია"});
-                }
-            });
-        }
-    }
-]);
-app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootScope', 'InfoModal',
-    function ($scope, AuthService, $state, $rootScope, InfoModal) {
-        $scope.username = "";
-        $scope.email = "";
-        $scope.password = "";
-
-        $scope.register = function () {
-            if (!($scope.username.length && $scope.email.length && $scope.password.length)) {
-                InfoModal.show({message: "გთხოვთ შეავსოთ ყველა ველი"});
-                return;
-            }
-            AuthService.register({
-                username: $scope.username,
-                password: $scope.password,
-                email: $scope.email
-            }, function (err, flash) {
-                if (!err) {
-                    $rootScope.$broadcast('authentication', 'login');
-                    $state.go("dashboard.profile");
-
-                }
-                else {
-                    if (flash.length == 0) {
-                        InfoModal.show({message: "გთხოვთ შეამოწმოთ შეყვანილი ინფორმაციის სიზუსტე", size: "md"});
-                        return;
-                    }
-                    var messageCode = flash[0];
-                    if (messageCode == "email_exists") {
-                        return InfoModal.show({
-                            message: "მომხმარებელი მითითებული ელ. ფოსტით უკვე არსებობს",
-                            size: "md"
-                        });
-                    }
-                    if (messageCode == "username_exists") {
-                        return InfoModal.show({
-                            message: "მომხმარებელი მითითებული მეტსახელით უკვე არსებობს",
-                            size: "md"
-                        });
-                    }
-                }
-            });
-        }
-    }
-]);
 app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance", "InfoModal",
     function ($scope, Collection, WordService, collectionId, $uibModalInstance, InfoModal) {
         $scope.wordName = "";
@@ -588,39 +429,6 @@ app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$roo
         $scope.localUserName = AuthService.local.username;
     }
 ]);
-app.controller('HeaderController', function ($scope, $rootScope, AuthService, $state) {
-    $scope.authenticated = AuthService.authenticated;
-    $scope.navCollapsed = true;
-    $scope.$on('authentication', function () {
-        $scope.authenticated = AuthService.authenticated;
-    });
-    $scope.headerLinks = [
-        {title: "მთავარი", state: "app", active: false},
-        {title: "ფორუმი", state: "forum", active: false},
-        {title: "კოლექციები", state: "collection.list", active: false}
-    ];
-    $rootScope.$on('$stateChangeSuccess', function (event, toState) {
-        //console.log(toState);
-        var i;
-        for (i = 0; i < $scope.headerLinks.length; i++) {
-            $scope.headerLinks[i].active = $scope.headerLinks[i].state === toState.name;
-        }
-    });
-
-    $scope.goToState = function (state) {
-        $scope.navCollapsed = true;
-        $state.go(state);
-    };
-
-    $scope.logOut = function () {
-        AuthService.logOut(function (status) {
-            if (status) {
-                $state.go('app');
-                $scope.authenticated = AuthService.authenticated;
-            }
-        });
-    };
-});
 app.factory("Forum", ["$http",
     function ($http) {
         var forumPath = "/api/forum/";
@@ -758,6 +566,198 @@ app.controller('TopicController', ['$scope', '$uibModal', '$log',
                 date: new Date()
             }
         ]
+    }
+]);
+app.controller('HeaderController', function ($scope, $rootScope, AuthService, $state) {
+    $scope.authenticated = AuthService.authenticated;
+    $scope.navCollapsed = true;
+    $scope.$on('authentication', function () {
+        $scope.authenticated = AuthService.authenticated;
+    });
+    $scope.headerLinks = [
+        {title: "მთავარი", state: "app", active: false},
+        {title: "ფორუმი", state: "forum", active: false},
+        {title: "კოლექციები", state: "collection.list", active: false}
+    ];
+    $rootScope.$on('$stateChangeSuccess', function (event, toState) {
+        //console.log(toState);
+        var i;
+        for (i = 0; i < $scope.headerLinks.length; i++) {
+            $scope.headerLinks[i].active = $scope.headerLinks[i].state === toState.name;
+        }
+    });
+
+    $scope.goToState = function (state) {
+        $scope.navCollapsed = true;
+        $state.go(state);
+    };
+
+    $scope.logOut = function () {
+        AuthService.logOut(function (status) {
+            if (status) {
+                $state.go('app');
+                $scope.authenticated = AuthService.authenticated;
+            }
+        });
+    };
+});
+app.factory("AuthService", ['$http',
+    function ($http) {
+        var AuthService = {
+            authenticated: false,
+            uid: null,
+            local: {
+                username: null,
+                email: null
+            },
+            facebook: {
+                name: null,
+                email: null
+            }
+        };
+
+        AuthService.setDefault = function () {
+
+            AuthService.authenticated = false;
+
+            AuthService.local = {
+                username: null,
+                email: null
+            };
+
+            AuthService.facebook = {
+                name: null,
+                email: null
+            };
+
+            AuthService.uid = null;
+        };
+
+        AuthService.logIn = function (email, password, callback) {
+            console.log("aq var");
+            $http.post("/local/login", {email: email, password: password}).then(function (res) {
+                if (res.data.status != "failed") {
+                    // console.log(res.data);
+                    var userData = res.data.user;
+                    if (userData.local) AuthService.local = userData.local;
+                    if (userData.facebook) AuthService.facebook = userData.facebook;
+                    AuthService.authenticated = true;
+                    AuthService.uid = userData._id;
+                    //console.log("aqac var");
+                    callback(null);
+                }
+                else {
+                    callback(true, res.data.info);
+                }
+            });
+        };
+        AuthService.register = function (params, callback) {
+            var email = params.email, password = params.password, username = params.username;
+            console.log("aq var");
+            $http.post("/local/register", {email: email, password: password, username: username}).then(function (res) {
+                if (res.data.status != "failed") {
+                    // console.log(res.data);
+                    var userData = res.data.user;
+                    if (userData.local) AuthService.local = userData.local;
+                    if (userData.facebook) AuthService.facebook = userData.facebook;
+                    AuthService.authenticated = true;
+                    AuthService.uid = userData._id;
+                    //console.log("aqac var");
+                    callback(null);
+                } else {
+                    callback(true, res.data.info);
+                }
+            });
+        };
+
+        AuthService.logOut = function (callback) {
+            $http.get("/local/logout").then(function (res) {
+                if (res.data.status === "ok") {
+                    AuthService.setDefault();
+                    return callback(true);
+                }
+            });
+        };
+
+        AuthService.startUp = function () {
+            if (typeof startUpUserData === 'undefined') startUpUserData = false;
+            var userData = startUpUserData;
+            console.log("eh");
+            if (userData) {
+                userData = JSON.parse(userData);
+                // console.log(userData.facebook);
+                console.log(userData);
+                console.log("wtf");
+                if (userData.local) this.local = userData.local;
+                if (userData.facebook) this.facebook = userData.facebook;
+                AuthService.authenticated = true;
+                AuthService.uid = userData._id;
+            }
+        };
+
+        return AuthService;
+    }
+]);
+app.controller("LoginController", ['$scope', 'AuthService', '$state', '$rootScope', 'InfoModal',
+    function ($scope, AuthService, $state, $rootScope, InfoModal) {
+        $scope.username = "";
+        $scope.email = "";
+
+        $scope.loginSubmit = function () {
+            AuthService.logIn($scope.email, $scope.password, function (error) {
+                if (!error) {
+                    $rootScope.$broadcast('authentication', 'login');
+                    $state.go("dashboard.profile");
+                }
+                else {
+                    InfoModal.show({message: "ელ.ფოსტა ან პაროლი არასწორია"});
+                }
+            });
+        }
+    }
+]);
+app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootScope', 'InfoModal',
+    function ($scope, AuthService, $state, $rootScope, InfoModal) {
+        $scope.username = "";
+        $scope.email = "";
+        $scope.password = "";
+
+        $scope.register = function () {
+            if (!($scope.username.length && $scope.email.length && $scope.password.length)) {
+                InfoModal.show({message: "გთხოვთ შეავსოთ ყველა ველი"});
+                return;
+            }
+            AuthService.register({
+                username: $scope.username,
+                password: $scope.password,
+                email: $scope.email
+            }, function (err, flash) {
+                if (!err) {
+                    $rootScope.$broadcast('authentication', 'login');
+                    $state.go("dashboard.profile");
+
+                }
+                else {
+                    if (flash.length == 0) {
+                        InfoModal.show({message: "გთხოვთ შეამოწმოთ შეყვანილი ინფორმაციის სიზუსტე", size: "md"});
+                        return;
+                    }
+                    var messageCode = flash[0];
+                    if (messageCode == "email_exists") {
+                        return InfoModal.show({
+                            message: "მომხმარებელი მითითებული ელ. ფოსტით უკვე არსებობს",
+                            size: "md"
+                        });
+                    }
+                    if (messageCode == "username_exists") {
+                        return InfoModal.show({
+                            message: "მომხმარებელი მითითებული მეტსახელით უკვე არსებობს",
+                            size: "md"
+                        });
+                    }
+                }
+            });
+        }
     }
 ]);
 app.controller('HomeController', ['$scope', '$uibModal', '$log',
