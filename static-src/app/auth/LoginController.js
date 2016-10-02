@@ -1,7 +1,7 @@
 app.controller("LoginController", ['$scope', 'AuthService', '$state', '$rootScope', 'InfoModal',
     function ($scope, AuthService, $state, $rootScope, InfoModal) {
-        $scope.username = "";
         $scope.email = "";
+        $scope.password = "";
 
         $scope.loginSubmit = function () {
             AuthService.logIn($scope.email, $scope.password, function (error) {
