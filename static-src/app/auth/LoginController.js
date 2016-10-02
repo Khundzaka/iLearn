@@ -1,10 +1,10 @@
 app.controller("LoginController", ['$scope', 'AuthService', '$state', '$rootScope', 'InfoModal',
     function ($scope, AuthService, $state, $rootScope, InfoModal) {
         $scope.username = "";
-        $scope.password = "";
+        $scope.email = "";
 
         $scope.loginSubmit = function () {
-            AuthService.logIn($scope.username, $scope.password, function (error) {
+            AuthService.logIn($scope.email, $scope.password, function (error) {
                 if (!error) {
                     $rootScope.$broadcast('authentication', 'login');
                     $state.go("dashboard.profile");
