@@ -70,7 +70,7 @@ DefaultSeeder.seedUsers = function (params, callback) {
 };
 
 DefaultSeeder.exec = function (callback) {
-    mongoose.connect('mongodb://localhost/learn_iti', function (err) {
+    mongoose.connect('mongodb://localhost/learn_it', function (err) {
         if (!err) {
             DefaultSeeder.seedPermissions(function (err, permissions) {
 
