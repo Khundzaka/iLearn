@@ -3,6 +3,7 @@ var gulp = require('gulp'),
     gulpConcat = require('gulp-concat'),
     nodemon = require('gulp-nodemon'),
     less = require('gulp-less'),
+    DefaultSeeder = require('./seeds/DefaultSeeder'),
     livereload = require('gulp-livereload');
 
 var templateCache = require('gulp-angular-templatecache');
@@ -48,11 +49,17 @@ gulp.task('copy-app-styles', function () {
 //         .pipe(gulp.dest('static/css/')).pipe(livereload());
 // });
 
-gulp.task('compile-less', function() {
+gulp.task('compile-less', function () {
     gulp.src('static-src/styles/app.less')
         .pipe(less())
         .pipe(gulp.dest('static/css/'))
         .pipe(livereload());
+});
+
+gulp.task('seed-default', function (done) {
+    DefaultSeeder.exec(function (err) {
+        done(err);
+    });
 });
 
 gulp.task('dev-env', function () {
@@ -63,7 +70,7 @@ gulp.task('dev-env', function () {
         , env: {'NODE_ENV': 'development'}
     });
     livereload.listen();
-    
+
     gulp.watch('static-src/app/**/*.{html,css}', ['copy-app-templates']);
     gulp.watch('static-src/apanel/**/*.{html,css}', ['copy-apanel-templates']);
     gulp.watch('static-src/app/**/*.js', ['concat-main-app']);
