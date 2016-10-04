@@ -1,9 +1,9 @@
-app.controller("CollectionController", ["$scope","Collection",
-    function ($scope, Collection) {
+app.controller("CollectionController", ["$scope","Collection","$log",
+    function ($scope, Collection,$log) {
         Collection.getList().then(function (data) {
             $scope.collections = data.collections;
-            console.log(data);
+            $log(data);
         });
-        console.log("fuck");
+        $log("fuck");
     }
 ]);
