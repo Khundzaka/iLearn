@@ -5,15 +5,9 @@
 
 
     <table class="table">
-        <tr>
-            <th><span class="glyphicon glyphicon-globe"></span></th>
-            <th>ფორუმის აღწერა</th>
-            <th><span class="glyphicon glyphicon-pencil"></span></th>
-        </tr>
         <tr ng-repeat="topic in topics">
             <td><a ui-sref="">{{topic.title}}</a>
             </td>
-            <td><a ui-sref="">{{topic.description}}</a>
             <td>
                 <a ui-sref="" class="btn btn-xs btn-warning"><span
                         class="glyphicon glyphicon-pencil"></span></a>
