@@ -108,6 +108,13 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
                 }
             }
         })
+        .state("app.forum",{
+            url:"/forum",
+            views:{
+                templateUrl:_st+"forum/forum.html",
+                controller:"forumController"
+            }
+        })
     ;
 });
 apanelApp.controller("AccessGroupsController", function ($scope, GroupAccess, $uibModal) {
@@ -491,6 +498,7 @@ apanelApp.factory("UserAccess", function ($http) {
 
     return UserAccess;
 });
+
 
 /**
  * Created by george on 10.07.2016.
