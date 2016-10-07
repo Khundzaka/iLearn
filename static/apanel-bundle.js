@@ -111,8 +111,10 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
         .state("app.forum",{
             url:"/forum",
             views:{
-                templateUrl:_st+"forum/forum.html",
-                controller:"forumController"
+                "": {
+                    templateUrl: _st + "forum/forum.html",
+                    controller: "ForumController"
+                }
             }
         })
     ;
@@ -499,10 +501,10 @@ apanelApp.factory("UserAccess", function ($http) {
     return UserAccess;
 });
 
-
 /**
  * Created by george on 10.07.2016.
  */
+
 
 apanelApp.controller("ModifyWordController", ["$scope", "WordService", "wordId", "$uibModalInstance",
     function ($scope, WordService, WordId, $uibModalInstance) {

@@ -113,7 +113,7 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             views:{
                 "": {
                     templateUrl: _st + "forum/forum.html",
-                    controller: "forumController"
+                    controller: "ForumController"
                 }
             }
         })
