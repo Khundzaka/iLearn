@@ -1,21 +1,20 @@
 <div class="navbar navbar-default navbar-static-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Main Panel</a>
+            <a class="navbar-brand" href="#">aPanel</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a ui-sref="app.home">Home</a></li>
-                <li><a href="#" ui-sref="app.forum">Forum</a></li>
+                <li><a href="#" ui-sref="app.forum.list">Forum</a></li>
                 <li><a href="#">Reload</a></li>
                 <li uib-dropdown>
                     <a href="#" uib-dropdown-toggle>მოდულები<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="menuitem"><a ui-sref="app.access">წვდომა</a></li>
-                        <li role="menuitem"><a href="#">Another action</a></li>
-                        <li role="menuitem"><a href="#">Something else here</a></li>
+                        <li role="menuitem"><a ui-sref="app.access.users">წვდომა</a></li>
+                        <li role="menuitem"><a ui-sref="app.word.pending">სიტყვები</a></li>
+                        <li role="menuitem"><a ui-sref="app.forum.list">ფორუმი</a></li>
                         <li class="divider"></li>
-                        <li role="menuitem"><a href="#">Separated link</a></li>
                     </ul>
                 </li>
             </ul>
