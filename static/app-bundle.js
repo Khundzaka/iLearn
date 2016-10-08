@@ -499,9 +499,9 @@ app.controller("CreateCollectionController", ["$scope", "Collection", "$state",
 
     }
 ]);
-app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal", "Collection", "$state", "AuthService",
-    function ($scope, $stateParams, $uibModal, Collection, $state, AuthService) {
-        console.log($stateParams.collection);
+app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal", "Collection", "$state", "AuthService","$log",
+    function ($scope, $stateParams, $uibModal, Collection, $state, AuthService,$log) {
+        $log($stateParams.collection);
         $scope.collectionTypeText = "";
 
         function fetchCollection() {
@@ -517,7 +517,7 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;
                 $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
-                console.log(data.collection);
+                $log(data.collection);
             });
         }
 
@@ -538,7 +538,7 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
             });
 
             groupModal.result.then(function () {
-                console.log("Done");
+                $log("Done");
                 fetchCollection();
             });
         };
@@ -550,7 +550,7 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
         };
 
         $scope.update = function () {
-            console.log("aris");
+            $log("aris");
             Collection.update({
                 collectionId: $stateParams.collection,
                 name: $scope.collectionName,
@@ -594,23 +594,23 @@ app.controller('HeaderController', function ($scope, $rootScope, AuthService, $s
     $scope.$on('authentication', function () {
         $scope.authenticated = AuthService.authenticated;
     });
-    $scope.headerLinks = [
-        {title: "მთავარი", state: "app", active: false},
-        {title: "ფორუმი", state: "forum", active: false},
-        {title: "კოლექციები", state: "collection.list", active: false}
-    ];
-    $rootScope.$on('$stateChangeSuccess', function (event, toState) {
-        //console.log(toState);
-        var i;
-        for (i = 0; i < $scope.headerLinks.length; i++) {
-            $scope.headerLinks[i].active = $scope.headerLinks[i].state === toState.name;
-        }
-    });
-
-    $scope.goToState = function (state) {
-        $scope.navCollapsed = true;
-        $state.go(state);
-    };
+    // $scope.headerLinks = [
+    //     {title: "მთავარი", state: "app", active: false},
+    //     {title: "ფორუმი", state: "forum", active: false},
+    //     {title: "კოლექციები", state: "collection.list", active: false}
+    // ];
+    // $rootScope.$on('$stateChangeSuccess', function (event, toState) {
+    //     //console.log(toState);
+    //     var i;
+    //     for (i = 0; i < $scope.headerLinks.length; i++) {
+    //         $scope.headerLinks[i].active = $scope.headerLinks[i].state === toState.name;
+    //     }
+    // });
+    //
+    // $scope.goToState = function (state) {
+    //     $scope.navCollapsed = true;
+    //     $state.go(state);
+    // };
 
     $scope.logOut = function () {
         AuthService.logOut(function (status) {

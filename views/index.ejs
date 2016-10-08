@@ -37,13 +37,20 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand navbar-brand-logo" href="#"><img class="custom-logo-img" src="/static/img/logo.gif"
-                                                      alt="Learn.Translate.Ge"></a>
+                <a class="navbar-brand navbar-brand-logo" href="#"><img class="custom-logo-img"
+                                                                        src="/static/img/logo.gif"
+                                                                        alt="Learn.Translate.Ge"></a>
             </div>
             <div class="collapse navbar-collapse" uib-collapse="navCollapsed" ng-class="!navCollapsed && 'in'">
                 <ul class="nav navbar-nav">
-                    <li ng-repeat="link in headerLinks" ng-class="{active:link.active}">
-                        <a ng-click="goToState(link.state)">{{link.title}}</a>
+                    <li ui-sref-active="active">
+                        <a ui-sref="app">მთავარი</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="collection.list">კოლექციები</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="forum.index">ფორუმი</a>
                     </li>
                 </ul>
 
@@ -71,8 +78,9 @@
                 </ul>
 
                 <ul ng-show="!authenticated" class="nav navbar-nav navbar-right">
-                    <li><a ui-sref="login" ng-click="navCollapsed = true">შესვლა</a></li>
-                    <li><a ui-sref="register" ng-click="navCollapsed = true">რეგისტრაცია</a></li>
+                    <li ui-sref-active="active"><a ui-sref="login" ng-click="navCollapsed = true">შესვლა</a></li>
+                    <li ui-sref-active="active"><a ui-sref="register" ng-click="navCollapsed = true">რეგისტრაცია</a>
+                    </li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
