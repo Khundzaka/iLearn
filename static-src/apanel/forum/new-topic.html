@@ -1,0 +1,18 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">ფორუმის თემები</h3>
+    </div>
+
+
+    <table class="table">
+        <tr ng-repeat="topic in topics">
+            <td><a ui-sref="">{{topic.title}}</a>
+            </td>
+            <td>
+                <a ui-sref="" class="btn btn-xs btn-warning"><span
+                        class="glyphicon glyphicon-pencil"></span></a>
+            </td>
+        </tr>
+    </table>
+
+</div>

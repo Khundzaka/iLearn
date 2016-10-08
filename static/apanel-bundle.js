@@ -91,13 +91,18 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "forum/list.html",
             controller: "ForumController"
         })
+        .state("app.forum.newTopic",{
+            url:"/newTopic",
+            templateUrl:_st+"forum/new-topic.html",
+            controller:"newTopicController"
+        })
     ;
 })
 ;
-apanelApp.controller("AccessGroupsController", function ($scope, GroupAccess, $uibModal) {
+apanelApp.controller("AccessGroupsController", function ($scope, GroupAccess, $uibModal,$log) {
     var getAll = function () {
         GroupAccess.getList().then(function (data) {
-            console.log(data);
+            $log.log(data);
             $scope.groups = data.groups;
         });
     };
@@ -106,7 +111,7 @@ apanelApp.controller("AccessGroupsController", function ($scope, GroupAccess, $u
     $scope.search = {};
 
     $scope.view = function (group_id) {
-        console.log(group_id);
+        $log.log(group_id);
 
         var groupModal = $uibModal.open({
             animation: true,
@@ -130,7 +135,7 @@ apanelApp.controller("AccessGroupsController", function ($scope, GroupAccess, $u
         });
 
         groupModal.result.then(function () {
-            console.log("wtf");
+            $log.log("wtf");
             getAll();
         });
     };
@@ -153,16 +158,15 @@ apanelApp.controller("CreateGroupModalController", function ($scope, $uibModalIn
 });
 
 
-apanelApp.controller("GroupModalController", function ($scope, $uibModalInstance, GroupAccess, group_id) {
+apanelApp.controller("GroupModalController", function ($scope, $uibModalInstance, GroupAccess, group_id,$log) {
     var getOne = function () {
         GroupAccess.getOne({user_id: {collectionId: group_id}}).then(function (data) {
             $scope.group = data.group;
             $scope.permissions = data.permissions;
             $scope.groupName = $scope.group.name;
-            console.log($scope.permissions);
+            $log.log($scope.permissions);
         });
     };
-
     getOne();
 
     $scope.save = function () {
@@ -209,10 +213,10 @@ apanelApp.controller('AccessMainController', function ($scope) {
     //        groups: []
     //    }
     //];
-apanelApp.controller("AccessPermissionsController", function ($scope, PermissionAccess, $uibModal) {
+apanelApp.controller("AccessPermissionsController", function ($scope, PermissionAccess, $uibModal,$log) {
     var getAll = function () {
         PermissionAccess.getList().then(function (data) {
-            console.log(data);
+            $log.log(data);
             $scope.permissions = data.permissions;
         });
     };
@@ -221,7 +225,7 @@ apanelApp.controller("AccessPermissionsController", function ($scope, Permission
     $scope.search = {};
 
     $scope.view = function (permission_id) {
-        console.log(permission_id);
+        $log.log(permission_id);
 
         var groupModal = $uibModal.open({
             animation: true,
@@ -245,7 +249,7 @@ apanelApp.controller("AccessPermissionsController", function ($scope, Permission
         });
 
         groupModal.result.then(function () {
-            console.log("wtf");
+            $log.log("wtf");
             getAll();
         });
     };
@@ -294,14 +298,14 @@ apanelApp.controller("PermissionModalController", function ($scope, $uibModalIns
             });
     };
 });
-apanelApp.controller("AccessUsersController", function ($scope, UserAccess, $uibModal) {
+apanelApp.controller("AccessUsersController", function ($scope, UserAccess, $uibModal,$log) {
     UserAccess.getList().then(function (data) {
         $scope.users_list = data.users;
     });
     $scope.search = {};
 
     $scope.view = function (user_id) {
-        console.log(user_id);
+        $log.log(user_id);
 
         var userModal = $uibModal.open({
             animation: true,
@@ -354,7 +358,7 @@ apanelApp.controller("UserModalController", function ($scope, $uibModalInstance,
         return $scope.user.groups.indexOf(group_id) >= 0;
     };
 });
-apanelApp.factory("GroupAccess", function ($http) {
+apanelApp.factory("GroupAccess", function ($http,$log) {
     var GroupAccess = function () {
 
     };
@@ -362,14 +366,14 @@ apanelApp.factory("GroupAccess", function ($http) {
 
     GroupAccess.getList = function () {
         return $http.get(groupAccessEndpoint).then(function (response) {
-            console.log(response);
+            $log.log(response);
             return response.data.data;
         });
     };
 
     GroupAccess.getOne = function (groupId) {
         return $http.get(groupAccessEndpoint + groupId).then(function (response) {
-            console.log(response);
+            $log.log(response);
             return response.data.data;
         });
     };
@@ -403,7 +407,7 @@ apanelApp.factory("GroupAccess", function ($http) {
 
     return GroupAccess;
 });
-apanelApp.factory("PermissionAccess", function ($http) {
+apanelApp.factory("PermissionAccess", function ($http,$log) {
     var PermissionAccess = function () {
 
     };
@@ -411,14 +415,14 @@ apanelApp.factory("PermissionAccess", function ($http) {
 
     PermissionAccess.getList = function () {
         return $http.get(permissionAccessEndpoint).then(function (response) {
-            console.log(response);
+            $log.log(response);
             return response.data.data;
         });
     };
 
     PermissionAccess.getOne = function (permissionId) {
         return $http.get(permissionAccessEndpoint + permissionId).then(function (response) {
-            console.log(response);
+            $log.log(response);
             return response.data.data;
         });
     };
@@ -493,6 +497,11 @@ apanelApp.controller("ForumController", ["$scope",
         }
 
         ];
+
+    }
+]);
+apanelApp.controller("newTopicController",['$scope',
+    function ($scope) {
 
     }
 ]);
