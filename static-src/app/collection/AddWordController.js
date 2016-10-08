@@ -14,7 +14,7 @@ app.controller("AddWordController", ["$scope", "Collection", "WordService", "col
                     wordName: $scope.wordName,
                     wordDescription: $scope.wordDescription
                 }).then(function (data) {
-                    $log(data);
+                    $log.log(data);
                     $uibModalInstance.close();
                 });
             }
@@ -25,7 +25,7 @@ app.controller("AddWordController", ["$scope", "Collection", "WordService", "col
 
         $scope.addWord = function (wordId) {
             Collection.addWord({wordId: wordId, collectionId: collectionId}).then(function (data) {
-                $log(data);
+                $log.log(data);
                 $uibModalInstance.close();
             });
         };

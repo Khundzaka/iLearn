@@ -1,7 +1,7 @@
 apanelApp.controller("AccessGroupsController", function ($scope, GroupAccess, $uibModal,$log) {
     var getAll = function () {
         GroupAccess.getList().then(function (data) {
-            $log(data);
+            $log.log(data);
             $scope.groups = data.groups;
         });
     };
@@ -10,7 +10,7 @@ apanelApp.controller("AccessGroupsController", function ($scope, GroupAccess, $u
     $scope.search = {};
 
     $scope.view = function (group_id) {
-        $log(group_id);
+        $log.log(group_id);
 
         var groupModal = $uibModal.open({
             animation: true,
@@ -34,7 +34,7 @@ apanelApp.controller("AccessGroupsController", function ($scope, GroupAccess, $u
         });
 
         groupModal.result.then(function () {
-            $log("wtf");
+            $log.log("wtf");
             getAll();
         });
     };
@@ -63,7 +63,7 @@ apanelApp.controller("GroupModalController", function ($scope, $uibModalInstance
             $scope.group = data.group;
             $scope.permissions = data.permissions;
             $scope.groupName = $scope.group.name;
-            $log($scope.permissions);
+            $log.log($scope.permissions);
         });
     };
     getOne();

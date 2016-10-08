@@ -1,7 +1,7 @@
 apanelApp.controller("AccessPermissionsController", function ($scope, PermissionAccess, $uibModal,$log) {
     var getAll = function () {
         PermissionAccess.getList().then(function (data) {
-            $log(data);
+            $log.log(data);
             $scope.permissions = data.permissions;
         });
     };
@@ -10,7 +10,7 @@ apanelApp.controller("AccessPermissionsController", function ($scope, Permission
     $scope.search = {};
 
     $scope.view = function (permission_id) {
-        $log(permission_id);
+        $log.log(permission_id);
 
         var groupModal = $uibModal.open({
             animation: true,
@@ -34,7 +34,7 @@ apanelApp.controller("AccessPermissionsController", function ($scope, Permission
         });
 
         groupModal.result.then(function () {
-            $log("wtf");
+            $log.log("wtf");
             getAll();
         });
     };

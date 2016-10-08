@@ -56,7 +56,7 @@ app.factory("Forum", ["$http",'$log',
         Forum.addWord = function (params) {
             var collectionId = params.collectionId;
             var wordId = params.wordId;
-            $log(params);
+            $log.log(params);
             return $http.post(forumPath + "word/add", {
                 collectionId: collectionId,
                 wordId: wordId

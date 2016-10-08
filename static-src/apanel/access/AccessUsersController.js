@@ -5,7 +5,7 @@ apanelApp.controller("AccessUsersController", function ($scope, UserAccess, $uib
     $scope.search = {};
 
     $scope.view = function (user_id) {
-        $log(user_id);
+        $log.log(user_id);
 
         var userModal = $uibModal.open({
             animation: true,

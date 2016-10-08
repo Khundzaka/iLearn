@@ -31,7 +31,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
             var minutes = Math.floor(time / 60);
             var seconds = time - minutes * 60;
             var timeString = ('0' + minutes.toString()).slice(-2) + ":" + ('0' + seconds.toString()).slice(-2);
-            $log(timeString);
+            $log.log(timeString);
             return timeString;
         }
 
@@ -60,7 +60,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
         Collection.getOne($stateParams.collection).then(function (data) {
             $scope.collection = data.collection;
             $scope.collectionName = data.collection.name;
-            $log(data.collection);
+            $log.log(data.collection);
             wordList = data.collection.words;
             $scope.fullTime = wordList.length * 9;
             initScope();
@@ -98,14 +98,14 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
         function getRandomWord() {
             var i = Math.floor(Math.random() * words.length);
             var w = words.splice(i, 1);
-            $log(w);
+            $log.log(w);
             //  $scope.currentWordIndex = i;
             currentWordPair = w[0];
             $scope.currentWord = currentWordPair.description;
         }
 
         function setFocus(){
-            $timeout(function(){document.getElementById("inputWord").focus(); $log("why")});
+            $timeout(function(){document.getElementById("inputWord").focus(); $log.log("why")});
         }
 
         $scope.checkWord = function () {
@@ -120,7 +120,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
                     mistakesList.push(currentWordPair._id);
                     words.push(currentWordPair);
                 }
-                $log(words.length);
+                $log.log(words.length);
             }
 
             if (words.length === 0) {

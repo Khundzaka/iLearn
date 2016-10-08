@@ -52,7 +52,7 @@ app.factory("Collection", ["$http",'$log',
         Collection.addWord = function (params) {
             var collectionId = params.collectionId;
             var wordId = params.wordId;
-            $log(params);
+            $log.log(params);
             return $http.post(collectionPath + "word/add", {
                 collectionId: collectionId,
                 wordId: wordId

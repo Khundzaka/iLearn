@@ -6,14 +6,14 @@ apanelApp.factory("PermissionAccess", function ($http,$log) {
 
     PermissionAccess.getList = function () {
         return $http.get(permissionAccessEndpoint).then(function (response) {
-            $log(response);
+            $log.log(response);
             return response.data.data;
         });
     };
 
     PermissionAccess.getOne = function (permissionId) {
         return $http.get(permissionAccessEndpoint + permissionId).then(function (response) {
-            $log(response);
+            $log.log(response);
             return response.data.data;
         });
     };

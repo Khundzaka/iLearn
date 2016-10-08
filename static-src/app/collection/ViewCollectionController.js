@@ -2,7 +2,7 @@ app.controller("ViewCollectionController", ["$scope", "Collection", "$stateParam
     function ($scope, Collection, $stateParams,$log) {
         Collection.getOne($stateParams.collection).then(function (data) {
             $scope.collection = data.collection;
-            $log(data.collection);
+            $log.log(data.collection);
         });
     }
 ]);
