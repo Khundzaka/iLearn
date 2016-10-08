@@ -1,5 +1,5 @@
-app.factory("AuthService", ['$http',
-    function ($http) {
+app.factory("AuthService", ['$http','$log',
+    function ($http,$log) {
         var AuthService = {
             authenticated: false,
             uid: null,
@@ -31,7 +31,7 @@ app.factory("AuthService", ['$http',
         };
 
         AuthService.logIn = function (email, password, callback) {
-            console.log("aq var");
+            $log.log("aq var");
             $http.post("/local/login", {email: email, password: password}).then(function (res) {
                 if (res.data.status != "failed") {
                     // console.log(res.data);
@@ -50,7 +50,7 @@ app.factory("AuthService", ['$http',
         };
         AuthService.register = function (params, callback) {
             var email = params.email, password = params.password, username = params.username;
-            console.log("aq var");
+            $log.log("aq var");
             $http.post("/local/register", {email: email, password: password, username: username}).then(function (res) {
                 if (res.data.status != "failed") {
                     // console.log(res.data);
@@ -79,12 +79,12 @@ app.factory("AuthService", ['$http',
         AuthService.startUp = function () {
             if (typeof startUpUserData === 'undefined') startUpUserData = false;
             var userData = startUpUserData;
-            console.log("eh");
+            $log.log("eh");
             if (userData) {
                 userData = JSON.parse(userData);
                 // console.log(userData.facebook);
-                console.log(userData);
-                console.log("wtf");
+                $log.log(userData);
+                $log.log("wtf");
                 if (userData.local) this.local = userData.local;
                 if (userData.facebook) this.facebook = userData.facebook;
                 AuthService.authenticated = true;

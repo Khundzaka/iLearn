@@ -1,5 +1,5 @@
-app.factory("Forum", ["$http",
-    function ($http) {
+app.factory("Forum", ["$http",'$log',
+    function ($http,$log) {
         var forumPath = "/api/forum/";
         var Forum = {};
         Forum.getTopicList = function () {
@@ -56,7 +56,7 @@ app.factory("Forum", ["$http",
         Forum.addWord = function (params) {
             var collectionId = params.collectionId;
             var wordId = params.wordId;
-            console.log(params);
+            $log.log(params);
             return $http.post(forumPath + "word/add", {
                 collectionId: collectionId,
                 wordId: wordId

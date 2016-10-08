@@ -1,6 +1,6 @@
 app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal", "Collection", "$state", "AuthService","$log",
     function ($scope, $stateParams, $uibModal, Collection, $state, AuthService,$log) {
-        $log($stateParams.collection);
+        $log.log($stateParams.collection);
         $scope.collectionTypeText = "";
 
         function fetchCollection() {
@@ -16,7 +16,7 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;
                 $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
-                $log(data.collection);
+                $log.log(data.collection);
             });
         }
 
@@ -37,7 +37,7 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
             });
 
             groupModal.result.then(function () {
-                $log("Done");
+                $log.log("Done");
                 fetchCollection();
             });
         };
@@ -49,7 +49,7 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
         };
 
         $scope.update = function () {
-            $log("aris");
+            $log.log("aris");
             Collection.update({
                 collectionId: $stateParams.collection,
                 name: $scope.collectionName,

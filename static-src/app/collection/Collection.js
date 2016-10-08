@@ -1,5 +1,5 @@
-app.factory("Collection", ["$http",
-    function ($http) {
+app.factory("Collection", ["$http",'$log',
+    function ($http,$log) {
         var collectionPath = "/api/collection/";
         var Collection = {};
         Collection.getList = function () {
@@ -52,7 +52,7 @@ app.factory("Collection", ["$http",
         Collection.addWord = function (params) {
             var collectionId = params.collectionId;
             var wordId = params.wordId;
-            console.log(params);
+            $log.log(params);
             return $http.post(collectionPath + "word/add", {
                 collectionId: collectionId,
                 wordId: wordId

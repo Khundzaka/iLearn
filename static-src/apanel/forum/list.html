@@ -4,26 +4,15 @@
     </div>
 
 
-    <div class="list-group">
-        <a ui-sref="forum.topic({TopicId:topic._id})" class="list-group-item" ng-repeat="topic in topics">
-            <h4 class="list-group-item-heading">{{topic.title}}</h4>
-            <p class="list-group-item-text">{{topic.description}}</p>
-        </a>
-    </div>
-
-</div>
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        <h3 class="panel-title">სათაური</h3>
-    </div>
-
-
-    <div class="list-group">
-        <div class="list-group-item" ng-repeat="post in posts">
-            <span style="font-weight: bold;" class="list-group-item-heading">{{post.author}}</span>&nbsp;&nbsp;<span>{{post.date}}</span>
-            <hr>
-            <p class="list-group-item-text" style="color:black; font-size:14px;">{{post.text}}</p>
-        </div>
-    </div>
+    <table class="table">
+        <tr ng-repeat="topic in topics">
+            <td><a ui-sref="">{{topic.title}}</a>
+            </td>
+            <td>
+                <a ui-sref="" class="btn btn-xs btn-warning"><span
+                        class="glyphicon glyphicon-pencil"></span></a>
+            </td>
+        </tr>
+    </table>
 
 </div>

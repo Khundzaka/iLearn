@@ -174,8 +174,8 @@ app.directive('capitalize', function () {
         }
     };
 });
-app.factory("AuthService", ['$http',
-    function ($http) {
+app.factory("AuthService", ['$http','$log',
+    function ($http,$log) {
         var AuthService = {
             authenticated: false,
             uid: null,
@@ -207,7 +207,7 @@ app.factory("AuthService", ['$http',
         };
 
         AuthService.logIn = function (email, password, callback) {
-            console.log("aq var");
+            $log.log("aq var");
             $http.post("/local/login", {email: email, password: password}).then(function (res) {
                 if (res.data.status != "failed") {
                     // console.log(res.data);
@@ -226,7 +226,7 @@ app.factory("AuthService", ['$http',
         };
         AuthService.register = function (params, callback) {
             var email = params.email, password = params.password, username = params.username;
-            console.log("aq var");
+            $log.log("aq var");
             $http.post("/local/register", {email: email, password: password, username: username}).then(function (res) {
                 if (res.data.status != "failed") {
                     // console.log(res.data);
@@ -255,12 +255,12 @@ app.factory("AuthService", ['$http',
         AuthService.startUp = function () {
             if (typeof startUpUserData === 'undefined') startUpUserData = false;
             var userData = startUpUserData;
-            console.log("eh");
+            $log.log("eh");
             if (userData) {
                 userData = JSON.parse(userData);
                 // console.log(userData.facebook);
-                console.log(userData);
-                console.log("wtf");
+                $log.log(userData);
+                $log.log("wtf");
                 if (userData.local) this.local = userData.local;
                 if (userData.facebook) this.facebook = userData.facebook;
                 AuthService.authenticated = true;
@@ -333,8 +333,8 @@ app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootS
         }
     }
 ]);
-app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance", "InfoModal",
-    function ($scope, Collection, WordService, collectionId, $uibModalInstance, InfoModal) {
+app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance", "InfoModal",'$log',
+    function ($scope, Collection, WordService, collectionId, $uibModalInstance, InfoModal,$log) {
         $scope.wordName = "";
         $scope.wordDescription = "";
         $scope.words = [];
@@ -349,7 +349,7 @@ app.controller("AddWordController", ["$scope", "Collection", "WordService", "col
                     wordName: $scope.wordName,
                     wordDescription: $scope.wordDescription
                 }).then(function (data) {
-                    console.log(data);
+                    $log.log(data);
                     $uibModalInstance.close();
                 });
             }
@@ -360,7 +360,7 @@ app.controller("AddWordController", ["$scope", "Collection", "WordService", "col
 
         $scope.addWord = function (wordId) {
             Collection.addWord({wordId: wordId, collectionId: collectionId}).then(function (data) {
-                console.log(data);
+                $log.log(data);
                 $uibModalInstance.close();
             });
         };
@@ -378,8 +378,8 @@ app.controller("AddWordController", ["$scope", "Collection", "WordService", "col
         }
     }
 ]);
-app.factory("Collection", ["$http",
-    function ($http) {
+app.factory("Collection", ["$http",'$log',
+    function ($http,$log) {
         var collectionPath = "/api/collection/";
         var Collection = {};
         Collection.getList = function () {
@@ -432,7 +432,7 @@ app.factory("Collection", ["$http",
         Collection.addWord = function (params) {
             var collectionId = params.collectionId;
             var wordId = params.wordId;
-            console.log(params);
+            $log.log(params);
             return $http.post(collectionPath + "word/add", {
                 collectionId: collectionId,
                 wordId: wordId
@@ -472,9 +472,9 @@ app.controller("CollectionController", ["$scope","Collection","$log",
     function ($scope, Collection,$log) {
         Collection.getList().then(function (data) {
             $scope.collections = data.collections;
-            $log(data);
+            $log.log(data);
         });
-        $log("fuck");
+        $log.log("fuck");
     }
 ]);
 app.controller("CreateCollectionController", ["$scope", "Collection", "$state",
@@ -501,7 +501,7 @@ app.controller("CreateCollectionController", ["$scope", "Collection", "$state",
 ]);
 app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal", "Collection", "$state", "AuthService","$log",
     function ($scope, $stateParams, $uibModal, Collection, $state, AuthService,$log) {
-        $log($stateParams.collection);
+        $log.log($stateParams.collection);
         $scope.collectionTypeText = "";
 
         function fetchCollection() {
@@ -517,7 +517,7 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;
                 $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
-                $log(data.collection);
+                $log.log(data.collection);
             });
         }
 
@@ -538,7 +538,7 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
             });
 
             groupModal.result.then(function () {
-                $log("Done");
+                $log.log("Done");
                 fetchCollection();
             });
         };
@@ -550,7 +550,7 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
         };
 
         $scope.update = function () {
-            $log("aris");
+            $log.log("aris");
             Collection.update({
                 collectionId: $stateParams.collection,
                 name: $scope.collectionName,
@@ -561,26 +561,26 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
         };
     }
 ]);
-app.controller("MyCollectionController", ["$scope","Collection",
-    function ($scope, Collection, AuthService) {
+app.controller("MyCollectionController", ["$scope", "Collection", "$log",
+    function ($scope, Collection, $log) {
         Collection.getUserCollections().then(function (data) {
             $scope.collections = data.collections;
-            console.log(data);
+            $log.log(data);
         });
-        console.log("fuck");
+        $log.log("fuck");
     }
 ]);
-app.controller("ViewCollectionController", ["$scope", "Collection", "$stateParams",
-    function ($scope, Collection, $stateParams) {
+app.controller("ViewCollectionController", ["$scope", "Collection", "$stateParams","$log",
+    function ($scope, Collection, $stateParams,$log) {
         Collection.getOne($stateParams.collection).then(function (data) {
             $scope.collection = data.collection;
-            console.log(data.collection);
+            $log.log(data.collection);
         });
     }
 ]);
-app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope',
-    function ($scope, AuthService, $location, $rootScope) {
-        console.log(AuthService);
+app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope', '$log',
+    function ($scope, AuthService, $location, $rootScope, $log) {
+        $log.log(AuthService);
         $scope.hasFacebook = AuthService.facebook.name !== null;
         $scope.hasLocal = AuthService.local.email !== null;
         $scope.facebookName = AuthService.facebook.name;
@@ -588,19 +588,20 @@ app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$roo
         $scope.localUserName = AuthService.local.username;
     }
 ]);
-app.controller('HeaderController', function ($scope, $rootScope, AuthService, $state) {
+app.controller('HeaderController', function ($scope, $rootScope, AuthService, $state, $log) {
     $scope.authenticated = AuthService.authenticated;
     $scope.navCollapsed = true;
     $scope.$on('authentication', function () {
         $scope.authenticated = AuthService.authenticated;
     });
+
     // $scope.headerLinks = [
     //     {title: "მთავარი", state: "app", active: false},
     //     {title: "ფორუმი", state: "forum", active: false},
     //     {title: "კოლექციები", state: "collection.list", active: false}
     // ];
     // $rootScope.$on('$stateChangeSuccess', function (event, toState) {
-    //     //console.log(toState);
+    //     //$log.log(toState);
     //     var i;
     //     for (i = 0; i < $scope.headerLinks.length; i++) {
     //         $scope.headerLinks[i].active = $scope.headerLinks[i].state === toState.name;
@@ -621,8 +622,8 @@ app.controller('HeaderController', function ($scope, $rootScope, AuthService, $s
         });
     };
 });
-app.factory("Forum", ["$http",
-    function ($http) {
+app.factory("Forum", ["$http",'$log',
+    function ($http,$log) {
         var forumPath = "/api/forum/";
         var Forum = {};
         Forum.getTopicList = function () {
@@ -679,7 +680,7 @@ app.factory("Forum", ["$http",
         Forum.addWord = function (params) {
             var collectionId = params.collectionId;
             var wordId = params.wordId;
-            console.log(params);
+            $log.log(params);
             return $http.post(forumPath + "word/add", {
                 collectionId: collectionId,
                 wordId: wordId
@@ -765,8 +766,8 @@ app.controller('HomeController', ['$scope', '$uibModal', '$log',
 
     }
 ]);
-app.controller("PracticeController", ["$scope", "$timeout", "$state", "$stateParams", "$http", "Collection",
-    function ($scope, $timeout, $state, $stateParams, $http, Collection) {
+app.controller("PracticeController", ["$scope", "$timeout", "$state", "$stateParams", "$http", "Collection","$log",
+    function ($scope, $timeout, $state, $stateParams, $http, Collection,$log) {
         var words = [];
         var mistakesList = [];
         // $scope.focused = true;
@@ -798,7 +799,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
             var minutes = Math.floor(time / 60);
             var seconds = time - minutes * 60;
             var timeString = ('0' + minutes.toString()).slice(-2) + ":" + ('0' + seconds.toString()).slice(-2);
-            console.log(timeString);
+            $log.log(timeString);
             return timeString;
         }
 
@@ -827,7 +828,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
         Collection.getOne($stateParams.collection).then(function (data) {
             $scope.collection = data.collection;
             $scope.collectionName = data.collection.name;
-            console.log(data.collection);
+            $log.log(data.collection);
             wordList = data.collection.words;
             $scope.fullTime = wordList.length * 9;
             initScope();
@@ -865,14 +866,14 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
         function getRandomWord() {
             var i = Math.floor(Math.random() * words.length);
             var w = words.splice(i, 1);
-            console.log(w);
+            $log.log(w);
             //  $scope.currentWordIndex = i;
             currentWordPair = w[0];
             $scope.currentWord = currentWordPair.description;
         }
 
         function setFocus(){
-            $timeout(function(){document.getElementById("inputWord").focus(); console.log("why")});
+            $timeout(function(){document.getElementById("inputWord").focus(); $log.log("why")});
         }
 
         $scope.checkWord = function () {
@@ -887,7 +888,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
                     mistakesList.push(currentWordPair._id);
                     words.push(currentWordPair);
                 }
-                console.log(words.length);
+                $log.log(words.length);
             }
 
             if (words.length === 0) {
