@@ -1,4 +1,4 @@
-apanelApp.factory("GroupAccess", function ($http) {
+apanelApp.factory("GroupAccess", function ($http,$log) {
     var GroupAccess = function () {
 
     };
@@ -6,14 +6,14 @@ apanelApp.factory("GroupAccess", function ($http) {
 
     GroupAccess.getList = function () {
         return $http.get(groupAccessEndpoint).then(function (response) {
-            console.log(response);
+            $log(response);
             return response.data.data;
         });
     };
 
     GroupAccess.getOne = function (groupId) {
         return $http.get(groupAccessEndpoint + groupId).then(function (response) {
-            console.log(response);
+            $log(response);
             return response.data.data;
         });
     };

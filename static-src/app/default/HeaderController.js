@@ -1,4 +1,4 @@
-app.controller('HeaderController', function ($scope, $rootScope, AuthService, $state) {
+app.controller('HeaderController', function ($scope, $rootScope, AuthService, $state,$log) {
     $scope.authenticated = AuthService.authenticated;
     $scope.navCollapsed = true;
     $scope.$on('authentication', function () {
@@ -10,7 +10,7 @@ app.controller('HeaderController', function ($scope, $rootScope, AuthService, $s
         {title: "კოლექციები", state: "collection.list", active: false}
     ];
     $rootScope.$on('$stateChangeSuccess', function (event, toState) {
-        //console.log(toState);
+        //$log(toState);
         var i;
         for (i = 0; i < $scope.headerLinks.length; i++) {
             $scope.headerLinks[i].active = $scope.headerLinks[i].state === toState.name;

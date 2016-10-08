@@ -1,11 +1,11 @@
-apanelApp.controller("AccessUsersController", function ($scope, UserAccess, $uibModal) {
+apanelApp.controller("AccessUsersController", function ($scope, UserAccess, $uibModal,$log) {
     UserAccess.getList().then(function (data) {
         $scope.users_list = data.users;
     });
     $scope.search = {};
 
     $scope.view = function (user_id) {
-        console.log(user_id);
+        $log(user_id);
 
         var userModal = $uibModal.open({
             animation: true,

@@ -1,6 +1,6 @@
-app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope',
-    function ($scope, AuthService, $location, $rootScope) {
-        console.log(AuthService);
+app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope','$log',
+    function ($scope, AuthService, $location, $rootScope,$log) {
+        $log(AuthService);
         $scope.hasFacebook = AuthService.facebook.name !== null;
         $scope.hasLocal = AuthService.local.email !== null;
         $scope.facebookName = AuthService.facebook.name;
