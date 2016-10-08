@@ -91,10 +91,10 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "forum/list.html",
             controller: "ForumController"
         })
-        .state("app.forum.newTopic",{
-            url:"/newTopic",
-            templateUrl:_st+"forum/new-topic.html",
-            controller:"newTopicController"
+        .state("app.forum.new-topic",{
+            url:"/new-topic",
+            templateUrl: _st + "forum/new-topic.html",
+            controller:"NewTopicController"
         })
     ;
 })
