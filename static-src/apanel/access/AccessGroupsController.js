@@ -66,7 +66,6 @@ apanelApp.controller("GroupModalController", function ($scope, $uibModalInstance
             $log($scope.permissions);
         });
     };
-
     getOne();
 
     $scope.save = function () {
