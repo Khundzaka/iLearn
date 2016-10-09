@@ -91,10 +91,10 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "forum/list.html",
             controller: "ForumController"
         })
-        .state("app.forum.newTopic",{
-            url:"/newTopic",
-            templateUrl:_st+"forum/new-topic.html",
-            controller:"newTopicController"
+        .state("app.forum.new-topic",{
+            url:"/new-topic",
+            templateUrl: _st + "forum/new-topic.html",
+            controller:"NewTopicController"
         })
     ;
 })
@@ -484,24 +484,72 @@ apanelApp.factory("UserAccess", function ($http) {
  * Created by george on 10.07.2016.
  */
 
-apanelApp.controller("ForumController", ["$scope",
-    function ($scope) {
-        $scope.topics = [{
-            "_id": "123",
-            "title": "კითხვები ადმინისტრატორთან",
-            "description": "აქ შეგიძლიათ დასვათ ნებისმიერი კითხვა და ადმინისტრაცია გაგცემთ პასუხს"
-        }, {
-            "_id": "456",
-            "title": "ტექნიკური ხარვეზები",
-            "description": "თუ რაიმე პრობლემა შეგემნათ სერვისით სარგებლობისას, დაწერეთ აქ"
-        }
-
-        ];
-
+apanelApp.controller("ForumController", ["$scope","ForumService","$log",
+    function ($scope,ForumService,$log) {
+        ForumService.getList().then(function (data) {
+            $scope.topics = data.topics;
+            $log.log(data);
+        });
+        $log.log("fuck");
     }
 ]);
-apanelApp.controller("newTopicController",['$scope',
-    function ($scope) {
+apanelApp.factory("ForumService",["$http","$log",
+    function ($http,$log) {
+        var ForumService={};
+        var getListEndpoint="GET/apanel/api/forum";
+        var newTopicEndpoint="POST/apanel/api/forum/";
+        var updateTopicEndpoint="PUT/apanel/api/forum/";
+
+        ForumService.getTopicList = function() {
+            return $http.get(getListEndpoint).then(function (response) {
+                $log.log(response);
+                return response.data.data;
+            });
+        };
+
+        ForumService.addNewTopic = function (params) {
+            var title=params.title;
+            var description=params.description;
+            var active=params.active;
+
+            return $http.post(newTopicEndpoint, {
+                title: title,
+                description: description,
+                active:active
+            }).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        ForumService.update = function (title,description,active,topic_id) {
+            return $http.put(updateTopicEndpoint, {
+                title: title,
+                description: description,
+                active:active,
+                uid:topic_id
+            }).then(function (response) {
+                return response.data.status;
+            });
+        };
+
+        return ForumService;
+    }
+]);
+apanelApp.controller("NewTopicController",['$scope','ForumService','$log',
+    function ($scope,ForumService,$log) {
+        $scope.topicTitle='';
+        $scope.topicDescription='';
+        $scope.active=true;
+
+        $scope.add=function () {
+            ForumService.addNewTopic({
+                title: $scope.topicTitle,
+                description: $scope.topicDescription,
+                active:$scope.active
+            }).then(function (resp) {
+                return resp.data.data;
+            });
+        };
 
     }
 ]);
