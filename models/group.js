@@ -1,7 +1,5 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
-var bcrypt = require('bcrypt-nodejs');
-var _ = require('lodash');
 
 var Group = new Schema({
     name: String,

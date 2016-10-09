@@ -1,6 +1,5 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
-var _ = require('lodash');
 
 var Collection = new Schema({
     name: String,
