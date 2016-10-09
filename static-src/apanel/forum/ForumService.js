@@ -1,9 +1,9 @@
 apanelApp.factory("ForumService",["$http","$log",
     function ($http,$log) {
         var ForumService={};
-        var getListEndpoint="GET/apanel/api/forum";
-        var newTopicEndpoint="POST/apanel/api/forum/";
-        var updateTopicEndpoint="PUT/apanel/api/forum/";
+        var getListEndpoint="/apanel/api/forum/";
+        var newTopicEndpoint="/apanel/api/forum/";
+        var updateTopicEndpoint="/apanel/api/forum/";
 
         ForumService.getTopicList = function() {
             return $http.get(getListEndpoint).then(function (response) {

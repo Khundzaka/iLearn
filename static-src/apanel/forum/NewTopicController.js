@@ -1,17 +1,17 @@
-apanelApp.controller("NewTopicController",['$scope','ForumService','$log',
-    function ($scope,ForumService,$log) {
+apanelApp.controller("NewTopicController",['$scope','ForumService','$state','$log',
+    function ($scope,ForumService,$state,$log) {
         $scope.topicTitle='';
         $scope.topicDescription='';
-        $scope.active=true;
 
-        $scope.add=function () {
-            ForumService.addNewTopic({
-                title: $scope.topicTitle,
-                description: $scope.topicDescription,
-                active:$scope.active
-            }).then(function (resp) {
-                return resp.data.data;
-            });
+
+        $scope.submit = function () {
+            var active = true;
+            if (active) {
+                ForumService.addNewTopic({
+                    title: $scope.topicTitle,
+                    description: $scope.topicDescription,
+                })
+            }
         };
 
     }

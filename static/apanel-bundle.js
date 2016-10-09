@@ -486,7 +486,7 @@ apanelApp.factory("UserAccess", function ($http) {
 
 apanelApp.controller("ForumController", ["$scope","ForumService","$log",
     function ($scope,ForumService,$log) {
-        ForumService.getList().then(function (data) {
+        ForumService.getTopicList().then(function (data) {
             $scope.topics = data.topics;
             $log.log(data);
         });
@@ -496,9 +496,9 @@ apanelApp.controller("ForumController", ["$scope","ForumService","$log",
 apanelApp.factory("ForumService",["$http","$log",
     function ($http,$log) {
         var ForumService={};
-        var getListEndpoint="GET/apanel/api/forum";
-        var newTopicEndpoint="POST/apanel/api/forum/";
-        var updateTopicEndpoint="PUT/apanel/api/forum/";
+        var getListEndpoint="/apanel/api/forum/";
+        var newTopicEndpoint="/apanel/api/forum/";
+        var updateTopicEndpoint="/apanel/api/forum/";
 
         ForumService.getTopicList = function() {
             return $http.get(getListEndpoint).then(function (response) {
@@ -535,20 +535,20 @@ apanelApp.factory("ForumService",["$http","$log",
         return ForumService;
     }
 ]);
-apanelApp.controller("NewTopicController",['$scope','ForumService','$log',
-    function ($scope,ForumService,$log) {
+apanelApp.controller("NewTopicController",['$scope','ForumService','$state','$log',
+    function ($scope,ForumService,$state,$log) {
         $scope.topicTitle='';
         $scope.topicDescription='';
-        $scope.active=true;
 
-        $scope.add=function () {
-            ForumService.addNewTopic({
-                title: $scope.topicTitle,
-                description: $scope.topicDescription,
-                active:$scope.active
-            }).then(function (resp) {
-                return resp.data.data;
-            });
+
+        $scope.submit = function () {
+            var active = true;
+            if (active) {
+                ForumService.addNewTopic({
+                    title: $scope.topicTitle,
+                    description: $scope.topicDescription,
+                })
+            }
         };
 
     }
