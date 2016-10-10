@@ -6,7 +6,11 @@
 
     <table class="table">
         <tr ng-repeat="topic in topics">
-            <td><a >{{topic.title}}</a>
+
+            <td>
+                <span ng-class="{'glyphicon':true, 'glyphicon-eye-open':topic.active,
+             'glyphicon-lock':!topic.active}"></a></span>
+                <a >{{topic.title}}</a>
             </td>
             <td>
                 <a  class="btn btn-xs btn-warning"><span

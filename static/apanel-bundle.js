@@ -539,16 +539,14 @@ apanelApp.controller("NewTopicController",['$scope','ForumService','$state','$lo
     function ($scope,ForumService,$state,$log) {
         $scope.topicTitle='';
         $scope.topicDescription='';
-
+        $scope.active;
 
         $scope.submit = function () {
-            var active = true;
-            if (active) {
-                ForumService.addNewTopic({
-                    title: $scope.topicTitle,
-                    description: $scope.topicDescription,
-                })
-            }
+            ForumService.addNewTopic({
+                title: $scope.topicTitle,
+                description: $scope.topicDescription,
+                active:$scope.active
+            })
         };
 
     }
