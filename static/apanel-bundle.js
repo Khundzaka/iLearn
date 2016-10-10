@@ -484,19 +484,61 @@ apanelApp.factory("UserAccess", function ($http) {
  * Created by george on 10.07.2016.
  */
 
-apanelApp.controller("ForumController", ["$scope","ForumService","$log",
-    function ($scope,ForumService,$log) {
+apanelApp.controller("EditTopicController",["$scope","ForumService","topic_id","$uibModalInstance","$log",
+    function ($scope,ForumService,topic_id,$uibModalInstance,$log) {
+        $scope.topicTitle = "";
+        $scope.topicDescription = "";
+        $scope.editTopic = function () {
+            ForumService.update({
+                title: $scope.topicTitle,
+                description: $scope.topicDescription,
+                uid: topic_id
+            }).then(function () {
+                $uibModalInstance.close();
+            });
+            $scope.close = function () {
+                $uibModalInstance.close();
+            }
+            $log.log(topic_id);
+
+        };
+    }
+])
+apanelApp.controller("ForumController", ["$scope","ForumService","$uibModal","$log",
+    function ($scope,ForumService,$uibModal,$log) {
         ForumService.getTopicList().then(function (data) {
             $scope.topics = data.topics;
             $log.log(data);
         });
         $log.log("fuck");
+
+
+        $scope.modify = function (topic_id) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/forum/edit-topic.html',
+                controller: 'EditTopicController',
+                size: "lg",
+                resolve: {
+                    topic_id: function () {
+                        return topic_id;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                $log.log("Done");
+                getTopicList();
+            });
+
+        };
     }
 ]);
 apanelApp.factory("ForumService",["$http","$log",
     function ($http,$log) {
         var ForumService={};
-        var getListEndpoint="/apanel/api/forum/";
+        var getListEndpoint="/apanel/api/forum";
         var newTopicEndpoint="/apanel/api/forum/";
         var updateTopicEndpoint="/apanel/api/forum/";
 
