@@ -1,5 +1,5 @@
 apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id", "$uibModal", "$uibModalInstance", "$log",
-    function ($scope, ForumService, topic_id, $uibModal, $uibModalInstance, $log) {
+    function ($scope, ForumService, topic_id, $uibModal, $uibModalInstance,$log) {
         $scope.topicTitle = "";
         $scope.topicDescription = "";
         $scope.active = null;
@@ -24,6 +24,7 @@ apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id
                 uid: topic_id
             }).then(function () {
                 fetchTopic();
+                $uibModalInstance.close();
             });
 
         };
