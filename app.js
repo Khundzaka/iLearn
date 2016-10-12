@@ -66,7 +66,9 @@ require('./routes/local_auth_routes')(app);
 app.use('/apanel', apanelRouter);
 var collectionRouter = require('./routes/collection_router');
 var wordRouter = require('./routes/word_router');
+var forumRouter = require('./routes/forum_router');
 app.use('/api/collection', collectionRouter);
+app.use('/api/forum', forumRouter);
 app.use('/api/word', wordRouter);
 
 

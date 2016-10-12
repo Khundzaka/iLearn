@@ -16,6 +16,18 @@ ForumRepository.allTopicList = function (callback) {
     });
 };
 
+ForumRepository.fetchOneTopic = function (params, callback) {
+    ForumTopic.findById(params.uid).exec(function (err, topic) {
+        callback(err, topic);
+    });
+};
+
+ForumRepository.fetchOnePost = function (params, callback) {
+    ForumPost.findById(params.uid).exec(function (err, post) {
+        callback(err, post);
+    });
+};
+
 ForumRepository.createTopic = function (params, callback) {
     var topic = new ForumTopic({title: params.title, description: params.description, active: params.active});
     topic.save(function (err) {
