@@ -1,4 +1,4 @@
-apanelApp.controller("NewTopicController",['$scope','ForumService','$state','$log',
+apanelApp.controller("NewTopicController",["$scope","ForumService","$state","$log",
     function ($scope,ForumService,$state,$log) {
         $scope.topicTitle='';
         $scope.topicDescription='';

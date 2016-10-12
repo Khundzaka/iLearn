@@ -484,24 +484,35 @@ apanelApp.factory("UserAccess", function ($http) {
  * Created by george on 10.07.2016.
  */
 
-apanelApp.controller("EditTopicController",["$scope","ForumService","topic_id","$uibModalInstance","$log",
-    function ($scope,ForumService,topic_id,$uibModalInstance,$log) {
+apanelApp.controller("EditTopicController",["$scope","ForumService","topic_id","$uibModal","$uibModalInstance","$log","$stateParams",
+    function ($scope,ForumService,topic_id,$uibModal,$uibModalInstance,$log,$stateParams) {
         $scope.topicTitle = "";
         $scope.topicDescription = "";
+
+        function fetchTopic() {
+            ForumService.getOne(topic_id).then(function (data) {
+                $log.log(data);
+                $log.log(topic_id);
+                $scope.topicTitle = data.topics.title;
+                $scope.topicDescription = data.topics.description;
+            });
+        }
+
+        fetchTopic();
+
+
         $scope.editTopic = function () {
             ForumService.update({
                 title: $scope.topicTitle,
                 description: $scope.topicDescription,
                 uid: topic_id
             }).then(function () {
-                $uibModalInstance.close();
+                fetchTopic();
             });
-            $scope.close = function () {
-                $uibModalInstance.close();
-            }
-            $log.log(topic_id);
 
         };
+
+
     }
 ])
 apanelApp.controller("ForumController", ["$scope","ForumService","$uibModal","$log",
@@ -511,7 +522,6 @@ apanelApp.controller("ForumController", ["$scope","ForumService","$uibModal","$l
             $log.log(data);
         });
         $log.log("fuck");
-
 
         $scope.modify = function (topic_id) {
 
@@ -541,6 +551,7 @@ apanelApp.factory("ForumService",["$http","$log",
         var getListEndpoint="/apanel/api/forum";
         var newTopicEndpoint="/apanel/api/forum/";
         var updateTopicEndpoint="/apanel/api/forum/";
+        var getOneApiEndpoint="/api/forum/topic/one/";
 
         ForumService.getTopicList = function() {
             return $http.get(getListEndpoint).then(function (response) {
@@ -549,15 +560,21 @@ apanelApp.factory("ForumService",["$http","$log",
             });
         };
 
-        ForumService.addNewTopic = function (params) {
-            var title=params.title;
-            var description=params.description;
-            var active=params.active;
+        ForumService.getOne=function (topic_id) {
+            return $http.get(getOneApiEndpoint+topic_id).then(function (response) {
+                $log.log(response);
+                $log.log("found");
+                $log.log(response.data.data);
+                return response.data.data;
+            })
+        };
 
-            return $http.post(newTopicEndpoint, {
-                title: title,
-                description: description,
-                active:active
+        ForumService.addNewTopic = function (params) {
+           return $http.post(newTopicEndpoint, {
+                title:params.title,
+                description:params.description,
+                active:params.active,
+                uid:params.uid
             }).then(function (resp) {
                 return resp.data.data;
             });
@@ -577,7 +594,7 @@ apanelApp.factory("ForumService",["$http","$log",
         return ForumService;
     }
 ]);
-apanelApp.controller("NewTopicController",['$scope','ForumService','$state','$log',
+apanelApp.controller("NewTopicController",["$scope","ForumService","$state","$log",
     function ($scope,ForumService,$state,$log) {
         $scope.topicTitle='';
         $scope.topicDescription='';

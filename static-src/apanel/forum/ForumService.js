@@ -4,6 +4,7 @@ apanelApp.factory("ForumService",["$http","$log",
         var getListEndpoint="/apanel/api/forum";
         var newTopicEndpoint="/apanel/api/forum/";
         var updateTopicEndpoint="/apanel/api/forum/";
+        var getOneApiEndpoint="/api/forum/topic/one/";
 
         ForumService.getTopicList = function() {
             return $http.get(getListEndpoint).then(function (response) {
@@ -12,15 +13,21 @@ apanelApp.factory("ForumService",["$http","$log",
             });
         };
 
-        ForumService.addNewTopic = function (params) {
-            var title=params.title;
-            var description=params.description;
-            var active=params.active;
+        ForumService.getOne=function (topic_id) {
+            return $http.get(getOneApiEndpoint+topic_id).then(function (response) {
+                $log.log(response);
+                $log.log("found");
+                $log.log(response.data.data);
+                return response.data.data;
+            })
+        };
 
-            return $http.post(newTopicEndpoint, {
-                title: title,
-                description: description,
-                active:active
+        ForumService.addNewTopic = function (params) {
+           return $http.post(newTopicEndpoint, {
+                title:params.title,
+                description:params.description,
+                active:params.active,
+                uid:params.uid
             }).then(function (resp) {
                 return resp.data.data;
             });

@@ -6,7 +6,6 @@ apanelApp.controller("ForumController", ["$scope","ForumService","$uibModal","$l
         });
         $log.log("fuck");
 
-
         $scope.modify = function (topic_id) {
 
             var groupModal = $uibModal.open({
