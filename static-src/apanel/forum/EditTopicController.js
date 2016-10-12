@@ -1,8 +1,8 @@
-apanelApp.controller("EditTopicController",["$scope","ForumService","topic_id","$uibModal","$uibModalInstance","$log",
-    function ($scope,ForumService,topic_id,$uibModal,$uibModalInstance,$log) {
+apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id", "$uibModal", "$uibModalInstance", "$log",
+    function ($scope, ForumService, topic_id, $uibModal, $uibModalInstance, $log) {
         $scope.topicTitle = "";
         $scope.topicDescription = "";
-        $scope.active;
+        $scope.active = null;
 
         function fetchTopic() {
             ForumService.getOne(topic_id).then(function (data) {
@@ -20,7 +20,7 @@ apanelApp.controller("EditTopicController",["$scope","ForumService","topic_id","
             ForumService.update({
                 title: $scope.topicTitle,
                 description: $scope.topicDescription,
-                active:$scope.active,
+                active: $scope.active,
                 uid: topic_id
             }).then(function () {
                 fetchTopic();
@@ -30,4 +30,4 @@ apanelApp.controller("EditTopicController",["$scope","ForumService","topic_id","
 
 
     }
-])
+]);

@@ -18,7 +18,8 @@
     "lodash": "latest",
     "connect-mongo": "latest",
     "connect-flash": "latest",
-    "async": "latest"
+    "async": "latest",
+    "bluebird": "latest"
   },
   "devDependencies": {
     "gulp": "latest",

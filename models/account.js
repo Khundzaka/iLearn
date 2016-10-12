@@ -33,17 +33,18 @@ Account.methods.checkPassword = function (password) {
 Account.methods.loadPermissions = function (callback) {
     if (typeof this.permissions === 'undefined') {
         var that = this;
-        Group.where("_id").in(that.groups).exec(function (err, groups) {
-            if (!err) {
-                var permissions = [];
-                for (var i = 0; i < groups.length; i++) {
-                    permissions = permissions.concat(groups[i].permissions);
-                }
-                that.permissions = _.uniq(permissions);
-            } else {
-                that.permissions = [];
+        Group.where("_id").in(that.groups).exec().then(function (groups) {
+            var permissions = [];
+            for (var i = 0; i < groups.length; i++) {
+                permissions = permissions.concat(groups[i].permissions);
             }
+            that.permissions = _.uniq(permissions);
             callback(that.permissions);
+            return null;
+        }).catch(function (err) {
+            that.permissions = [];
+            callback(that.permissions);
+            return null;
         });
     } else {
         callback(this.permissions);

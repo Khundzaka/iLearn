@@ -9,6 +9,7 @@ var methodOverride = require("method-override");
 var cookieParser = require("cookie-parser");
 var expressSession = require("express-session");
 var errorHandler = require("errorhandler");
+var Promise = require("bluebird");
 var MongoStore = require('connect-mongo')(expressSession);
 var flash = require('connect-flash');
 
@@ -31,7 +32,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(cookieParser('your secret here'));
-
+mongoose.Promise = Promise;
 // mongoose
 mongoose.connect('mongodb://localhost/learn_it');
 var mongooseConnection = mongoose.connection;

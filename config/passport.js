@@ -20,7 +20,7 @@ module.exports = function (passport) {
     // used to deserialize the user
     passport.deserializeUser(function (id, done) {
         Account.findById(id, function (err, user) {
-            done(err, user);
+            return done(err, user);
         });
     });
 
