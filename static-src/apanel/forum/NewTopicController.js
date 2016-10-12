@@ -9,6 +9,8 @@ apanelApp.controller("NewTopicController",["$scope","ForumService","$state","$lo
                 title: $scope.topicTitle,
                 description: $scope.topicDescription,
                 active:$scope.active
+            }).then(function () {
+                $state.go('app.forum.list');
             })
         };
 
