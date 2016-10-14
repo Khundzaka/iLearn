@@ -1,10 +1,9 @@
-apanelApp.controller("ForumController", ["$scope","ForumService","$uibModal","$log",
-    function ($scope,ForumService,$uibModal,$log) {
+apanelApp.controller("ForumController", ["$scope", "ForumService", "$uibModal", "$log",
+    function ($scope, ForumService, $uibModal, $log) {
         ForumService.getTopicList().then(function (data) {
             $scope.topics = data.topics;
             $log.log(data);
         });
-        $log.log("fuck");
 
         $scope.modify = function (topic_id) {
 

@@ -32,6 +32,14 @@ ForumRepository.fetchOnePost = function (params, callback) {
     });
 };
 
+
+ForumRepository.fetchPostsByTopic = function (params, callback) {
+    ForumPost.find({topic: params.topicId}).populate('user').exec(function (err, post) {
+        return callback(err, post);
+    });
+};
+
+
 ForumRepository.createTopic = function (params, callback) {
     var topic = new ForumTopic({title: params.title, description: params.description, active: params.active});
     topic.save(function (err) {

@@ -30,11 +30,32 @@ forumRouter.get("/topic/one/:topic", function (req, res) {
     });
 });
 
+forumRouter.get("/topic/posts/:topic", function (req, res, next) {
+    ForumRepository.fetchPostsByTopic({topicId: req.params.topic}, function (err, topic) {
+        if (err) {
+            // console.log(err);
+            return next();
+        }
+
+        res.json({status: "ok", data: {topic: topic}});
+    });
+});
+
 forumRouter.get("/post/one/:post", function (req, res) {
     ForumRepository.fetchOnePost({uid: req.params.post}, function (err, post) {
         if (err) {
             console.log(err);
             return res.json(defaultFailResponse);
+        }
+
+        res.json({status: "ok", data: {post: post}});
+    });
+});
+
+forumRouter.post("/post", function (req, res, next) {
+    ForumRepository.createPost({user: req.user, data: req.body}, function (err, post) {
+        if (err) {
+            return next();
         }
 
         res.json({status: "ok", data: {post: post}});
