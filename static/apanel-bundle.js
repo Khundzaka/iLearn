@@ -485,7 +485,7 @@ apanelApp.factory("UserAccess", function ($http) {
  */
 
 apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id", "$uibModal", "$uibModalInstance", "$log",
-    function ($scope, ForumService, topic_id, $uibModal, $uibModalInstance, $log) {
+    function ($scope, ForumService, topic_id, $uibModal, $uibModalInstance,$log) {
         $scope.topicTitle = "";
         $scope.topicDescription = "";
         $scope.active = null;
@@ -510,6 +510,7 @@ apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id
                 uid: topic_id
             }).then(function () {
                 fetchTopic();
+                $uibModalInstance.close();
             });
 
         };
@@ -518,12 +519,15 @@ apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id
     }
 ]);
 apanelApp.controller("ForumController", ["$scope","ForumService","$uibModal","$log",
-    function ($scope,ForumService,$uibModal,$log) {
-        ForumService.getTopicList().then(function (data) {
-            $scope.topics = data.topics;
-            $log.log(data);
-        });
-        $log.log("fuck");
+     function ($scope,ForumService,$uibModal,$log) {
+
+            function fetchTopicList(){
+            ForumService.getTopicList().then(function (data) {
+                $scope.topics = data.topics;
+            });
+        };
+
+        fetchTopicList();
 
         $scope.modify = function (topic_id) {
 
@@ -541,7 +545,7 @@ apanelApp.controller("ForumController", ["$scope","ForumService","$uibModal","$l
 
             groupModal.result.then(function () {
                 $log.log("Done");
-                getTopicList();
+                fetchTopicList();
             });
 
         };
@@ -576,21 +580,18 @@ apanelApp.factory("ForumService", ["$http", "$log",
                 title: params.title,
                 description: params.description,
                 active: params.active,
-                uid: params.uid
             }).then(function (resp) {
                 return resp.data.data;
             });
         };
 
-        ForumService.update = function (title, description, active, topic_id) {
-            var value = {
-                title: title,
-                description: description,
-                active: active,
-                uid: topic_id
-            };
-            $log.log(value);
-            return $http.put(updateTopicEndpoint, value).then(function (response) {
+        ForumService.update = function (params) {
+            return $http.put(updateTopicEndpoint,{
+                title:params.title,
+                description:params.description,
+                active:params.active,
+                uid:params.uid
+            }).then(function (response) {
                 return response.data.status;
             });
         };

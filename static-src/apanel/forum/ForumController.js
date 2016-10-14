@@ -1,9 +1,13 @@
 apanelApp.controller("ForumController", ["$scope", "ForumService", "$uibModal", "$log",
     function ($scope, ForumService, $uibModal, $log) {
-        ForumService.getTopicList().then(function (data) {
-            $scope.topics = data.topics;
-            $log.log(data);
-        });
+
+        function fetchTopicList() {
+            ForumService.getTopicList().then(function (data) {
+                $scope.topics = data.topics;
+            });
+        }
+
+        fetchTopicList();
 
         $scope.modify = function (topic_id) {
 
@@ -21,7 +25,7 @@ apanelApp.controller("ForumController", ["$scope", "ForumService", "$uibModal", 
 
             groupModal.result.then(function () {
                 $log.log("Done");
-                getTopicList();
+                fetchTopicList();
             });
 
         };

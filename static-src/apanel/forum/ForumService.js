@@ -27,21 +27,18 @@ apanelApp.factory("ForumService", ["$http", "$log",
                 title: params.title,
                 description: params.description,
                 active: params.active,
-                uid: params.uid
             }).then(function (resp) {
                 return resp.data.data;
             });
         };
 
-        ForumService.update = function (title, description, active, topic_id) {
-            var value = {
-                title: title,
-                description: description,
-                active: active,
-                uid: topic_id
-            };
-            $log.log(value);
-            return $http.put(updateTopicEndpoint, value).then(function (response) {
+        ForumService.update = function (params) {
+            return $http.put(updateTopicEndpoint,{
+                title:params.title,
+                description:params.description,
+                active:params.active,
+                uid:params.uid
+            }).then(function (response) {
                 return response.data.status;
             });
         };
