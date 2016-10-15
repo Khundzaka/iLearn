@@ -4,11 +4,11 @@ var CollectionRepository = require('../../app/collection_repository').Collection
 var apanelCollectionRouter = Router();
 
 apanelCollectionRouter.get("/pending", function (req, res, next) {
-    CollectionRepository.pending(function (err, words) {
+    CollectionRepository.pending(function (err, collections) {
         if (err) {
             return next(err);
         }
-        res.json({status: "ok", data: {words: words}});
+        res.json({status: "ok", data: {collections: collections}});
     });
 });
 
