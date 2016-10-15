@@ -101,6 +101,16 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "forum/topic.html",
             controller:"TopicController"
         })
+        .state("app.collection",{
+            url:"/collection",
+            templateUrl:_st+"collection/collection.html",
+            abstract:true
+        })
+        .state("app.collection.collection-list",{
+            url:"/",
+            templateUrl: _st+"collection/collection-list.html",
+            controller:"CollectionController"
+        })
     ;
 })
 ;
@@ -484,10 +494,89 @@ apanelApp.factory("UserAccess", function ($http) {
 
     return UserAccess;
 });
+apanelApp.controller("CollectionController", ["$scope", "ForumService", "$uibModal", "CollectionService", "$log",
+    function ($scope, ForumService, $uibModal, CollectionService, $log) {
 
-/**
- * Created by george on 10.07.2016.
- */
+        function fetchCollectionList() {
+            CollectionService.getCollectionList().then(function (data) {
+                $scope.collections = data.collections;
+                $log.log(data);
+            });
+        }
+
+        fetchCollectionList();
+
+        $scope.modify = function (collection_id) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/forum/modify-collection.html',
+                controller: 'ModifyCollectionController',
+                size: "lg",
+                resolve: {
+                    collection_id: function () {
+                        return collection_id;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                $log.log("Done");
+                fetchCollectionList();
+            });
+
+        };
+    }
+]);
+apanelApp.factory("CollectionService", ['$http',
+    function ($http) {
+        var CollectionService = {};
+
+        var CollectionApiEndpoint = "/apanel/api/collection/pending";
+        var OneCollectionApiEndpoint="/api/collection/";
+
+        CollectionService.getCollectionList = function () {
+            return $http.get(CollectionApiEndpoint).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        CollectionService.getOne = function (CollectionId) {
+            return $http.get(OneCollectionApiEndpoint + CollectionId).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return CollectionService;
+    }
+]);
+apanelApp.controller("ModifyCollectionController", ["$scope", "$stateParams", "$uibModal", "Collection", "$state", "AuthService","$log",
+    function ($scope, $stateParams, $uibModal, Collection, $state, AuthService,$log) {
+        $log.log($stateParams.collection);
+        $scope.collectionTypeText = "";
+
+        function fetchCollection() {
+            CollectionService.getOne($stateParams.collection).then(function (data) {
+                if(data.collection.author._id != AuthService.uid){
+                    $state.go("collection.list");
+                    // console.log(data.collection.author._id);
+                    // console.log(AuthService.uid);
+                }
+                // console.log(data.collection.author._id);
+                // console.log(AuthService.uid);
+                $scope.collection = data.collection;
+                $scope.collectionName = data.collection.name;
+                $scope.collectionDescription = data.collection.description;
+                $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
+                $log.log(data.collection);
+            });
+        }
+
+        fetchCollection();
+
+
+    }
+]);
 
 apanelApp.controller("DeletePostConfirmationController",
     ["$scope", "ForumService", "post_id", "$uibModalInstance", "$log",

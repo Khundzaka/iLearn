@@ -101,6 +101,16 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "forum/topic.html",
             controller:"TopicController"
         })
+        .state("app.collection",{
+            url:"/collection",
+            templateUrl:_st+"collection/collection.html",
+            abstract:true
+        })
+        .state("app.collection.collection-list",{
+            url:"/",
+            templateUrl: _st+"collection/collection-list.html",
+            controller:"CollectionController"
+        })
     ;
 })
 ;

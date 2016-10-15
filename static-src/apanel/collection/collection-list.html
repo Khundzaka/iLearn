@@ -1,0 +1,19 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">კოლექციები</h3>
+    </div>
+
+
+    <table class="table">
+        <tr ng-repeat="collection in collections">
+            <td>
+                <a >{{collection.name}}</a>
+            </td>
+            <td>
+                <button class="btn btn-xs btn-primary" ng-click="modify(collection._id)">
+                    <span class="glyphicon glyphicon-pencil"></span></button>
+            </td>
+        </tr>
+    </table>
+
+</div>
