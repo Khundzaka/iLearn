@@ -5,13 +5,17 @@
 
     <div class="modal-body">
         <div class="form-group">
-            <label for="collectionName">კოლექცია :</label>
-            <input type="text" class="form-control" id="collectionName" ng-model="collectionName" placeholder="">
+            <label for="collectionName" >სახელი</label>
+            <input type="text" class="form-control" id="collectionName" ng-model="collectionName" placeholder="სახელი">
         </div>
         <div class="form-group">
-            <label for="collectionDescription">აღწერა :</label>
+            <label for="collectionDescription">აღწერა</label>
             <input type="text" class="form-control" id="collectionDescription" ng-model="collectionDescription"
-                   placeholder="">
+                   placeholder="აღწერა">
+        </div>
+        <div class="form-group">
+            <label >ტიპი</label>
+            <p class="form-control-static"><strong>{{collectionTypeText}}</strong></p>
         </div>
     </div>
 

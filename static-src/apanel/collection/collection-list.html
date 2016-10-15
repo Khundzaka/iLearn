@@ -6,11 +6,15 @@
 
     <table class="table">
         <tr ng-repeat="collection in collections">
-            <td>
-                <a >{{collection.name}}</a>
+            <td >
+                <span ng-class="{'glyphicon':true, 'glyphicon-eye-open':collection.is_public,
+             'glyphicon-lock':!collection.is_public}"></span>
             </td>
             <td>
-                <button class="btn btn-xs btn-primary" ng-click="modify(collection._id)">
+                <a>{{collection.name}}</a>
+            </td>
+            <td>
+                <button  class="btn btn-xs btn-primary" ng-click="modify(collection._id)">
                     <span class="glyphicon glyphicon-pencil"></span></button>
             </td>
         </tr>
