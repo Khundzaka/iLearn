@@ -9,6 +9,8 @@ var Collection = new Schema({
     is_public: Boolean,
     featured: {type: Boolean, default: false},
     cost: {type: Number, default: 0},
+    checked: Boolean,
+    accepted: Boolean,
     created_at: Date,
     updated_at: Date
 });

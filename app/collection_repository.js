@@ -22,7 +22,7 @@ CollectionRepository.getCollection = function (params) {
 };
 
 CollectionRepository.getAll = function (callback) {
-    Collection.find({is_public: true}).exec(function (err, collections) {
+    Collection.find({is_public: true, accepted: true}).exec(function (err, collections) {
         if (err) {
             return callback(err);
         }
@@ -55,7 +55,14 @@ CollectionRepository.create = function (params, callback) {
     var isPublic = data.isPublic;
     var description = data.description;
     var user = params.user;
-    var newCollection = Collection({name: name, is_public: isPublic, author: user._id, description: description});
+    var newCollection = Collection({
+        checked: false,
+        accepted: false,
+        name: name,
+        is_public: isPublic,
+        author: user._id,
+        description: description
+    });
     newCollection.save(function (err) {
         if (err) {
             return callback(err);
@@ -193,6 +200,28 @@ CollectionRepository.addNewWord = function (params, callback) {
         CollectionRepository.getCollection({user: user, collectionId: collectionId}),
         createWord
     ], processData);
+};
+
+CollectionRepository.pending = function (callback) {
+    Collection.find({checked: false, is_public: true}).exec(function (err, collections) {
+        callback(err, collections);
+    });
+};
+
+CollectionRepository.validate = function (params, callback) {
+    Collection.findById(params.uid).exec(function (err, collection) {
+        if (err) {
+            return (err);
+        }
+        collection.checked = true;
+        collection.accepted = params.accepted;
+        collection.name = params.name;
+        collection.description = params.description;
+
+        collection.save(function (err) {
+            callback(err, collection);
+        });
+    });
 };
 
 

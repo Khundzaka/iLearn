@@ -3,6 +3,7 @@ var AccessControl = require("../app/access_control");
 var requiresPermission = require("../app/middleware").requiresPermission;
 var apanelWordRouter = require("./apanel/apanel_word_router");
 var apanelForumRouter = require("./apanel/apanel_forum_router");
+var apanelCollectionRouter = require("./apanel/apanel_collection_router");
 
 var apanelRouter = Router();
 
@@ -138,5 +139,6 @@ apanelRouter.put("/api/permission/", function (req, res) {
 
 apanelRouter.use("/api/word", apanelWordRouter);
 apanelRouter.use("/api/forum", apanelForumRouter);
+apanelRouter.use("/api/collection", apanelCollectionRouter);
 
 module.exports = apanelRouter;

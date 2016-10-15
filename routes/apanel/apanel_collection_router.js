@@ -12,9 +12,9 @@ apanelCollectionRouter.get("/pending", function (req, res, next) {
     });
 });
 
-apanelWordRouter.post("/validate", function (req, res, next) {
+apanelCollectionRouter.post("/validate", function (req, res, next) {
     var params = req.body;
-    WordRepository.validate(params, function (err) {
+    CollectionRepository.validate(params, function (err) {
         if (err) {
             return next(err);
         }
@@ -22,4 +22,4 @@ apanelWordRouter.post("/validate", function (req, res, next) {
     });
 });
 
-module.exports = apanelWordRouter;
+module.exports = apanelCollectionRouter;
