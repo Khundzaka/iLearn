@@ -32,4 +32,14 @@ apanelForumRouter.put("/", function (req, res, next) {
     });
 });
 
+apanelForumRouter.delete("/post/:post", function (req, res, next) {
+    var params = {postId: req.params.post};
+    ForumRepository.deletePost(params, function (err) {
+        if (err) {
+            return next(err);
+        }
+        res.json({status: "ok"});
+    });
+});
+
 module.exports = apanelForumRouter;

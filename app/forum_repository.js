@@ -34,7 +34,7 @@ ForumRepository.fetchOnePost = function (params, callback) {
 
 
 ForumRepository.fetchPostsByTopic = function (params, callback) {
-    ForumPost.find({topic: params.topicId}).populate('user').exec(function (err, post) {
+    ForumPost.find({topic: params.topicId, deleted: false}).populate('user').exec(function (err, post) {
         return callback(err, post);
     });
 };
@@ -65,7 +65,7 @@ ForumRepository.createPost = function (params, callback) {
         if (err) {
             return callback(err);
         }
-        var post = new ForumPost({text: params.text, topic: topic._id, user: params.user._id});
+        var post = new ForumPost({text: params.text, topic: topic._id, user: params.user._id, deleted: false});
         post.save(function (err) {
             callback(err, post);
         });
@@ -78,6 +78,18 @@ ForumRepository.updatePost = function (params, callback) {
             return callback(err);
         }
         post.text = params.text;
+        post.save(function (err) {
+            callback(err, post);
+        });
+    });
+};
+
+ForumRepository.deletePost = function (params, callback) {
+    ForumPost.findById(params.postId).exec(function (err, post) {
+        if (err) {
+            return callback(err);
+        }
+        post.deleted = true;
         post.save(function (err) {
             callback(err, post);
         });

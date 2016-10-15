@@ -96,6 +96,11 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "forum/new-topic.html",
             controller:"NewTopicController"
         })
+        .state("app.forum.topic",{
+            url:"/topic/:topicId",
+            templateUrl: _st + "forum/topic.html",
+            controller:"TopicController"
+        })
     ;
 })
 ;

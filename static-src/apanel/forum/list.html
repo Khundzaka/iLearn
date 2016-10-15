@@ -11,7 +11,7 @@
             </td>
 
             <td>
-                <a >{{topic.title}}</a>
+                <a ui-sref="app.forum.topic({topicId:topic._id})">{{topic.title}}</a>
             </td>
             <td>
                 <button  class="btn btn-xs btn-primary" ng-click="modify(topic._id)">

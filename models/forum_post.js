@@ -5,6 +5,7 @@ var ForumPost = new Schema({
     text: String,
     user: {type: Schema.Types.ObjectId, ref: 'Account'},
     topic: {type: Schema.Types.ObjectId, ref: 'ForumTopic'},
+    deleted: Boolean,
     created_at: Date
 });
 

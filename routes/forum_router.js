@@ -31,13 +31,13 @@ forumRouter.get("/topic/one/:topic", function (req, res) {
 });
 
 forumRouter.get("/topic/posts/:topic", function (req, res, next) {
-    ForumRepository.fetchPostsByTopic({topicId: req.params.topic}, function (err, topic) {
+    ForumRepository.fetchPostsByTopic({topicId: req.params.topic}, function (err, posts) {
         if (err) {
             // console.log(err);
             return next();
         }
 
-        res.json({status: "ok", data: {topic: topic}});
+        res.json({status: "ok", data: {posts: posts}});
     });
 });
 
@@ -53,12 +53,14 @@ forumRouter.get("/post/one/:post", function (req, res) {
 });
 
 forumRouter.post("/post", function (req, res, next) {
-    ForumRepository.createPost({user: req.user, data: req.body}, function (err, post) {
+    var params = {user: req.user, text: req.body.text, topicId: req.body.topicId};
+
+    ForumRepository.createPost(params, function (err, post) {
         if (err) {
             return next();
         }
 
-        res.json({status: "ok", data: {post: post}});
+        res.json({status: "ok"});
     });
 });
 

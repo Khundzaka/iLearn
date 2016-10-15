@@ -1,4 +1,5 @@
-var app = angular.module('myApp', ['templates', 'ngAnimate', 'ui.router', 'ui.bootstrap']);
+var app = angular.module('myApp',
+    ['templates', 'ngAnimate', 'ui.router', 'ui.bootstrap', 'angulartics', 'angulartics.google.analytics']);
 
 var _st = "/static/app/";
 
@@ -622,8 +623,8 @@ app.controller('HeaderController', function ($scope, $rootScope, AuthService, $s
         });
     };
 });
-app.factory("Forum", ["$http",'$log',
-    function ($http,$log) {
+app.factory("Forum", ["$http", '$log',
+    function ($http, $log) {
         var forumPath = "/api/forum/";
         var Forum = {};
         Forum.getTopicList = function () {
@@ -631,83 +632,24 @@ app.factory("Forum", ["$http",'$log',
                 return resp.data.data;
             });
         };
-        Forum.getTopicPosts = function (topicId) {
-            return $http.get(forumPath + topicId).then(function (resp) {
+        Forum.getTopicPosts = function (params) {
+            var topicId = params.topicId;
+            return $http.get(forumPath + "topic/posts/" + topicId).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+        Forum.getOneTopic = function (params) {
+            var topicId = params.topicId;
+            return $http.get(forumPath + "topic/one/" + topicId).then(function (resp) {
                 return resp.data.data;
             });
         };
 
         Forum.createPost = function (params) {
 
-            return $http.post(forumPath, {
+            return $http.post(forumPath + "post", {
                 topicId: params.topicId,
                 text: params.text
-            }).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        Forum.create = function (params) {
-            var name = params.name;
-            var description = params.description;
-            var isPublic = params.isPublic;
-
-            return $http.post(forumPath, {
-                name: name,
-                isPublic: isPublic,
-                description: description
-            }).then(function (resp) {
-                return resp.data.data;
-            });
-
-        };
-
-        Forum.update = function (params) {
-            var name = params.name;
-            var description = params.description;
-            var collectionId = params.collectionId;
-
-            return $http.put(forumPath, {
-                name: name,
-                description: description,
-                collectionId: collectionId
-            }).then(function (resp) {
-                return resp.data.status;
-            });
-
-        };
-
-        Forum.addWord = function (params) {
-            var collectionId = params.collectionId;
-            var wordId = params.wordId;
-            $log.log(params);
-            return $http.post(forumPath + "word/add", {
-                collectionId: collectionId,
-                wordId: wordId
-            }).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        Forum.removeWord = function (params) {
-            var collectionId = params.collectionId;
-            var wordId = params.wordId;
-            return $http.post(forumPath + "word/remove", {
-                collectionId: collectionId,
-                wordId: wordId
-            }).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        Forum.addNewWord = function (params) {
-            var collectionId = params.collectionId;
-            var wordName = params.wordName;
-            var wordDescription = params.wordDescription;
-            return $http.post(forumPath + "word/new", {
-                collectionId: collectionId,
-                wordName: wordName,
-                wordDescription: wordDescription
             }).then(function (resp) {
                 return resp.data.data;
             });
@@ -716,49 +658,86 @@ app.factory("Forum", ["$http",'$log',
         return Forum;
     }
 ]);
-app.controller('ForumIndexController', ['$scope', '$uibModal', '$state',
-    function ($scope, $uibModal, $state) {
-        $scope.topics = [{
-
-            "title": "კითხვები ადმინისტრატორთან",
-            "description": "აქ შეგიძლიათ დასვათ ნებისმიერი კითხვა და ადმინისტრაცია გაგცემთ პასუხს"
-        }, {
-
-            "title": "ტექნიკური ხარვეზები",
-            "description": "თუ რაიმე პრობლემა შეგემნათ სერვისითსარგებლობისას, დაწერეთ აქ"
-        }
-
-        ];
+app.controller('ForumIndexController', ['$scope', '$uibModal', '$state', 'Forum', '$log',
+    function ($scope, $uibModal, $state, Forum, $log) {
+        // $scope.topics = [{
         //
-        // $scope.view = function (topicId) {
-        //     $state.go("forum.topic", {topicId: topicId});
+        //     "title": "კითხვები ადმინისტრატორთან",
+        //     "description": "აქ შეგიძლიათ დასვათ ნებისმიერი კითხვა და ადმინისტრაცია გაგცემთ პასუხს"
+        // }, {
+        //
+        //     "title": "ტექნიკური ხარვეზები",
+        //     "description": "თუ რაიმე პრობლემა შეგემნათ სერვისითსარგებლობისას, დაწერეთ აქ"
         // }
+        //
+        // ];
+        //
+        $scope.view = function (topicId) {
+            $state.go("forum.topic", {topicId: topicId});
+        }
+        function fetchTopicList() {
+            Forum.getTopicList().then(function (data) {
+                $scope.topics = data.topics;
+            });
+        }
+        fetchTopicList();
+
     }
 ]);
-app.controller('TopicController', ['$scope', '$uibModal', '$log',
-    function ($scope, $uibModal, $log) {
-        $scope.topics = [{
-            "_id": "123",
-            "title": "კითხვები ადმინისტრატორთან",
-            "description": "აქ შეგიძლიათ დასვათ ნებისმიერი კითხვა და ადმინისტრაცია გაგცემთ პასუხს"
-        }, {
-            "_id": "456",
-            "title": "ტექნიკური ხარვეზები",
-            "description": "თუ რაიმე პრობლემა შეგემნათ სერვისითსარგებლობისას, დაწერეთ აქ"
+app.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateParams', 'Forum',
+    function ($scope, $uibModal, $log, $stateParams, Forum) {
+        $scope.newPostText = "";
+        $scope.posts = [];
+        // $scope.topics = [{
+        //     "_id": "123",
+        //     "title": "კითხვები ადმინისტრატორთან",
+        //     "description": "აქ შეგიძლიათ დასვათ ნებისმიერი კითხვა და ადმინისტრაცია გაგცემთ პასუხს"
+        // }, {
+        //     "_id": "456",
+        //     "title": "ტექნიკური ხარვეზები",
+        //     "description": "თუ რაიმე პრობლემა შეგემნათ სერვისითსარგებლობისას, დაწერეთ აქ"
+        // }
+        // ];
+        function fetchTopic() {
+            Forum.getOneTopic({topicId: $stateParams.topicId}).then(function (data) {
+                $scope.topic = data.topic;
+                $log.log(data);
+            })
+
         }
-        ];
-        $scope.posts = [
-            {
-                author: "jemali",
-                text: "klaviatura kompiuters sad aqvs?",
-                date: new Date()
-            },
-            {
-                author: "nodari",
-                text: "kompiuters adiela rom gadavafaro da uknidan shevubero, interneti achqardeba?",
-                date: new Date()
-            }
-        ]
+
+        fetchTopic();
+
+        function fetchPosts() {
+            Forum.getTopicPosts({topicId: $stateParams.topicId}).then(function (data) {
+               $scope.posts=data.posts;
+            });
+        }
+
+        fetchPosts();
+
+        $scope.createPost = function () {
+            Forum.createPost({text: $scope.newPostText, topicId: $stateParams.topicId}).then(function () {
+                $scope.newPostText = "";
+                fetchPosts();
+            });
+        };
+
+
+        // $log.log($stateParams.topicId);
+        // $log.log("watafaq");
+        // $scope.posts = [
+        //     {
+        //         author: "jemali",
+        //         text: "klaviatura kompiuters sad aqvs?",
+        //         date: new Date()
+        //     },
+        //     {
+        //         author: "nodari",
+        //         text: "kompiuters adiela rom gadavafaro da uknidan shevubero, interneti achqardeba?",
+        //         date: new Date()
+        //     }
+        // ]
     }
 ]);
 app.controller('HomeController', ['$scope', '$uibModal', '$log',

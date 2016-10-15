@@ -1,35 +1,37 @@
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <h3 class="panel-title">სათაური</h3>
+        <h3 class="panel-title">{{topic.title}}</h3>
     </div>
 
 
     <div class="list-group">
         <div class="list-group-item" ng-repeat="post in posts">
-            <span style="font-weight: bold;" class="list-group-item-heading">{{post.author}}</span>&nbsp;&nbsp;<span>{{post.date}}</span>
-            <hr>
-            <p class="list-group-item-text" style="color:black; font-size:14px;">{{post.text}}</p>
+            <span style="font-weight: bold;" class="list-group-item-heading">{{post.user.local.username}}</span>&nbsp;&nbsp;<span>{{post.created_at | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+            <!--<hr>-->
+            <div class="well"><p class="list-group-item-text" style="color:black; font-size:14px;">{{post.text}}</p>
+            </div>
         </div>
     </div>
 
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">პოსტის დამატება</h3>
+    </div>
     <div class="panel-body">
-        <form class="form-horizontal" ng-submit="" >
-                <div class="form-group">
-                    <label for="newPost" class="col-lg-2 control-label">დაპოსტვა</label>
-                    <div class="col-lg-10">
-                        <textarea class="form-control" id="newPost" ng-model="posts.text"
-                                  rows="2"></textarea>
-                    </div>
-                </div>
+        <form class="form" ng-submit="createPost()">
+            <div class="form-group">
+                <label for="newPost" class="control-label"></label>
+                <textarea placeholder="დაწერე აქ რამე..." class="form-control" id="newPost"
+                          ng-model="newPostText"
+                          rows="2"></textarea>
+            </div>
 
 
-                <div class="form-group">
-                    <div class="col-lg-10 col-lg-offset-2">
-                        <button type="submit" class="btn btn-primary">დამატება</button>
-                    </div>
-                </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">დამატება</button>
+            </div>
         </form>
     </div>
-
-
 </div>

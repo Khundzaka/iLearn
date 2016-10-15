@@ -1,4 +1,5 @@
-var app = angular.module('myApp', ['templates', 'ngAnimate', 'ui.router', 'ui.bootstrap']);
+var app = angular.module('myApp',
+    ['templates', 'ngAnimate', 'ui.router', 'ui.bootstrap', 'angulartics', 'angulartics.google.analytics']);
 
 var _st = "/static/app/";
 

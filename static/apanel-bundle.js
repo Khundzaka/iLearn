@@ -96,6 +96,11 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "forum/new-topic.html",
             controller:"NewTopicController"
         })
+        .state("app.forum.topic",{
+            url:"/topic/:topicId",
+            templateUrl: _st + "forum/topic.html",
+            controller:"TopicController"
+        })
     ;
 })
 ;
@@ -484,8 +489,25 @@ apanelApp.factory("UserAccess", function ($http) {
  * Created by george on 10.07.2016.
  */
 
-apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id", "$uibModal", "$uibModalInstance", "$log",
-    function ($scope, ForumService, topic_id, $uibModal, $uibModalInstance,$log) {
+apanelApp.controller("DeletePostConfirmationController",
+    ["$scope", "ForumService", "post_id", "$uibModalInstance", "$log",
+        function ($scope, ForumService, post_id, $uibModalInstance, $log) {
+
+            $scope.deletePost = function () {
+                ForumService.deletePost({
+                    postId: post_id
+                }).then(function () {
+                    $uibModalInstance.close();
+                });
+            };
+
+            $scope.close = function () {
+                $uibModalInstance.dismiss();
+            }
+        }
+    ]);
+apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id", "$uibModalInstance", "$log",
+    function ($scope, ForumService, topic_id, $uibModalInstance, $log) {
         $scope.topicTitle = "";
         $scope.topicDescription = "";
         $scope.active = null;
@@ -502,7 +524,7 @@ apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id
         fetchTopic();
 
 
-        $scope.editTopic = function () {
+        $scope.deleteTopic = function () {
             ForumService.update({
                 title: $scope.topicTitle,
                 description: $scope.topicDescription,
@@ -518,14 +540,14 @@ apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id
 
     }
 ]);
-apanelApp.controller("ForumController", ["$scope","ForumService","$uibModal","$log",
-     function ($scope,ForumService,$uibModal,$log) {
+apanelApp.controller("ForumController", ["$scope", "ForumService", "$uibModal", "$log",
+    function ($scope, ForumService, $uibModal, $log) {
 
-            function fetchTopicList(){
+        function fetchTopicList() {
             ForumService.getTopicList().then(function (data) {
                 $scope.topics = data.topics;
             });
-        };
+        }
 
         fetchTopicList();
 
@@ -554,13 +576,36 @@ apanelApp.controller("ForumController", ["$scope","ForumService","$uibModal","$l
 apanelApp.factory("ForumService", ["$http", "$log",
     function ($http, $log) {
         var ForumService = {};
-        var getListEndpoint = "/apanel/api/forum";
+        var forumApanelEndpoint = "/apanel/api/forum/";
         var newTopicEndpoint = "/apanel/api/forum/";
         var updateTopicEndpoint = "/apanel/api/forum/";
         var getOneApiEndpoint = "/api/forum/topic/one/";
+        var forumApiEndpoint = "/api/forum/";
+
+        ForumService.getTopicPosts = function (params) {
+            var topicId = params.topicId;
+            return $http.get(forumApiEndpoint + "topic/posts/" + topicId).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        ForumService.deletePost = function (params) {
+            var postId = params.postId;
+            return $http.delete(forumApanelEndpoint + "post/" + postId).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        ForumService.getOneTopic = function (params) {
+            var topicId = params.topicId;
+            return $http.get(forumApiEndpoint + "topic/one/" + topicId).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
 
         ForumService.getTopicList = function () {
-            return $http.get(getListEndpoint).then(function (response) {
+            return $http.get(forumApanelEndpoint).then(function (response) {
                 $log.log(response);
                 return response.data.data;
             });
@@ -579,18 +624,18 @@ apanelApp.factory("ForumService", ["$http", "$log",
             return $http.post(newTopicEndpoint, {
                 title: params.title,
                 description: params.description,
-                active: params.active,
+                active: params.active
             }).then(function (resp) {
                 return resp.data.data;
             });
         };
 
         ForumService.update = function (params) {
-            return $http.put(updateTopicEndpoint,{
-                title:params.title,
-                description:params.description,
-                active:params.active,
-                uid:params.uid
+            return $http.put(updateTopicEndpoint, {
+                title: params.title,
+                description: params.description,
+                active: params.active,
+                uid: params.uid
             }).then(function (response) {
                 return response.data.status;
             });
@@ -615,6 +660,51 @@ apanelApp.controller("NewTopicController",["$scope","ForumService","$state","$lo
             })
         };
 
+    }
+]);
+apanelApp.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateParams', 'ForumService',
+    function ($scope, $uibModal, $log, $stateParams, ForumService) {
+        $scope.posts = [];
+
+        function fetchTopic() {
+            ForumService.getOneTopic({topicId: $stateParams.topicId}).then(function (data) {
+                $scope.topic = data.topic;
+                $log.log(data);
+            })
+
+        }
+
+        fetchTopic();
+
+        function fetchPosts() {
+            ForumService.getTopicPosts({topicId: $stateParams.topicId}).then(function (data) {
+                $scope.posts = data.posts;
+            });
+        }
+
+        fetchPosts();
+
+
+        $scope.deletePost = function (post_id) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/forum/delete-post.html',
+                controller: 'DeletePostConfirmationController',
+                size: "md",
+                resolve: {
+                    post_id: function () {
+                        return post_id;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                $log.log("Done");
+                fetchPosts();
+            });
+
+        };
     }
 ]);
 apanelApp.controller("ModifyWordController", ["$scope", "WordService", "wordId", "$uibModalInstance",

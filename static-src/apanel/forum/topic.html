@@ -1,0 +1,25 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{topic.title}}</h3>
+    </div>
+
+
+    <div class="list-group">
+        <div class="list-group-item" ng-repeat="post in posts">
+            <div class="row">
+                <div class="col-md-12">
+                    <span style="font-weight: bold;" class="list-group-item-heading">{{post.user.local.username}}</span>&nbsp;&nbsp;<span>{{post.created_at | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+                    <span class="pull-right">
+                    <button class="btn btn-danger btn-sm" ng-click="deletePost(post._id)">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </span>
+                </div>
+            </div>
+            <div class="well"><p class="list-group-item-text" style="color:black; font-size:14px;">{{post.text}}</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
