@@ -26,20 +26,14 @@
                     <label class="col-lg-2 control-label">ტიპი</label>
                     <div class="col-lg-10">
                         <p class="form-control-static"><strong>{{collectionTypeText}}</strong></p>
-                        <!--<div class="radio">-->
-                            <!--<label>-->
-                                <!--<input type="radio" class="disabled" ng-model="collectionType" id="optionsRadios1"-->
-                                       <!--value="public" disabled>-->
-                                <!--ღია კოლექცია-->
-                            <!--</label>-->
-                        <!--</div>-->
-                        <!--<div class="radio">-->
-                            <!--<label>-->
-                                <!--<input type="radio" class="disabled" ng-model="collectionType" id="optionsRadios2"-->
-                                       <!--value="private" disabled>-->
-                                <!--პირადი კოლექცია-->
-                            <!--</label>-->
-                        <!--</div>-->
+                    </div>
+                </div>
+                <div class="form-group" ng-show="collection.is_public">
+                    <label class="col-lg-2 control-label">სტატუსი</label>
+                    <div class="col-lg-10">
+                        <p class="form-control-static">
+                            <strong>{{collection.accepted?"შემოწმებული":"შესამოწმებელი"}}</strong>
+                        </p>
                     </div>
                 </div>
 

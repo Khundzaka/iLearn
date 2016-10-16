@@ -34,8 +34,18 @@ ForumRepository.fetchOnePost = function (params, callback) {
 
 
 ForumRepository.fetchPostsByTopic = function (params, callback) {
-    ForumPost.find({topic: params.topicId, deleted: false}).populate('user').exec(function (err, post) {
-        return callback(err, post);
+    ForumPost.find({topic: params.topicId, deleted: false}).populate('user').lean().exec(function (err, posts) {
+        posts.forEach(function (post) {
+            var user = {_id: post.user._id};
+            if (post.user.local) {
+                user.local = {username: post.user.local.username};
+            }
+            if (post.user.facebook) {
+                user.facebook = {name: post.user.facebook.name};
+            }
+            post.user = user;
+        });
+        return callback(err, posts);
     });
 };
 
