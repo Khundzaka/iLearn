@@ -16,7 +16,7 @@ apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id
         fetchTopic();
 
 
-        $scope.deleteTopic = function () {
+        $scope.editTopic = function () {
             ForumService.update({
                 title: $scope.topicTitle,
                 description: $scope.topicDescription,

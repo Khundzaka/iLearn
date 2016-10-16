@@ -1,10 +1,9 @@
-apanelApp.controller("ModifyCollectionController", ["$scope", "$stateParams", "$uibModal", "CollectionService", "$state","$log",
-    function ($scope, $stateParams, $uibModal, CollectionService, $state, $log) {
-        $log.log($stateParams.collection);
+apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance", "CollectionService","collection_id","$log",
+    function ($scope, $uibModalInstance, CollectionService,collection_id ,$log) {
         $scope.collectionTypeText = "";
 
         function fetchCollection() {
-            CollectionService.getOne($stateParams.collection).then(function (data) {
+            CollectionService.getOne(collection_id).then(function (data) {
                 $scope.collection = data.collection;
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;
@@ -14,6 +13,17 @@ apanelApp.controller("ModifyCollectionController", ["$scope", "$stateParams", "$
         }
 
         fetchCollection();
+
+        $scope.editCollection=function (collection_id) {
+            CollectionService.getOne(collection_id).then(function (data) {
+                $log.log(data);
+                fetchCollection();
+            })
+        };
+
+        $scope.close = function () {
+            $uibModalInstance.close();
+        };
 
 
     }

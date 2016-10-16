@@ -16,7 +16,7 @@ apanelApp.controller("CollectionController", ["$scope", "ForumService", "$uibMod
                 animation: true,
                 templateUrl: '/static/apanel/collection/modify-collection.html',
                 controller: 'ModifyCollectionController',
-                size: "md",
+                size: "lg",
                 resolve: {
                     collection_id: function () {
                         return collection_id;
