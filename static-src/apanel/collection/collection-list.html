@@ -3,14 +3,17 @@
         <h3 class="panel-title">კოლექციები</h3>
     </div>
 
-
     <table class="table">
         <tr ng-repeat="collection in collections">
-            <td>
-                <a >{{collection.name}}</a>
+            <td ><span ng-class="{'glyphicon':true, 'glyphicon-eye-open':collection.is_public,
+             'glyphicon-lock':!collection.is_public}"></span>
+            </td>
+
+            <td class="col-md-8">
+                <a ng-click="modify(collection._id)">{{collection.name}}</a>
             </td>
             <td>
-                <button class="btn btn-xs btn-primary" ng-click="modify(collection._id)">
+                <button  class="btn btn-xs btn-primary" ng-click="modify(collection._id)">
                     <span class="glyphicon glyphicon-pencil"></span></button>
             </td>
         </tr>

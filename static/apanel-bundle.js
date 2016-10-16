@@ -510,7 +510,7 @@ apanelApp.controller("CollectionController", ["$scope", "ForumService", "$uibMod
 
             var groupModal = $uibModal.open({
                 animation: true,
-                templateUrl: '/static/apanel/forum/modify-collection.html',
+                templateUrl: '/static/apanel/collection/modify-collection.html',
                 controller: 'ModifyCollectionController',
                 size: "lg",
                 resolve: {
@@ -532,11 +532,11 @@ apanelApp.factory("CollectionService", ['$http',
     function ($http) {
         var CollectionService = {};
 
-        var CollectionApiEndpoint = "/apanel/api/collection/pending";
+        var CollectionApiEndpoint = "/apanel/api/collection/";
         var OneCollectionApiEndpoint="/api/collection/";
 
         CollectionService.getCollectionList = function () {
-            return $http.get(CollectionApiEndpoint).then(function (resp) {
+            return $http.get(CollectionApiEndpoint+"pending").then(function (resp) {
                 return resp.data.data;
             });
         };
@@ -547,32 +547,63 @@ apanelApp.factory("CollectionService", ['$http',
             });
         };
 
+        CollectionService.validate=function (params) {
+            return $http.post(CollectionApiEndpoint + "validate", {
+                uid: params.uid,
+                accepted: params.accepted,
+                name:params.name,
+                description:params.description
+            }).then(function (resp) {
+                return resp.data.status;
+            });
+        }
+
         return CollectionService;
     }
 ]);
-apanelApp.controller("ModifyCollectionController", ["$scope", "$stateParams", "$uibModal", "Collection", "$state", "AuthService","$log",
-    function ($scope, $stateParams, $uibModal, Collection, $state, AuthService,$log) {
-        $log.log($stateParams.collection);
+apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance", "CollectionService","collection_id","$log",
+    function ($scope, $uibModalInstance, CollectionService,collection_id ,$log) {
         $scope.collectionTypeText = "";
+        $scope.active="";
 
         function fetchCollection() {
-            CollectionService.getOne($stateParams.collection).then(function (data) {
-                if(data.collection.author._id != AuthService.uid){
-                    $state.go("collection.list");
-                    // console.log(data.collection.author._id);
-                    // console.log(AuthService.uid);
-                }
-                // console.log(data.collection.author._id);
-                // console.log(AuthService.uid);
+            CollectionService.getOne(collection_id).then(function (data) {
                 $scope.collection = data.collection;
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;
                 $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
+                $scope.active=data.collection.accepted?"ვალიდური":"არა ვალიდური";
                 $log.log(data.collection);
             });
         }
 
         fetchCollection();
+
+        $scope.editCollection=function () {
+            CollectionService.validate({
+                uid: collection_id,
+                name: $scope.collectionName,
+                description: $scope.collectionDescription,
+                accepted:$scope.active
+            }).then(function () {
+                $uibModalInstance.close();
+            });
+        };
+        // $scope.approve = function (CollectionId) {
+        //     CollectionService.validate({uid: CollectionId, accepted:true}).then(function (data) {
+        //         fetchCollection();
+        //     });
+        // };
+        //
+        // $scope.reject = function (CollectionId) {
+        //     CollectionService.validate({uid: CollectionId, accepted:false}).then(function (data) {
+        //         fetchCollection();
+        //     });
+        // };
+
+        $scope.close = function () {
+            $uibModalInstance.close();
+        };
 
 
     }
@@ -613,7 +644,7 @@ apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id
         fetchTopic();
 
 
-        $scope.deleteTopic = function () {
+        $scope.editTopic = function () {
             ForumService.update({
                 title: $scope.topicTitle,
                 description: $scope.topicDescription,

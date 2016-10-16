@@ -14,7 +14,7 @@ apanelApp.controller("CollectionController", ["$scope", "ForumService", "$uibMod
 
             var groupModal = $uibModal.open({
                 animation: true,
-                templateUrl: '/static/apanel/forum/modify-collection.html',
+                templateUrl: '/static/apanel/collection/modify-collection.html',
                 controller: 'ModifyCollectionController',
                 size: "lg",
                 resolve: {
