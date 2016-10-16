@@ -532,11 +532,11 @@ apanelApp.factory("CollectionService", ['$http',
     function ($http) {
         var CollectionService = {};
 
-        var CollectionApiEndpoint = "/apanel/api/collection/pending";
+        var CollectionApiEndpoint = "/apanel/api/collection/";
         var OneCollectionApiEndpoint="/api/collection/";
 
         CollectionService.getCollectionList = function () {
-            return $http.get(CollectionApiEndpoint).then(function (resp) {
+            return $http.get(CollectionApiEndpoint+"pending").then(function (resp) {
                 return resp.data.data;
             });
         };
@@ -547,13 +547,24 @@ apanelApp.factory("CollectionService", ['$http',
             });
         };
 
+        CollectionService.validate=function (params) {
+            return $http.post(CollectionApiEndpoint + "validate", {
+                uid: params.uid,
+                accepted: params.accepted,
+                name:params.name,
+                description:params.description
+            }).then(function (resp) {
+                return resp.data.status;
+            });
+        }
+
         return CollectionService;
     }
 ]);
 apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance", "CollectionService","collection_id","$log",
     function ($scope, $uibModalInstance, CollectionService,collection_id ,$log) {
         $scope.collectionTypeText = "";
-        $scope.collectionIsValid="";
+        $scope.active="";
 
         function fetchCollection() {
             CollectionService.getOne(collection_id).then(function (data) {
@@ -561,19 +572,34 @@ apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;
                 $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
-                $scope.collectionIsValid=data.collection.accepted?"ვალიდური":"არა ვალიდური";
+                $scope.active=data.collection.accepted?"ვალიდური":"არა ვალიდური";
                 $log.log(data.collection);
             });
         }
 
         fetchCollection();
 
-        $scope.editCollection=function (collection_id) {
-            CollectionService.getOne(collection_id).then(function (data) {
-                $log.log(data);
-                fetchCollection();
-            })
+        $scope.editCollection=function () {
+            CollectionService.validate({
+                uid: collection_id,
+                name: $scope.collectionName,
+                description: $scope.collectionDescription,
+                accepted:$scope.active
+            }).then(function () {
+                $uibModalInstance.close();
+            });
         };
+        // $scope.approve = function (CollectionId) {
+        //     CollectionService.validate({uid: CollectionId, accepted:true}).then(function (data) {
+        //         fetchCollection();
+        //     });
+        // };
+        //
+        // $scope.reject = function (CollectionId) {
+        //     CollectionService.validate({uid: CollectionId, accepted:false}).then(function (data) {
+        //         fetchCollection();
+        //     });
+        // };
 
         $scope.close = function () {
             $uibModalInstance.close();
