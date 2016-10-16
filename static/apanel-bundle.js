@@ -553,6 +553,7 @@ apanelApp.factory("CollectionService", ['$http',
 apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance", "CollectionService","collection_id","$log",
     function ($scope, $uibModalInstance, CollectionService,collection_id ,$log) {
         $scope.collectionTypeText = "";
+        $scope.collectionIsValid="";
 
         function fetchCollection() {
             CollectionService.getOne(collection_id).then(function (data) {
@@ -560,6 +561,7 @@ apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance
                 $scope.collectionName = data.collection.name;
                 $scope.collectionDescription = data.collection.description;
                 $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
+                $scope.collectionIsValid=data.collection.accepted?"ვალიდური":"არა ვალიდური";
                 $log.log(data.collection);
             });
         }
