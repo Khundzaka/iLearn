@@ -43,13 +43,13 @@
             </div>
             <div class="collapse navbar-collapse" uib-collapse="navCollapsed" ng-class="!navCollapsed && 'in'">
                 <ul class="nav navbar-nav">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-click="navCollapsed = true">
                         <a ui-sref="app">მთავარი</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-click="navCollapsed = true">
                         <a ui-sref="collection.list">კოლექციები</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-click="navCollapsed = true">
                         <a ui-sref="forum.index">ფორუმი</a>
                     </li>
                 </ul>
