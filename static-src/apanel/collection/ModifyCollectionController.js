@@ -27,21 +27,21 @@ apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance
                 $uibModalInstance.close();
             });
         };
-        $scope.approve = function (CollectionId) {
-            CollectionService.validate({uid: CollectionId, accepted:true}).then(function (data) {
-                fetchCollection();
-            });
-        };
-
-        $scope.reject = function (CollectionId) {
-            CollectionService.validate({uid: CollectionId, accepted:false}).then(function (data) {
-                fetchCollection();
-                $scope.close();
-            });
-        };
+        // $scope.approve = function (CollectionId) {
+        //     CollectionService.validate({uid: CollectionId, accepted:true}).then(function (data) {
+        //         fetchCollection();
+        //     });
+        // };
+        //
+        // $scope.reject = function (CollectionId) {
+        //     CollectionService.validate({uid: CollectionId, accepted:false}).then(function (data) {
+        //         fetchCollection();
+        //         $scope.close();
+        //     });
+        // };
 
         $scope.close = function () {
-            $uibModalInstance.close();
+            $uibModalInstance.dismiss();
         };
 
 
