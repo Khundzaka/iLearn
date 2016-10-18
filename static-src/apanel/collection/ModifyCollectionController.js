@@ -10,6 +10,7 @@ apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance
                 $scope.collectionDescription = data.collection.description;
                 $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
                 $scope.active=data.collection.accepted?"ვალიდური":"არა ვალიდური";
+                $scope.accepted=data.collection.accepted;
                 $log.log(data.collection);
             });
         }
@@ -21,22 +22,23 @@ apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance
                 uid: collection_id,
                 name: $scope.collectionName,
                 description: $scope.collectionDescription,
-                accepted:$scope.active
+                accepted:$scope.accepted
             }).then(function () {
                 $uibModalInstance.close();
             });
         };
-        // $scope.approve = function (CollectionId) {
-        //     CollectionService.validate({uid: CollectionId, accepted:true}).then(function (data) {
-        //         fetchCollection();
-        //     });
-        // };
-        //
-        // $scope.reject = function (CollectionId) {
-        //     CollectionService.validate({uid: CollectionId, accepted:false}).then(function (data) {
-        //         fetchCollection();
-        //     });
-        // };
+        $scope.approve = function (CollectionId) {
+            CollectionService.validate({uid: CollectionId, accepted:true}).then(function (data) {
+                fetchCollection();
+            });
+        };
+
+        $scope.reject = function (CollectionId) {
+            CollectionService.validate({uid: CollectionId, accepted:false}).then(function (data) {
+                fetchCollection();
+                $scope.close();
+            });
+        };
 
         $scope.close = function () {
             $uibModalInstance.close();
