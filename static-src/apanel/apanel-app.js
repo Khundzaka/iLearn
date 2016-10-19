@@ -111,6 +111,11 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st+"collection/collection-list.html",
             controller:"CollectionController"
         })
+        .state("app.collection.all-collection-list",{
+            url:"/",
+            templateUrl: _st+"collection/all-collection-list.html",
+            controller:"AllCollectionListController"
+        })
     ;
 })
 ;

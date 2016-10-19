@@ -41,7 +41,7 @@ apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance
         // };
 
         $scope.close = function () {
-            $uibModalInstance.dismiss();
+            $uibModalInstance.close();
         };
 
 

@@ -111,6 +111,11 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st+"collection/collection-list.html",
             controller:"CollectionController"
         })
+        .state("app.collection.all-collection-list",{
+            url:"/",
+            templateUrl: _st+"collection/all-collection-list.html",
+            controller:"AllCollectionListController"
+        })
     ;
 })
 ;
@@ -494,6 +499,39 @@ apanelApp.factory("UserAccess", function ($http) {
 
     return UserAccess;
 });
+apanelApp.controller("AllCollectionListController", ["$scope", "CollectionService", "$uibModal", "$log",
+    function ($scope, CollectionService, $uibModal, $log) {
+        function fetchAllCollectionList() {
+            CollectionService.getAllCollectionList().then(function (data) {
+                $scope.collections = data.collections;
+                $log.log(data);
+            });
+        }
+
+        fetchAllCollectionList();
+
+        $scope.modify = function (collection_id) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/collection/modify-collection.html',
+                controller: 'ModifyCollectionController',
+                size: "lg",
+                resolve: {
+                    collection_id: function () {
+                        return collection_id;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                $log.log("Done");
+                fetchAllCollectionList();
+            });
+
+        };
+    }
+]);
 apanelApp.controller("CollectionController", ["$scope", "ForumService", "$uibModal", "CollectionService", "$log",
     function ($scope, ForumService, $uibModal, CollectionService, $log) {
 
@@ -534,6 +572,12 @@ apanelApp.factory("CollectionService", ['$http',
 
         var CollectionApiEndpoint = "/apanel/api/collection/";
         var OneCollectionApiEndpoint="/api/collection/";
+
+        CollectionService.getAllCollectionList = function () {
+            return $http.get(OneCollectionApiEndpoint).then(function (resp) {
+                return resp.data.data;
+            });
+        };
 
         CollectionService.getCollectionList = function () {
             return $http.get(CollectionApiEndpoint+"pending").then(function (resp) {
@@ -590,18 +634,18 @@ apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance
                 $uibModalInstance.close();
             });
         };
-        $scope.approve = function (CollectionId) {
-            CollectionService.validate({uid: CollectionId, accepted:true}).then(function (data) {
-                fetchCollection();
-            });
-        };
-
-        $scope.reject = function (CollectionId) {
-            CollectionService.validate({uid: CollectionId, accepted:false}).then(function (data) {
-                fetchCollection();
-                $scope.close();
-            });
-        };
+        // $scope.approve = function (CollectionId) {
+        //     CollectionService.validate({uid: CollectionId, accepted:true}).then(function (data) {
+        //         fetchCollection();
+        //     });
+        // };
+        //
+        // $scope.reject = function (CollectionId) {
+        //     CollectionService.validate({uid: CollectionId, accepted:false}).then(function (data) {
+        //         fetchCollection();
+        //         $scope.close();
+        //     });
+        // };
 
         $scope.close = function () {
             $uibModalInstance.close();
