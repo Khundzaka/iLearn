@@ -1,0 +1,36 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">კოლექციები</h3>
+    </div>
+
+    <table class="table">
+        <tr>
+            <th><span class="glyphicon glyphicon-lock"></span></th>
+            <th>ვალიდური</th>
+            <th>შემოწმებული</th>
+            <th>კოლექცია</th>
+            <th><span class="glyphicon glyphicon-pencil"></span></th>
+        </tr>
+        <tr ng-repeat="collection in collections">
+            <td><span title="{{collection.is_public?'ღია':'პირადი'}}"
+                      ng-class="{'glyphicon':true, 'glyphicon-eye-open':collection.is_public,
+                      'glyphicon-eye-close':!collection.is_public}">
+            </span></td>
+            <td>
+                <span ng-class="{'glyphicon':true, 'glyphicon glyphicon-ok':collection.accepted,
+                'glyphicon glyphicon-remove':!collection.accepted}"></span>
+            </td>
+            <td>
+                <span ng-class="{'glyphicon':true, 'glyphicon glyphicon-ok':collection.checked,
+                'glyphicon glyphicon-remove':!collection.checked}"></span>
+            </td>
+            <td><a ng-click="modify(collection._id)" >{{collection.name}}</a>
+            </td>
+            <td>
+                <a class="btn btn-xs btn-warning" ><span
+                        class="glyphicon glyphicon-pencil" ng-click="modify(collection._id)"></span></a>
+            </td>
+        </tr>
+    </table>
+
+</div>
