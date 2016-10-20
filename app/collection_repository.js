@@ -22,6 +22,15 @@ CollectionRepository.getCollection = function (params) {
 };
 
 CollectionRepository.getAll = function (callback) {
+    Collection.find({}).exec(function (err, collections) {
+        if (err) {
+            return callback(err);
+        }
+        callback(null, collections);
+    });
+};
+
+Collection.getAcceptedPublic = function (callback) {
     Collection.find({is_public: true, accepted: true}).exec(function (err, collections) {
         if (err) {
             return callback(err);
