@@ -19,7 +19,8 @@
     "connect-mongo": "latest",
     "connect-flash": "latest",
     "async": "latest",
-    "bluebird": "latest"
+    "bluebird": "latest",
+    "serve-favicon": "latest"
   },
   "devDependencies": {
     "gulp": "latest",

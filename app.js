@@ -12,6 +12,7 @@ var errorHandler = require("errorhandler");
 var Promise = require("bluebird");
 var MongoStore = require('connect-mongo')(expressSession);
 var flash = require('connect-flash');
+var favicon = require('serve-favicon');
 
 var apanelRouter = require("./routes/apanel_router");
 
@@ -22,6 +23,8 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.use('/static', express.static(__dirname + '/static'));
+
+app.use(favicon(__dirname + '/static/img/favicon.ico'));
 
 app.use(flash());
 app.use(morgan('combined'));
