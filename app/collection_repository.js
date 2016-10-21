@@ -30,7 +30,7 @@ CollectionRepository.getAll = function (callback) {
     });
 };
 
-Collection.getAcceptedPublic = function (callback) {
+CollectionRepository.getAcceptedPublic = function (callback) {
     Collection.find({is_public: true, accepted: true}).exec(function (err, collections) {
         if (err) {
             return callback(err);
