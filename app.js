@@ -27,7 +27,11 @@ app.use('/static', express.static(__dirname + '/static'));
 app.use(favicon(__dirname + '/static/img/favicon.ico'));
 
 app.use(flash());
+
 app.use(morgan('combined'));
+morgan.token('remote-addr', function (req, res) {
+    return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+});
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}));
 
