@@ -19,7 +19,7 @@
             <td><span title="{{collection.is_public?'ღია':'პირადი'}}"
                       ng-class="{'glyphicon':true, 'glyphicon-eye-open':collection.is_public, 'glyphicon-eye-close':!collection.is_public}">
             </span></td>
-            <td><a ui-sref="collection.view({collection:collection._id})">{{collection.name}}</a>
+            <td><a ui-sref="collection.view({collection:collection._id})">{{collection.name}} ({{collection.words.length}})</a>
             </td>
             <td>
                 <a ui-sref="collection.edit({collection:collection._id})" class="btn btn-xs btn-warning"><span
