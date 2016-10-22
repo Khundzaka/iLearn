@@ -110,7 +110,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
         }
 
         $scope.checkWord = function () {
-            if ($scope.inputWord === currentWordPair.value) {
+            if ($scope.inputWord.toLowerCase() === currentWordPair.value.toLowerCase()) {
                 $scope.correct += 1;
                 showMessage(true);
             } else {
