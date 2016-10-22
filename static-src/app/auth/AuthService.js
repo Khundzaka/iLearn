@@ -31,7 +31,6 @@ app.factory("AuthService", ['$http','$log',
         };
 
         AuthService.logIn = function (email, password, callback) {
-            $log.log("aq var");
             $http.post("/local/login", {email: email, password: password}).then(function (res) {
                 if (res.data.status != "failed") {
                     // console.log(res.data);
@@ -50,7 +49,6 @@ app.factory("AuthService", ['$http','$log',
         };
         AuthService.register = function (params, callback) {
             var email = params.email, password = params.password, username = params.username;
-            $log.log("aq var");
             $http.post("/local/register", {email: email, password: password, username: username}).then(function (res) {
                 if (res.data.status != "failed") {
                     // console.log(res.data);
@@ -79,12 +77,9 @@ app.factory("AuthService", ['$http','$log',
         AuthService.startUp = function () {
             if (typeof startUpUserData === 'undefined') startUpUserData = false;
             var userData = startUpUserData;
-            $log.log("eh");
             if (userData) {
                 userData = JSON.parse(userData);
                 // console.log(userData.facebook);
-                $log.log(userData);
-                $log.log("wtf");
                 if (userData.local) this.local = userData.local;
                 if (userData.facebook) this.facebook = userData.facebook;
                 AuthService.authenticated = true;

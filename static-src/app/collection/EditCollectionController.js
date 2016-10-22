@@ -37,7 +37,6 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
             });
 
             groupModal.result.then(function () {
-                $log.log("Done");
                 fetchCollection();
             });
         };
@@ -49,7 +48,6 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
         };
 
         $scope.update = function () {
-            $log.log("aris");
             Collection.update({
                 collectionId: $stateParams.collection,
                 name: $scope.collectionName,

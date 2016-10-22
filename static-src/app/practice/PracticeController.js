@@ -1,12 +1,12 @@
-app.controller("PracticeController", ["$scope", "$timeout", "$state", "$stateParams", "$http", "Collection","$log",
-    function ($scope, $timeout, $state, $stateParams, $http, Collection,$log) {
+app.controller("PracticeController", ["$scope", "$timeout", "$state", "$stateParams", "$http", "Collection", "$log",
+    function ($scope, $timeout, $state, $stateParams, $http, Collection, $log) {
         var words = [];
         var mistakesList = [];
         // $scope.focused = true;
         $scope.message = {
-            show:false,
-            correct:0,
-            timeout:null
+            show: false,
+            correct: 0,
+            timeout: null
         };
         $scope.isCapital = false; //todo: for future addons...
 
@@ -16,10 +16,10 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
             $state.go("collection.view", {collection: $stateParams.collection});
         };
 
-        function showMessage(isCorrect){
+        function showMessage(isCorrect) {
             $scope.message.correct = isCorrect;
             $scope.message.show = true;
-            if($scope.message.timeout){
+            if ($scope.message.timeout) {
                 $timeout.cancel($scope.message.timeout);
             }
             $scope.message.timeout = $timeout(function () {
@@ -89,23 +89,24 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
                 return 0;
             }
             var skipped = allWords - $scope.correct;
-            if(skipped<0){
+            if (skipped < 0) {
                 skipped = 0;
             }
-            return Math.floor($scope.correct / (allAnswer+skipped) * 1000) / 10;
+            return Math.floor($scope.correct / (allAnswer + skipped) * 1000) / 10;
         };
 
         function getRandomWord() {
             var i = Math.floor(Math.random() * words.length);
             var w = words.splice(i, 1);
-            $log.log(w);
             //  $scope.currentWordIndex = i;
             currentWordPair = w[0];
             $scope.currentWord = currentWordPair.description;
         }
 
-        function setFocus(){
-            $timeout(function(){document.getElementById("inputWord").focus(); $log.log("why")});
+        function setFocus() {
+            $timeout(function () {
+                document.getElementById("inputWord").focus();
+            });
         }
 
         $scope.checkWord = function () {
@@ -116,7 +117,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
                 showMessage(false);
                 $scope.wrong += 1;
                 //check if word is already in mistakes
-                if(mistakesList.indexOf(currentWordPair._id)<0){
+                if (mistakesList.indexOf(currentWordPair._id) < 0) {
                     mistakesList.push(currentWordPair._id);
                     words.push(currentWordPair);
                 }

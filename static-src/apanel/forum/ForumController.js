@@ -24,7 +24,6 @@ apanelApp.controller("ForumController", ["$scope", "ForumService", "$uibModal", 
             });
 
             groupModal.result.then(function () {
-                $log.log("Done");
                 fetchTopicList();
             });
 

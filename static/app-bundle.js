@@ -208,7 +208,6 @@ app.factory("AuthService", ['$http','$log',
         };
 
         AuthService.logIn = function (email, password, callback) {
-            $log.log("aq var");
             $http.post("/local/login", {email: email, password: password}).then(function (res) {
                 if (res.data.status != "failed") {
                     // console.log(res.data);
@@ -227,7 +226,6 @@ app.factory("AuthService", ['$http','$log',
         };
         AuthService.register = function (params, callback) {
             var email = params.email, password = params.password, username = params.username;
-            $log.log("aq var");
             $http.post("/local/register", {email: email, password: password, username: username}).then(function (res) {
                 if (res.data.status != "failed") {
                     // console.log(res.data);
@@ -256,12 +254,9 @@ app.factory("AuthService", ['$http','$log',
         AuthService.startUp = function () {
             if (typeof startUpUserData === 'undefined') startUpUserData = false;
             var userData = startUpUserData;
-            $log.log("eh");
             if (userData) {
                 userData = JSON.parse(userData);
                 // console.log(userData.facebook);
-                $log.log(userData);
-                $log.log("wtf");
                 if (userData.local) this.local = userData.local;
                 if (userData.facebook) this.facebook = userData.facebook;
                 AuthService.authenticated = true;
@@ -475,17 +470,23 @@ app.controller("CollectionController", ["$scope","Collection","$log",
             $scope.collections = data.collections;
             $log.log(data);
         });
-        $log.log("fuck");
     }
 ]);
-app.controller("CreateCollectionController", ["$scope", "Collection", "$state",
-    function ($scope, Collection, $state) {
+app.controller("CreateCollectionController", ["$scope", "Collection", "$state", "InfoModal",
+    function ($scope, Collection, $state, InfoModal) {
         $scope.collectionType = 'public';
         $scope.collectionName = '';
         $scope.collectionDescription = '';
 
         $scope.submit = function () {
             var isPublic = $scope.collectionType === "public";
+            if ($scope.collectionName == '') {
+                InfoModal.show({title: "შეცდომა", message: "გთხოვთ შეავსოთ კოლექციის სახელი"});
+                return;
+            } else if ($scope.collectionDescription == '') {
+                InfoModal.show({title: "შეცდომა", message: "გთხოვთ შეავსოთ კოლექციის აღწერა"});
+                return;
+            }
             Collection.create({
                 isPublic: isPublic,
                 name: $scope.collectionName,
@@ -493,7 +494,6 @@ app.controller("CreateCollectionController", ["$scope", "Collection", "$state",
             }).then(function (data) {
                 var collectionId = data.id;
                 $state.go('collection.edit', {collection: collectionId});
-                // console.log(collectionId);
             });
         };
 
@@ -539,7 +539,6 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
             });
 
             groupModal.result.then(function () {
-                $log.log("Done");
                 fetchCollection();
             });
         };
@@ -551,7 +550,6 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
         };
 
         $scope.update = function () {
-            $log.log("aris");
             Collection.update({
                 collectionId: $stateParams.collection,
                 name: $scope.collectionName,
@@ -568,7 +566,6 @@ app.controller("MyCollectionController", ["$scope", "Collection", "$log",
             $scope.collections = data.collections;
             $log.log(data);
         });
-        $log.log("fuck");
     }
 ]);
 app.controller("ViewCollectionController", ["$scope", "Collection", "$stateParams","$log",
@@ -581,7 +578,7 @@ app.controller("ViewCollectionController", ["$scope", "Collection", "$stateParam
 ]);
 app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope', '$log',
     function ($scope, AuthService, $location, $rootScope, $log) {
-        $log.log(AuthService);
+        // $log.log(AuthService);
         $scope.hasFacebook = AuthService.facebook.name !== null;
         $scope.hasLocal = AuthService.local.email !== null;
         $scope.facebookName = AuthService.facebook.name;
@@ -745,15 +742,15 @@ app.controller('HomeController', ['$scope', '$uibModal', '$log',
 
     }
 ]);
-app.controller("PracticeController", ["$scope", "$timeout", "$state", "$stateParams", "$http", "Collection","$log",
-    function ($scope, $timeout, $state, $stateParams, $http, Collection,$log) {
+app.controller("PracticeController", ["$scope", "$timeout", "$state", "$stateParams", "$http", "Collection", "$log",
+    function ($scope, $timeout, $state, $stateParams, $http, Collection, $log) {
         var words = [];
         var mistakesList = [];
         // $scope.focused = true;
         $scope.message = {
-            show:false,
-            correct:0,
-            timeout:null
+            show: false,
+            correct: 0,
+            timeout: null
         };
         $scope.isCapital = false; //todo: for future addons...
 
@@ -763,10 +760,10 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
             $state.go("collection.view", {collection: $stateParams.collection});
         };
 
-        function showMessage(isCorrect){
+        function showMessage(isCorrect) {
             $scope.message.correct = isCorrect;
             $scope.message.show = true;
-            if($scope.message.timeout){
+            if ($scope.message.timeout) {
                 $timeout.cancel($scope.message.timeout);
             }
             $scope.message.timeout = $timeout(function () {
@@ -836,23 +833,24 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
                 return 0;
             }
             var skipped = allWords - $scope.correct;
-            if(skipped<0){
+            if (skipped < 0) {
                 skipped = 0;
             }
-            return Math.floor($scope.correct / (allAnswer+skipped) * 1000) / 10;
+            return Math.floor($scope.correct / (allAnswer + skipped) * 1000) / 10;
         };
 
         function getRandomWord() {
             var i = Math.floor(Math.random() * words.length);
             var w = words.splice(i, 1);
-            $log.log(w);
             //  $scope.currentWordIndex = i;
             currentWordPair = w[0];
             $scope.currentWord = currentWordPair.description;
         }
 
-        function setFocus(){
-            $timeout(function(){document.getElementById("inputWord").focus(); $log.log("why")});
+        function setFocus() {
+            $timeout(function () {
+                document.getElementById("inputWord").focus();
+            });
         }
 
         $scope.checkWord = function () {
@@ -863,7 +861,7 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
                 showMessage(false);
                 $scope.wrong += 1;
                 //check if word is already in mistakes
-                if(mistakesList.indexOf(currentWordPair._id)<0){
+                if (mistakesList.indexOf(currentWordPair._id) < 0) {
                     mistakesList.push(currentWordPair._id);
                     words.push(currentWordPair);
                 }

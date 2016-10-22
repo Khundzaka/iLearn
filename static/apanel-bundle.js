@@ -155,7 +155,6 @@ apanelApp.controller("AccessGroupsController", function ($scope, GroupAccess, $u
         });
 
         groupModal.result.then(function () {
-            $log.log("wtf");
             getAll();
         });
     };
@@ -269,7 +268,6 @@ apanelApp.controller("AccessPermissionsController", function ($scope, Permission
         });
 
         groupModal.result.then(function () {
-            $log.log("wtf");
             getAll();
         });
     };
@@ -681,7 +679,6 @@ apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id
         function fetchTopic() {
             ForumService.getOne(topic_id).then(function (data) {
                 $log.log(data);
-                $log.log(topic_id);
                 $scope.topicTitle = data.topic.title;
                 $scope.topicDescription = data.topic.description;
             });
@@ -732,7 +729,6 @@ apanelApp.controller("ForumController", ["$scope", "ForumService", "$uibModal", 
             });
 
             groupModal.result.then(function () {
-                $log.log("Done");
                 fetchTopicList();
             });
 
@@ -780,7 +776,6 @@ apanelApp.factory("ForumService", ["$http", "$log",
         ForumService.getOne = function (topic_id) {
             return $http.get(getOneApiEndpoint + topic_id).then(function (response) {
                 $log.log(response);
-                $log.log("found");
                 $log.log(response.data.data);
                 return response.data.data;
             })

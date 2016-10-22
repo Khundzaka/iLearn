@@ -34,7 +34,6 @@ apanelApp.controller("AccessPermissionsController", function ($scope, Permission
         });
 
         groupModal.result.then(function () {
-            $log.log("wtf");
             getAll();
         });
     };

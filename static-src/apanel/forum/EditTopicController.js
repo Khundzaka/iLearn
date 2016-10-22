@@ -7,7 +7,6 @@ apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id
         function fetchTopic() {
             ForumService.getOne(topic_id).then(function (data) {
                 $log.log(data);
-                $log.log(topic_id);
                 $scope.topicTitle = data.topic.title;
                 $scope.topicDescription = data.topic.description;
             });

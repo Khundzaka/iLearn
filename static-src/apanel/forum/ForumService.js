@@ -39,7 +39,6 @@ apanelApp.factory("ForumService", ["$http", "$log",
         ForumService.getOne = function (topic_id) {
             return $http.get(getOneApiEndpoint + topic_id).then(function (response) {
                 $log.log(response);
-                $log.log("found");
                 $log.log(response.data.data);
                 return response.data.data;
             })
