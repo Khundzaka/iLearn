@@ -22,6 +22,8 @@ app.set('port', process.env.PORT || 1337);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+app.set('trust proxy', 'loopback, uniquelocal');
+
 app.use('/static', express.static(__dirname + '/static'));
 
 app.use(favicon(__dirname + '/static/img/favicon.ico'));
@@ -30,7 +32,7 @@ app.use(flash());
 
 app.use(morgan('combined'));
 morgan.token('remote-addr', function (req, res) {
-    return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    return req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 });
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}));
