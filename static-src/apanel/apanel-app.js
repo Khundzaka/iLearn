@@ -116,6 +116,16 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st+"collection/all-collection-list.html",
             controller:"AllCollectionListController"
         })
+        .state("app.user",{
+            url:"/user",
+            templateUrl:_st+"user/user.html",
+            abstract:true
+        })
+        .state("app.user.user-list",{
+            url:"/",
+            templateUrl:_st+"user/user-list.html",
+            controller:"UserListController"
+        })
     ;
 })
 ;

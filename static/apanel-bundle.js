@@ -116,6 +116,16 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st+"collection/all-collection-list.html",
             controller:"AllCollectionListController"
         })
+        .state("app.user",{
+            url:"/user",
+            templateUrl:_st+"user/user.html",
+            abstract:true
+        })
+        .state("app.user.user-list",{
+            url:"/",
+            templateUrl:_st+"user/user-list.html",
+            controller:"UserListController"
+        })
     ;
 })
 ;
@@ -866,6 +876,19 @@ apanelApp.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateP
             });
 
         };
+    }
+]);
+apanelApp.controller("UserListController", ["$scope", "UserService", "$uibModal", "$log",
+    function ($scope, UserService, $uibModal, $log) {
+
+
+    }
+]);
+apanelApp.factory("UserService", ['$http',
+    function ($http) {
+        var UserService = {};
+
+        return UserService;
     }
 ]);
 apanelApp.controller("ModifyWordController", ["$scope", "WordService", "wordId", "$uibModalInstance",
