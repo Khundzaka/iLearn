@@ -11,6 +11,8 @@ var Word = new Schema({
     updated_at: Date
 });
 
+Word.index({value: "text", description: "text"});
+
 Word.pre('save', function (next) {
     var currentDate = new Date();
 

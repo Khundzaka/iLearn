@@ -4,28 +4,6 @@
 <div class="modal-body">
     <div class="panel panel-primary">
         <div class="panel-heading">
-            <h3 class="panel-title">ახალი სიტყვა</h3>
-        </div>
-        <div class="panel-body">
-            <form ng-submit="addNewWord()">
-                <div class="form-group">
-                    <label for="wordName">სიტყვა :</label>
-                    <input type="text" class="form-control" id="wordName" ng-model="wordName" placeholder="მაგ.: language">
-                </div>
-                <div class="form-group">
-                    <label for="wordDescription">განმარტება (ქართული/ინგლისური):</label>
-                    <input type="text" class="form-control" id="wordDescription" ng-model="wordDescription"
-                           placeholder="მაგ.: ენა">
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-success" type="submit">დამატება</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="panel panel-primary">
-        <div class="panel-heading">
             <h3 class="panel-title">სიტყვის ძებნა</h3>
         </div>
         <div class="panel-body">
@@ -33,7 +11,7 @@
                 <div class="form-group">
                     <label for="wordName1">სიტყვა :</label>
                     <input type="text" class="form-control" id="wordName1" ng-model="findInput"
-                           placeholder="მაგ.: language">
+                           placeholder="მაგ.: ენა ან language">
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-success">ძიება</button>
@@ -45,6 +23,29 @@
         <div class="list-group">
             <a style="cursor: pointer" ng-click="addWord(word._id)" class="list-group-item"
                ng-repeat="word in words">{{word.value}} - {{word.description}}</a>
+        </div>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">ახალი სიტყვა</h3>
+        </div>
+        <div class="panel-body">
+            <form ng-submit="addNewWord()">
+                <div class="form-group">
+                    <label for="wordName">სიტყვა ინგლისურად:</label>
+                    <input type="text" class="form-control" id="wordName" ng-model="wordName"
+                           placeholder="მაგ.: language">
+                </div>
+                <div class="form-group">
+                    <label for="wordDescription">განმარტება (ქართული/ინგლისური):</label>
+                    <input type="text" class="form-control" id="wordDescription" ng-model="wordDescription"
+                           placeholder="მაგ.: ენა">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-success" type="submit">დამატება</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
