@@ -7,9 +7,6 @@ apanelApp.controller('MyController', function ($scope, $uibModal, $log) {
 
 });
 
-apanelApp.controller('HeaderController', function ($scope, $templateCache) {
-
-});
 apanelApp.controller('FooterController', function ($scope) {
 
 });

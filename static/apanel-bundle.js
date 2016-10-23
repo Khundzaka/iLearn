@@ -7,9 +7,6 @@ apanelApp.controller('MyController', function ($scope, $uibModal, $log) {
 
 });
 
-apanelApp.controller('HeaderController', function ($scope, $templateCache) {
-
-});
 apanelApp.controller('FooterController', function ($scope) {
 
 });
@@ -878,8 +875,8 @@ apanelApp.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateP
         };
     }
 ]);
-app.controller('HeaderController', ["$scope", function ($scope) {
-
+apanelApp.controller('HeaderController', ["$scope", function ($scope) {
+        $scope.navCollapsed = 1;
     }]
 );
 apanelApp.controller("UserListController", ["$scope", "UserService", "$uibModal", "$log",
