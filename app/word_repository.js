@@ -14,17 +14,20 @@ WordRepository.create = function (params, callback) {
 };
 
 WordRepository.find = function (params, callback) {
-    Word.find({value: params.value}).exec(function (err, words) {
-        callback(err, words);
-    })
+    //todo: problem with bluebird, find out why
+    Word.find({$text: {$search: params.value}}).exec().then(function (words) {
+        return callback(null, words);
+    }).catch(function (err) {
+        return callback(err);
+    });
 };
 
 WordRepository.one = function (params, callback) {
     Word.findById(params.uid).exec(function (err, word) {
-        if(err){
+        if (err) {
             return callback(err);
         }
-        if(!word){
+        if (!word) {
             return callback(new Error("Word Not Found"));
         }
         return callback(err, word);

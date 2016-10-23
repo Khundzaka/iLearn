@@ -14,7 +14,7 @@ wordRouter.post("/find", function (req, res) {
             return res.json(defaultFailResponse);
         }
 
-        res.json({status: "ok", data: {words: words}});
+        return res.json({status: "ok", data: {words: words}});
     });
 });
 
