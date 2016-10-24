@@ -2,34 +2,34 @@
     <div class="panel-heading">
         <h3 class="panel-title">კოლექციები</h3>
     </div>
-    <span class="label">Ordered By: {{orderByField}}, Reverse Sort: {{reverseSort}}</span><br><
+    <div class="panel-body">Ordered By: {{orderByField}}, Reverse Sort: {{reverseSort}}</div>
     <table class="table">
         <tr>
-            <th><a  ng-click="orderByField='is_public'; reverseSort = !reverseSort">
+            <th><a ng-click="orderByField='is_public'; reverseSort = !reverseSort">
                 <span class="glyphicon glyphicon-lock"></span> <span ng-show="orderByField == 'is_public'">
-                <span ng-show="!reverseSort" class="glyphicon glyphicon-chevron-up"></span><span ng-show="reverseSort"
-            class="glyphicon glyphicon-chevron-down"></span></span>
-                </a>
+                <span ng-show="!reverseSort" class="glyphicon glyphicon-chevron-up"></span>
+                <span ng-show="reverseSort" class="glyphicon glyphicon-chevron-down"></span></span>
+            </a>
             </th>
-            <th><a  ng-click="orderByField='accepted'; reverseSort = !reverseSort">
+            <th><a ng-click="orderByField='accepted'; reverseSort = !reverseSort">
                 ვალიდური<span ng-show="orderByField == 'accepted'">
                 <span ng-show="!reverseSort" class="glyphicon glyphicon-chevron-up"></span>
                 <span ng-show="reverseSort" class="glyphicon glyphicon-chevron-down"></span></span>
-                </a>
+            </a>
             </th>
-            <th><a  ng-click="orderByField='checked'; reverseSort = !reverseSort">
+            <th><a ng-click="orderByField='checked'; reverseSort = !reverseSort">
                 შემოწმებული<span ng-show="orderByField == 'checked'">
                 <span ng-show="!reverseSort" class="glyphicon glyphicon-chevron-up"></span>
                 <span ng-show="reverseSort" class="glyphicon glyphicon-chevron-down"></span></span>
             </a></th>
-            <th><a  ng-click="orderByField='name'; reverseSort = !reverseSort">
+            <th><a ng-click="orderByField='name'; reverseSort = !reverseSort">
                 კოლექცია<span ng-show="orderByField == 'name'">
                 <span ng-show="!reverseSort" class="glyphicon glyphicon-chevron-up"></span>
                 <span ng-show="reverseSort" class="glyphicon glyphicon-chevron-down"></span></span>
             </a></th>
             <th><span class="glyphicon glyphicon-pencil"></span></th>
         </tr>
-        <tr ng-repeat="collection in collections  | orderBy:orderByField:reverseSort">">
+        <tr ng-repeat="collection in collections  | orderBy:orderByField:reverseSort">
             <td><span title="{{collection.is_public?'ღია':'პირადი'}}"
                       ng-class="{'glyphicon':true, 'glyphicon-eye-open':collection.is_public,
                       'glyphicon-eye-close':!collection.is_public}">
@@ -42,11 +42,12 @@
                 <span ng-class="{'glyphicon':true, 'glyphicon glyphicon-ok':collection.checked,
                 'glyphicon glyphicon-remove':!collection.checked}"></span>
             </td>
-            <td><a ng-click="modify(collection._id)" >{{collection.name}}</a>
+            <td><a ng-click="modify(collection._id)">{{collection.name}}</a>
             </td>
             <td>
-                <a class="btn btn-xs btn-warning" ><span
-                        class="glyphicon glyphicon-pencil" ng-click="modify(collection._id)"></span></a>
+                <a class="btn btn-xs btn-warning">
+                    <span class="glyphicon glyphicon-pencil" ng-click="modify(collection._id)"></span>
+                </a>
             </td>
         </tr>
     </table>

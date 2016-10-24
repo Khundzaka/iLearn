@@ -109,7 +109,7 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller:"CollectionController"
         })
         .state("app.collection.all-collection-list",{
-            url:"/",
+            url:"/all",
             templateUrl: _st+"collection/all-collection-list.html",
             controller:"AllCollectionListController"
         })
