@@ -22,6 +22,10 @@ app.controller("EditCollectionController", ["$scope", "$stateParams", "$uibModal
 
         fetchCollection();
 
+        $scope.goToCollection = function () {
+            $state.go("collection.view",{collection:$stateParams.collection});
+        };
+
         $scope.addNewWord = function () {
 
             var groupModal = $uibModal.open({

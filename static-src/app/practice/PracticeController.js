@@ -1,8 +1,9 @@
-app.controller("PracticeController", ["$scope", "$timeout", "$state", "$stateParams", "$http", "Collection", "$log",
-    function ($scope, $timeout, $state, $stateParams, $http, Collection, $log) {
+app.controller("PracticeController", [
+    "$scope", "$timeout", "$state", "$stateParams", "$http", "Collection", "AuthService", "$log",
+    function ($scope, $timeout, $state, $stateParams, $http, Collection, AuthService, $log) {
         var words = [];
         var mistakesList = [];
-        // $scope.focused = true;
+        // $scope.focused = true; //
         $scope.message = {
             show: false,
             correct: 0,
@@ -59,6 +60,11 @@ app.controller("PracticeController", ["$scope", "$timeout", "$state", "$statePar
 
         Collection.getOne($stateParams.collection).then(function (data) {
             $scope.collection = data.collection;
+
+            if (!$scope.collection.is_public && AuthService.uid != $scope.collection.author._id) {
+                $state.go("collection.list");
+            }
+
             $scope.collectionName = data.collection.name;
             $log.log(data.collection);
             wordList = data.collection.words;
