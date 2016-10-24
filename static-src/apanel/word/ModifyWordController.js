@@ -35,6 +35,14 @@ apanelApp.controller("ModifyWordController", ["$scope", "WordService", "wordId",
             $scope.wordName = tmp;
         };
 
+        $scope.lower = function () {
+            $scope.wordName = $scope.wordName.toLocaleLowerCase();
+        };
+
+        $scope.capitalize = function () {
+            $scope.wordName = $scope.wordName.charAt(0).toUpperCase() + $scope.wordName.slice(1);
+        };
+
 
         $scope.close = function () {
             $uibModalInstance.close();
