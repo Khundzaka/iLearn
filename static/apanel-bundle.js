@@ -506,6 +506,10 @@ apanelApp.factory("UserAccess", function ($http) {
 });
 apanelApp.controller("AllCollectionListController", ["$scope", "CollectionService", "$uibModal", "$log",
     function ($scope, CollectionService, $uibModal, $log) {
+        $scope.orderByField = 'name';
+        $scope.reverseSort = false;
+
+
         function fetchAllCollectionList() {
             CollectionService.getAllCollectionList().then(function (data) {
                 $scope.collections = data.collections;
