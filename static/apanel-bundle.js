@@ -879,15 +879,30 @@ apanelApp.controller('HeaderController', ["$scope", function ($scope) {
         $scope.navCollapsed = 1;
     }]
 );
-apanelApp.controller("UserListController", ["$scope", "UserService", "$uibModal", "$log",
+apanelApp.controller("UserListController",["$scope", "UserService", "$uibModal", "$log",
     function ($scope, UserService, $uibModal, $log) {
+        function fetchUsersList() {
+            UserService.getUsersList().then(function (data) {
+                $scope.users = data.users;
+                $log.log(data);
+            });
+        }
 
+        fetchUsersList();
 
     }
 ]);
 apanelApp.factory("UserService", ['$http',
     function ($http) {
         var UserService = {};
+
+        var UserApiEndpoint = "/apanel/api/user";
+
+        UserService.getUsersList = function () {
+            return $http.get(UserApiEndpoint).then(function (resp) {
+                return resp.data.data;
+            });
+        };
 
         return UserService;
     }

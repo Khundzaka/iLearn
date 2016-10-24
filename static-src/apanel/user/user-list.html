@@ -2,14 +2,13 @@
     <div class="panel-heading">
         <h3 class="panel-title">მომხმარებლები</h3>
     </div>
-
     <table class="table">
-        <tr ng-repeat="collection in collections">
+        <tr ng-repeat="user in users">
             <td class="col-md-8">
-                <a ng-click="">{{}}</a>
+                <a>{{user.local.email}}</a>
             </td>
             <td>
-                <button  class="btn btn-xs btn-primary" ng-click="">
+                <button class="btn btn-xs btn-primary" ng-click="">
                     <span class="glyphicon glyphicon-pencil"></span></button>
             </td>
         </tr>
