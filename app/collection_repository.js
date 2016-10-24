@@ -31,7 +31,7 @@ CollectionRepository.getAll = function (callback) {
 };
 
 CollectionRepository.getAcceptedPublic = function (callback) {
-    Collection.find({is_public: true, accepted: true}).exec(function (err, collections) {
+    Collection.find({is_public: true, accepted: true}).sort({_id: -1}).exec(function (err, collections) {
         if (err) {
             return callback(err);
         }

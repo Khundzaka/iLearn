@@ -29,6 +29,12 @@ apanelApp.controller("ModifyWordController", ["$scope", "WordService", "wordId",
 
         fetchWord();
 
+        $scope.swap = function () {
+            var tmp = $scope.wordDescription;
+            $scope.wordDescription = $scope.wordName;
+            $scope.wordName = tmp;
+        };
+
 
         $scope.close = function () {
             $uibModalInstance.close();
