@@ -141,6 +141,6 @@ apanelRouter.put("/api/permission/", function (req, res) {
 apanelRouter.use("/api/word", apanelWordRouter);
 apanelRouter.use("/api/forum", apanelForumRouter);
 apanelRouter.use("/api/collection", apanelCollectionRouter);
-apanelRouter.use("/api/user", apanelUserRouter);
+apanelRouter.use("/api/users", apanelUserRouter);
 
 module.exports = apanelRouter;
