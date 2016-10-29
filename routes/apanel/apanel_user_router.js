@@ -9,7 +9,6 @@ apanelUserRouter.get("/", function (req, res, next) {
         if (err) {
             return next(err);
         }
-        console.log(users);
 
         return res.json({status: "ok", data: {users: users}});
     });
