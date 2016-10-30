@@ -27,11 +27,15 @@
                 <span ng-show="!reverseSort" class="glyphicon glyphicon-chevron-up"></span>
                 <span ng-show="reverseSort" class="glyphicon glyphicon-chevron-down"></span></span>
             </a></th>
+            <th><a ng-click="orderByField='created_at'; reverseSort = !reverseSort">
+                შექმნის თარიღი<span ng-show="orderByField == 'created_at'">
+                <span ng-show="!reverseSort" class="glyphicon glyphicon-chevron-up"></span>
+                <span ng-show="reverseSort" class="glyphicon glyphicon-chevron-down"></span></span>
+            </a></th>
             <th><span class="glyphicon glyphicon-pencil"></span></th>
         </tr>
         <tr ng-repeat="collection in collections  | orderBy:orderByField:reverseSort">
-            <td><span title="{{collection.is_public?'ღია':'პირადი'}}"
-                      ng-class="{'glyphicon':true, 'glyphicon-eye-open':collection.is_public,
+            <td><span  ng-class="{'glyphicon':true, 'glyphicon-eye-open':collection.is_public,
                       'glyphicon-eye-close':!collection.is_public}">
             </span></td>
             <td>
@@ -44,6 +48,7 @@
             </td>
             <td><a ng-click="modify(collection._id)">{{collection.name}}</a>
             </td>
+            <td><a>{{collection.created_at | date:medium }}</a></td>
             <td>
                 <a class="btn btn-xs btn-warning">
                     <span class="glyphicon glyphicon-pencil" ng-click="modify(collection._id)"></span>

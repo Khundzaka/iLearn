@@ -329,16 +329,6 @@ app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootS
         }
     }
 ]);
-app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope', '$log',
-    function ($scope, AuthService, $location, $rootScope, $log) {
-        // $log.log(AuthService);
-        $scope.hasFacebook = AuthService.facebook.name !== null;
-        $scope.hasLocal = AuthService.local.email !== null;
-        $scope.facebookName = AuthService.facebook.name;
-        $scope.localEmail = AuthService.local.email;
-        $scope.localUserName = AuthService.local.username;
-    }
-]);
 app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance", "InfoModal",'$log',
     function ($scope, Collection, WordService, collectionId, $uibModalInstance, InfoModal,$log) {
         $scope.wordName = "";
@@ -591,6 +581,16 @@ app.controller("ViewCollectionController", ["$scope", "Collection", "$stateParam
             }
             // $log.log(data.collection);
         });
+    }
+]);
+app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope', '$log',
+    function ($scope, AuthService, $location, $rootScope, $log) {
+        // $log.log(AuthService);
+        $scope.hasFacebook = AuthService.facebook.name !== null;
+        $scope.hasLocal = AuthService.local.email !== null;
+        $scope.facebookName = AuthService.facebook.name;
+        $scope.localEmail = AuthService.local.email;
+        $scope.localUserName = AuthService.local.username;
     }
 ]);
 app.controller('HeaderController', ["$scope", "$rootScope", "AuthService", "$state", "$log",

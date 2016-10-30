@@ -4,12 +4,9 @@
     </div>
     <table class="table">
         <tr ng-repeat="user in users">
-            <td class="col-md-8">
-                <a>{{user.local.email}}</a>
-            </td>
-            <td>
-                <button class="btn btn-xs btn-primary" ng-click="">
-                    <span class="glyphicon glyphicon-pencil"></span></button>
+            <td class="col-md-8" >
+                <a ng-show="user.local.email">{{user.local.email}}</a>
+                <a ng-show="!user.local.email">{{user.facebook.name}}</a>
             </td>
         </tr>
     </table>
