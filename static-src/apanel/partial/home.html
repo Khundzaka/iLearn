@@ -1,2 +1,13 @@
-<a ui-sref="app.access" class="btn btn-lg btn-primary">წვდომა</a>
-<a ui-sref="app.word.pending" class="btn btn-lg btn-primary">წვდომა</a>
+<div class="panel panel-primary">
+    <div class="panel-heading">სტატისტიკა</div>
+    <div class="list-group">
+        <div class="list-group-item">მომხმარებლები სულ: {{stats.usersCount}}</div>
+        <div class="list-group-item">მომხმარებლები დღეს: {{stats.usersToday}}</div>
+        <div class="list-group-item">სიტყვები სულ: {{stats.wordsCount}}</div>
+        <div class="list-group-item">სიტყვები დღეს: {{stats.wordsToday}}</div>
+        <div class="list-group-item">შესამოწმებელი სიტყვები: {{stats.wordsUnchecked}}</div>
+        <div class="list-group-item">კოლექციები სულ: {{stats.collectionsCount}}</div>
+        <div class="list-group-item">კოლექციები დღეს: {{stats.collectionsToday}}</div>
+        <div class="list-group-item">შესამოწმებელი კოლექციები: {{stats.collectionsUnchecked}}</div>
+    </div>
+</div>

@@ -5,6 +5,7 @@ var apanelWordRouter = require("./apanel/apanel_word_router");
 var apanelForumRouter = require("./apanel/apanel_forum_router");
 var apanelCollectionRouter = require("./apanel/apanel_collection_router");
 var apanelUserRouter = require("./apanel/apanel_user_router");
+var apanelStatsRouter = require("./apanel/apanel_stats_router");
 
 var apanelRouter = Router();
 
@@ -142,5 +143,6 @@ apanelRouter.use("/api/word", apanelWordRouter);
 apanelRouter.use("/api/forum", apanelForumRouter);
 apanelRouter.use("/api/collection", apanelCollectionRouter);
 apanelRouter.use("/api/users", apanelUserRouter);
+apanelRouter.use("/api/stats", apanelStatsRouter);
 
 module.exports = apanelRouter;

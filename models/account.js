@@ -17,8 +17,19 @@ var Account = new Schema({
         name: String
     },
     groups: [{type: Schema.Types.ObjectId, ref: 'Group'}],
-    points: {type: Number, default: 0}
+    points: {type: Number, default: 0},
+    created_at: Date
 });
+
+Account.pre('save', function (next) {
+    var currentDate = new Date();
+
+    if (!this.created_at)
+        this.created_at = currentDate;
+
+    next();
+});
+
 
 // generating a hash
 Account.methods.generateHash = function (password) {

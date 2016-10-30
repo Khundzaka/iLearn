@@ -2,11 +2,6 @@ var apanelApp = angular.module('apanelApp', ['templates', 'ngAnimate', 'ui.route
 
 var _st = "/static/apanel/";
 
-
-apanelApp.controller('MyController', function ($scope, $uibModal, $log) {
-
-});
-
 apanelApp.controller('FooterController', function ($scope) {
 
 });
@@ -43,7 +38,7 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
         .state("app.home", {
             url: "/home",
             templateUrl: _st + "partial/home.html",
-            controller: "MyController"
+            controller: "HomeController"
         })
         .state("app.access", {
             // url: "/access",
@@ -883,6 +878,28 @@ apanelApp.controller('HeaderController', ["$scope", function ($scope) {
         $scope.navCollapsed = 1;
     }]
 );
+apanelApp.controller('HomeController', ["$scope", "StatsService",
+    function ($scope, StatsService) {
+        StatsService.summary().then(function (data) {
+            $scope.stats = data;
+        });
+    }
+]);
+apanelApp.factory("StatsService", ['$http',
+    function ($http) {
+        var StatsService = {};
+
+        var StatsApiEndpoint = "/apanel/api/stats";
+
+        StatsService.summary = function () {
+            return $http.get(StatsApiEndpoint + "/summary").then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return StatsService;
+    }
+]);
 apanelApp.controller("UserListController",["$scope", "UserService", "$uibModal", "$log",
     function ($scope, UserService, $uibModal, $log) {
         function fetchUsersList() {

@@ -2,11 +2,6 @@ var apanelApp = angular.module('apanelApp', ['templates', 'ngAnimate', 'ui.route
 
 var _st = "/static/apanel/";
 
-
-apanelApp.controller('MyController', function ($scope, $uibModal, $log) {
-
-});
-
 apanelApp.controller('FooterController', function ($scope) {
 
 });
@@ -43,7 +38,7 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
         .state("app.home", {
             url: "/home",
             templateUrl: _st + "partial/home.html",
-            controller: "MyController"
+            controller: "HomeController"
         })
         .state("app.access", {
             // url: "/access",
