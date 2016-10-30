@@ -1,7 +1,7 @@
 apanelApp.controller("AllCollectionListController", ["$scope", "CollectionService", "$uibModal", "$log",
     function ($scope, CollectionService, $uibModal, $log) {
-        $scope.orderByField = 'name';
-        $scope.reverseSort = false;
+        $scope.orderByField = 'created_at';
+        $scope.reverseSort =true;
 
 
         function fetchAllCollectionList() {
