@@ -4,6 +4,7 @@ apanelApp.controller("ForumController", ["$scope", "ForumService", "$uibModal", 
         function fetchTopicList() {
             ForumService.getTopicList().then(function (data) {
                 $scope.topics = data.topics;
+                $log.log(data);
             });
         }
 

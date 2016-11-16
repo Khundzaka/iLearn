@@ -1,0 +1,14 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">ბოლო პოსტები</h3>
+    </div>
+
+
+    <div class="list-group-item" ng-repeat="post in posts">
+        <span style="font-weight: bold;" class="list-group-item-heading">{{post.user.local.username}}</span>&nbsp;
+        <span>{{post.created_at | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+        <div class="well"><p class="list-group-item-text" style="color:black; font-size:14px;">{{post.text}}</p>
+        </div>
+    </div>
+
+</div>

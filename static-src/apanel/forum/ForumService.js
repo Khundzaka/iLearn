@@ -14,6 +14,13 @@ apanelApp.factory("ForumService", ["$http", "$log",
             });
         };
 
+        ForumService.getLatestPosts=function () {
+            return $http.get(forumApanelEndpoint+"posts").then(function (resp) {
+                $log.log(resp);
+                return resp.data.data;
+            })
+        }
+
         ForumService.deletePost = function (params) {
             var postId = params.postId;
             return $http.delete(forumApanelEndpoint + "post/" + postId).then(function (resp) {

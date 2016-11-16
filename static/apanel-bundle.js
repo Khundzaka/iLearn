@@ -93,6 +93,11 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "forum/topic.html",
             controller:"TopicController"
         })
+        .state("app.forum.last-posts",{
+            url:"/last-posts",
+            templateUrl: _st + "forum/last-posts.html",
+            controller:"LastPostsController"
+        })
         .state("app.collection",{
             url:"/collection",
             templateUrl:_st+"collection/collection.html",
@@ -715,6 +720,7 @@ apanelApp.controller("ForumController", ["$scope", "ForumService", "$uibModal", 
         function fetchTopicList() {
             ForumService.getTopicList().then(function (data) {
                 $scope.topics = data.topics;
+                $log.log(data);
             });
         }
 
@@ -756,6 +762,13 @@ apanelApp.factory("ForumService", ["$http", "$log",
                 return resp.data.data;
             });
         };
+
+        ForumService.getLatestPosts=function () {
+            return $http.get(forumApanelEndpoint+"posts").then(function (resp) {
+                $log.log(resp);
+                return resp.data.data;
+            })
+        }
 
         ForumService.deletePost = function (params) {
             var postId = params.postId;
@@ -809,6 +822,17 @@ apanelApp.factory("ForumService", ["$http", "$log",
         };
 
         return ForumService;
+    }
+]);
+apanelApp.controller("LastPostsController", ["$scope", "ForumService", "$log",
+    function ($scope, ForumService, $log) {
+        function fetchlatestPosts() {
+            ForumService.getLatestPosts().then(function (data) {
+                $scope.posts = data.posts;
+            });
+        }
+
+        fetchlatestPosts();
     }
 ]);
 apanelApp.controller("NewTopicController",["$scope","ForumService","$state","$log",

@@ -3,6 +3,15 @@ var ForumRepository = require('../../app/forum_repository').ForumRepository;
 
 var apanelForumRouter = Router();
 
+apanelForumRouter.get("/posts",function (req, res, next) {
+    ForumRepository.fetchLatestPosts(function (err,posts) {
+        if(err){
+            return next(err);
+        }
+        res.json({status:"ok",data:{posts:posts}});
+    })
+})
+
 apanelForumRouter.get("/", function (req, res, next) {
     ForumRepository.allTopicList(function (err, topics) {
         if (err) {

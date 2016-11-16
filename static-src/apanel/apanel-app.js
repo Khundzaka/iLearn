@@ -93,6 +93,11 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "forum/topic.html",
             controller:"TopicController"
         })
+        .state("app.forum.last-posts",{
+            url:"/last-posts",
+            templateUrl: _st + "forum/last-posts.html",
+            controller:"LastPostsController"
+        })
         .state("app.collection",{
             url:"/collection",
             templateUrl:_st+"collection/collection.html",

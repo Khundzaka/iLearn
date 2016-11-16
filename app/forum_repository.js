@@ -4,6 +4,12 @@ var async = require("async");
 
 var ForumRepository = {};
 
+ForumRepository.fetchLatestPosts=function (callback) {
+    ForumPost.find().sort([["created_at",'descending']]).limit(10).populate('user').exec(function (err,posts) {
+        return callback(err,posts);
+    })
+};
+
 ForumRepository.topicList = function (callback) {
     ForumTopic.find({active: true}).exec(function (err, topics) {
         return callback(err, topics);
@@ -31,7 +37,6 @@ ForumRepository.fetchOnePost = function (params, callback) {
         return callback(err, post);
     });
 };
-
 
 ForumRepository.fetchPostsByTopic = function (params, callback) {
     ForumPost.find({topic: params.topicId, deleted: false}).populate('user').lean().exec(function (err, posts) {
@@ -105,5 +110,6 @@ ForumRepository.deletePost = function (params, callback) {
         });
     });
 };
+
 
 module.exports = {ForumRepository: ForumRepository};
