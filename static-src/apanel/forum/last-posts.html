@@ -7,6 +7,7 @@
     <div class="list-group-item" ng-repeat="post in posts">
         <span style="font-weight: bold;" class="list-group-item-heading">{{post.user.local.username}}</span>&nbsp;
         <span>{{post.created_at | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+        <span style="font-weight: bold;" class="list-group-item-heading">{{post.topic.title}}</span>&nbsp;
         <div class="well"><p class="list-group-item-text" style="color:black; font-size:14px;">{{post.text}}</p>
         </div>
     </div>

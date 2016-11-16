@@ -5,7 +5,7 @@ var async = require("async");
 var ForumRepository = {};
 
 ForumRepository.fetchLatestPosts=function (callback) {
-    ForumPost.find().sort([["created_at",'descending']]).limit(10).populate('user').exec(function (err,posts) {
+    ForumPost.find().sort([["created_at",'descending']]).limit(10).populate('user').populate('topic').exec(function (err,posts) {
         return callback(err,posts);
     })
 };
