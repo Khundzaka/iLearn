@@ -1,21 +1,15 @@
 var Router = require("express").Router;
-var WordRepository = require("../app/word_repository").WordRepository;
-//var requiresPermission = require("../app/middleware").requiresPermission;
-var wordRouter = Router();
+var PracticeRepository = require("../app/practice_repository").PracticeRepository;
+var practiceRouter = Router();
 
-var defaultFailResponse = {status: "failed"};
-
-// todo: router needs auth
-
-wordRouter.post("/find", function (req, res) {
-    WordRepository.find({value: req.body.value, accepted: true}, function (err, words) {
+practiceRouter.post("/submit", function (req, res, next) {
+    PracticeRepository.saveResult({practiceData: req.body, user: req.user}, function (err, result) {
         if (err) {
-            console.log(err);
-            return res.json(defaultFailResponse);
+            return next(err);
         }
 
-        return res.json({status: "ok", data: {words: words}});
+        return res.json({status: "ok", data: {result: result}});
     });
 });
 
-module.exports = wordRouter;
+module.exports = practiceRouter;

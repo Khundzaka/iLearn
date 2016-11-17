@@ -77,9 +77,11 @@ app.use('/apanel', apanelRouter);
 var collectionRouter = require('./routes/collection_router');
 var wordRouter = require('./routes/word_router');
 var forumRouter = require('./routes/forum_router');
+var practiceRouter = require('./routes/practice_router');
 app.use('/api/collection', collectionRouter);
 app.use('/api/forum', forumRouter);
 app.use('/api/word', wordRouter);
+app.use('/api/practice', practiceRouter);
 
 
 if (process.env.NODE_ENV === 'development') {

@@ -3,6 +3,7 @@ app.controller("PracticeController", [
     function ($scope, $timeout, $state, $stateParams, $http, Collection, AuthService, $log) {
         var words = [];
         var mistakesList = [];
+        var startDate = null;
         // $scope.focused = true; //
         $scope.message = {
             show: false,
@@ -16,6 +17,17 @@ app.controller("PracticeController", [
         $scope.goToCollection = function () {
             $state.go("collection.view", {collection: $stateParams.collection});
         };
+
+        function findWord(elements, el) {
+            var filtered = elements.filter(function (e) {
+                return e.word === el;
+            });
+            if (filtered.length === 1) {
+                return filtered[0];
+            } else {
+                return null;
+            }
+        }
 
         function showMessage(isCorrect) {
             $scope.message.correct = isCorrect;
@@ -32,7 +44,7 @@ app.controller("PracticeController", [
             var minutes = Math.floor(time / 60);
             var seconds = time - minutes * 60;
             var timeString = ('0' + minutes.toString()).slice(-2) + ":" + ('0' + seconds.toString()).slice(-2);
-            $log.log(timeString);
+            // $log.log(timeString);
             return timeString;
         }
 
@@ -124,9 +136,9 @@ app.controller("PracticeController", [
                 $scope.wrong += 1;
                 //check if word is already in mistakes
                 if (mistakesList.indexOf(currentWordPair._id) < 0) {
-                    mistakesList.push(currentWordPair._id);
                     words.push(currentWordPair);
                 }
+                mistakesList.push(currentWordPair._id);
                 $log.log(words.length);
             }
 
@@ -154,10 +166,34 @@ app.controller("PracticeController", [
             timeTicker();
             getRandomWord();
             setFocus();
+            startDate = new Date();
         }
 
         function timeIsUp() {
             //todo: post activity stats to server
+            var intSpent = Math.ceil(((new Date()).getTime() - startDate.getTime()) / 1000);
+            var timeSpent = timeString(intSpent);
+            var mistakes = [];
+            mistakesList.forEach(function (el) {
+                var mistake = findWord(mistakes, el);
+                if (mistake != null) {
+                    mistake.count += 1;
+                } else {
+                    mistakes.push({word: el, count: 1});
+                }
+            });
+
+            $log.log(timeSpent);
+            $scope.timeSpent = timeSpent;
+
+            $http.post("/api/practice/submit", {
+                collection: $stateParams.collection,
+                spent: intSpent,
+                mistakes: mistakes,
+                correct: $scope.correct,
+                wrong: $scope.wrong,
+                points: $scope.getPoints()
+            });
         }
 
         var stageLoop = function () {

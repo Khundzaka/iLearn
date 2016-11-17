@@ -920,21 +920,6 @@ apanelApp.controller('HomeController', ["$scope", "StatsService",
         });
     }
 ]);
-apanelApp.factory("StatsService", ['$http',
-    function ($http) {
-        var StatsService = {};
-
-        var StatsApiEndpoint = "/apanel/api/stats";
-
-        StatsService.summary = function () {
-            return $http.get(StatsApiEndpoint + "/summary").then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        return StatsService;
-    }
-]);
 apanelApp.controller("UserListController",["$scope", "UserService", "$uibModal", "$log",
     function ($scope, UserService, $uibModal, $log) {
         function fetchUsersList() {
@@ -961,6 +946,21 @@ apanelApp.factory("UserService", ['$http',
         };
 
         return UserService;
+    }
+]);
+apanelApp.factory("StatsService", ['$http',
+    function ($http) {
+        var StatsService = {};
+
+        var StatsApiEndpoint = "/apanel/api/stats";
+
+        StatsService.summary = function () {
+            return $http.get(StatsApiEndpoint + "/summary").then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return StatsService;
     }
 ]);
 apanelApp.controller("ModifyWordController", ["$scope", "WordService", "wordId", "$uibModalInstance",

@@ -7,28 +7,33 @@ var PracticeRepository = {};
 PracticeRepository.saveResult = function (params, callback) {
 
     var practiceData = params.practiceData;
-    var collectionId = practiceData.collectionId;
+    var collectionId = practiceData.collection;
     var user = params.user;
 
     function getCollection(cb) {
-        Collection.findById(collectionId).exec(function (err, collection) {
+        Collection.findById(collectionId).exec().then(function (collection) {
             return cb(err, collection);
         });
     }
-    
+
     function getWordsList(collection, cb) {
         var wordsList = [];
-        cb(err, collection, wordsList);
+        cb(null, collection, wordsList);
     }
-    
-    function createPracticeResult(collection, wordsList, cb){
+
+    function createPracticeResult(collection, wordsList, cb) {
         var result = new PracticeResult();
-        result.collection = collection._id;
+        result._collection = collection._id;
         result.user = user._id;
         result.mistakes = practiceData.mistakes;
         result.coins = 0; //todo: change when we will create coins module
         result.points = practiceData.points;
-        //todo: finish this shit!
+        result.spent = practiceData.spent;
+        result.correct = practiceData.correct;
+        result.wrong = practiceData.wrong;
+        result.save(function (err) {
+            return cb(err, result);
+        });
     }
 
     async.waterfall([
@@ -36,12 +41,8 @@ PracticeRepository.saveResult = function (params, callback) {
         getWordsList,
         createPracticeResult
     ], function (err, result) {
-        if (err) {
-            return callback(err);
-        }
-        return callback(result);
+        return callback(err, result);
     });
-    return callback(result);
 };
 
 module.exports = {PracticeRepository: PracticeRepository};

@@ -2,6 +2,7 @@ var Account = require("../models/account"),
     Collection = require("../models/collection"),
     Word = require("../models/word"),
     ForumPost = require("../models/forum_post"),
+    PracticeResult = require("../models/practice_result"),
     Promise = require("bluebird");
 
 var StatsRepository = {};
@@ -47,6 +48,26 @@ StatsRepository.usersToday = function () {
     return Account.where('created_at').gt(now).count().exec();
 };
 
+StatsRepository.practicesCount = function () {
+    return PracticeResult.count().exec();
+};
+
+StatsRepository.practicesToday = function () {
+    var now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return PracticeResult.where('created_at').gt(now).count().exec();
+};
+
+StatsRepository.postsCount = function () {
+    return ForumPost.count().exec();
+};
+
+StatsRepository.postsToday = function () {
+    var now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return ForumPost.where('created_at').gt(now).count().exec();
+};
+
 StatsRepository.summary = function () {
     return Promise.props({
         wordsCount: StatsRepository.wordsCount(),
@@ -56,7 +77,11 @@ StatsRepository.summary = function () {
         collectionsToday: StatsRepository.collectionsToday(),
         collectionsUnchecked: StatsRepository.collectionsUnchecked(),
         usersCount: StatsRepository.usersCount(),
-        usersToday: StatsRepository.usersToday()
+        usersToday: StatsRepository.usersToday(),
+        practicesCount: StatsRepository.practicesCount(),
+        practicesToday: StatsRepository.practicesToday(),
+        postsCount: StatsRepository.postsCount(),
+        postsToday: StatsRepository.postsToday()
     });
 };
 

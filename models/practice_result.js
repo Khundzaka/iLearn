@@ -2,12 +2,18 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var PracticeResult = new Schema({
-    collection: {type: Schema.Types.ObjectId, ref: 'Collection'},
+    _collection: {type: Schema.Types.ObjectId, ref: 'Collection'},
     user: {type: Schema.Types.ObjectId, ref: 'Account'},
     created_at: Date,
     points: Number,
     coins: Number,
-    mistakes: [{type: Schema.Types.ObjectId, ref: 'Word'}]
+    correct: Number,
+    wrong: Number,
+    spent: Number,
+    mistakes: [{
+        word: {type: Schema.Types.ObjectId, ref: 'Word'},
+        count: Number
+    }]
 });
 
 PracticeResult.pre('save', function (next) {
