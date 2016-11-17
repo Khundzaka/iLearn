@@ -12,8 +12,8 @@ PracticeRepository.saveResult = function (params, callback) {
 
     function getCollection(cb) {
         Collection.findById(collectionId).exec().then(function (collection) {
-            return cb(err, collection);
-        });
+            return cb(null, collection);
+        }).catch(cb);
     }
 
     function getWordsList(collection, cb) {
