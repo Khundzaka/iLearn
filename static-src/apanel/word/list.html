@@ -1,0 +1,33 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">სიტყვების სია</h3>
+    </div>
+    <table class="table">
+        <tr>
+            <th>ვალიდური</th>
+            <th>შემოწმებული</th>
+            <th>სიტყვა</th>
+            <th>მნიშვნელობა</th>
+            <th>###</th>
+        </tr>
+        <tr ng-repeat="word in words">
+            <td>
+                <span ng-class="{'glyphicon':true, 'glyphicon glyphicon-ok':word.accepted,
+                'glyphicon glyphicon-remove':!word.accepted}"></span>
+            </td>
+            <td>
+                <span ng-class="{'glyphicon':true, 'glyphicon glyphicon-ok':word.checked,
+                'glyphicon glyphicon-remove':!word.checked}"></span>
+            </td>
+            <td>{{word.value}}</td>
+            <td>{{word.description}}</td>
+            <td>
+                <button ng-click="modify(word._id)" class="btn btn-xs btn-primary">ჩასწორება</button>
+            </td>
+        </tr>
+    </table>
+
+    <ul uib-pagination items-per-page="limit" boundary-links="true" ng-change="changePage()"
+        total-items="count" ng-model="page" class="pagination-sm"
+        previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+</div>

@@ -3,11 +3,11 @@
     <div class="list-group">
         <div class="list-group-item">მომხმარებლები სულ: {{stats.usersCount}}</div>
         <div class="list-group-item">მომხმარებლები დღეს: {{stats.usersToday}}</div>
-        <div class="list-group-item">სიტყვები სულ: {{stats.wordsCount}}</div>
+        <a ui-sref="app.word.list" class="list-group-item">სიტყვები სულ: {{stats.wordsCount}}</a>
         <div class="list-group-item">სიტყვები დღეს: {{stats.wordsToday}}</div>
-        <div class="list-group-item">შესამოწმებელი სიტყვები: {{stats.wordsUnchecked}}</div>
-        <div class="list-group-item">კოლექციები სულ: {{stats.collectionsCount}}</div>
+        <a ui-sref="app.word.pending" class="list-group-item">შესამოწმებელი სიტყვები: {{stats.wordsUnchecked}}</a>
+        <a ui-sref="app.collection.all-collection-list" class="list-group-item">კოლექციები სულ: {{stats.collectionsCount}}</a>
         <div class="list-group-item">კოლექციები დღეს: {{stats.collectionsToday}}</div>
-        <div class="list-group-item">შესამოწმებელი კოლექციები: {{stats.collectionsUnchecked}}</div>
+        <a  ui-sref="app.collection.collection-list" class="list-group-item">შესამოწმებელი კოლექციები: {{stats.collectionsUnchecked}}</a>
     </div>
 </div>

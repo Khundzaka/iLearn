@@ -3,6 +3,12 @@ var WordRepository = require('../../app/word_repository').WordRepository;
 
 var apanelWordRouter = Router();
 
+apanelWordRouter.get("/list", function (req, res, next) {
+    WordRepository.list(req.query).then(function (data) {
+        return res.json(data);
+    }).catch(next);
+});
+
 apanelWordRouter.get("/one/:word", function (req, res, next) {
     WordRepository.one({uid: req.params.word}, function (err, word) {
         if (err) {

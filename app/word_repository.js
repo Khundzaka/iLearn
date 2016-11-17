@@ -1,4 +1,5 @@
 var Word = require("../models/word");
+var Promise = require("bluebird");
 
 var WordRepository = {};
 
@@ -10,6 +11,18 @@ WordRepository.create = function (params, callback) {
     var word = new Word({author: author, description: description, value: value});
     word.save(function (err) {
         callback(err, word);
+    });
+};
+
+WordRepository.list = function (params) {
+    var page = params.page || 1;
+    var limit = params.limit || 5;
+    var skip = (page - 1) * limit || 0;
+    var query = Word.find().skip(skip).limit(limit).sort({'_id': -1});
+    return Promise.props({
+        words: query.exec(),
+        page: page,
+        count: Word.count().exec()
     });
 };
 

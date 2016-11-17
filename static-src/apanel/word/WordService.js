@@ -4,6 +4,14 @@ apanelApp.factory("WordService", ['$http',
 
         var WordApiEndpoint = "/apanel/api/word/";
 
+        WordService.list = function (params) {
+            params.limit = params.limit || 1;
+            params.page = params.page || 1;
+            return $http.get(WordApiEndpoint + "list", {params: params}).then(function (resp) {
+                return resp.data;
+            });
+        };
+
         WordService.pendingList = function () {
             return $http.get(WordApiEndpoint + "pending").then(function (resp) {
                 return resp.data.data;

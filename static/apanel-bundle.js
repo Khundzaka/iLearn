@@ -68,6 +68,17 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "word/word.html",
             controller: "WordController"
         })
+        .state("app.word.list", {
+            url: "/list?page",
+            params: {
+                page: {
+                    value: '1',
+                    squash: true
+                }
+            },
+            templateUrl: _st + "word/list.html",
+            controller: "WordListController"
+        })
         .state("app.word.pending", {
             url: "/pending",
             templateUrl: _st + "word/pending-word.html",
@@ -83,45 +94,45 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "forum/list.html",
             controller: "ForumController"
         })
-        .state("app.forum.new-topic",{
-            url:"/new-topic",
+        .state("app.forum.new-topic", {
+            url: "/new-topic",
             templateUrl: _st + "forum/new-topic.html",
-            controller:"NewTopicController"
+            controller: "NewTopicController"
         })
-        .state("app.forum.topic",{
-            url:"/topic/:topicId",
+        .state("app.forum.topic", {
+            url: "/topic/:topicId",
             templateUrl: _st + "forum/topic.html",
-            controller:"TopicController"
+            controller: "TopicController"
         })
-        .state("app.forum.last-posts",{
-            url:"/last-posts",
+        .state("app.forum.last-posts", {
+            url: "/last-posts",
             templateUrl: _st + "forum/last-posts.html",
-            controller:"LastPostsController"
+            controller: "LastPostsController"
         })
-        .state("app.collection",{
-            url:"/collection",
-            templateUrl:_st+"collection/collection.html",
-            abstract:true
+        .state("app.collection", {
+            url: "/collection",
+            templateUrl: _st + "collection/collection.html",
+            abstract: true
         })
-        .state("app.collection.collection-list",{
-            url:"/",
-            templateUrl: _st+"collection/collection-list.html",
-            controller:"CollectionController"
+        .state("app.collection.collection-list", {
+            url: "/",
+            templateUrl: _st + "collection/collection-list.html",
+            controller: "CollectionController"
         })
-        .state("app.collection.all-collection-list",{
-            url:"/all",
-            templateUrl: _st+"collection/all-collection-list.html",
-            controller:"AllCollectionListController"
+        .state("app.collection.all-collection-list", {
+            url: "/all",
+            templateUrl: _st + "collection/all-collection-list.html",
+            controller: "AllCollectionListController"
         })
-        .state("app.user",{
-            url:"/user",
-            templateUrl:_st+"user/user.html",
-            abstract:true
+        .state("app.user", {
+            url: "/user",
+            templateUrl: _st + "user/user.html",
+            abstract: true
         })
-        .state("app.user.user-list",{
-            url:"/",
-            templateUrl:_st+"user/user-list.html",
-            controller:"UserListController"
+        .state("app.user.user-list", {
+            url: "/",
+            templateUrl: _st + "user/user-list.html",
+            controller: "UserListController"
         })
     ;
 })
@@ -1053,11 +1064,63 @@ apanelApp.controller("WordController", ["$scope", "$stateParams", "$uibModal", "
         
     }
 ]);
+apanelApp.controller("WordListController", ["$scope", "$uibModal", "WordService", "$stateParams", "$state",
+    function ($scope, $uibModal, WordService, $stateParams, $state) {
+
+        $scope.limit = 50;
+        $scope.count = 0;
+
+        function fetchList() {
+            WordService.list({
+                limit: $scope.limit,
+                page: $stateParams.page
+            }).then(function (data) {
+                $scope.words = data.words;
+                $scope.count = data.count;
+                $scope.page = $stateParams.page;
+            });
+        }
+
+        fetchList();
+
+        $scope.modify = function (wordId) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/word/modify-word.html',
+                controller: 'ModifyWordController',
+                size: "lg",
+                resolve: {
+                    wordId: function () {
+                        return wordId;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                console.log("Done");
+                fetchList();
+            });
+        };
+
+        $scope.changePage = function () {
+            $state.go(".", {page: $scope.page});
+        };
+    }
+]);
 apanelApp.factory("WordService", ['$http',
     function ($http) {
         var WordService = {};
 
         var WordApiEndpoint = "/apanel/api/word/";
+
+        WordService.list = function (params) {
+            params.limit = params.limit || 1;
+            params.page = params.page || 1;
+            return $http.get(WordApiEndpoint + "list", {params: params}).then(function (resp) {
+                return resp.data;
+            });
+        };
 
         WordService.pendingList = function () {
             return $http.get(WordApiEndpoint + "pending").then(function (resp) {
