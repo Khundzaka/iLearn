@@ -9,7 +9,7 @@ apanelApp.factory("CollectionService", ['$http',
             params.limit = params.limit || 1;
             params.page = params.page || 1;
             return $http.get(CollectionApiEndpoint,{params: params}).then(function (resp) {
-                return resp.data.data;
+                return resp.data;
             });
         };
 

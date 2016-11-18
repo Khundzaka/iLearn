@@ -11,6 +11,8 @@ apanelApp.controller("AllCollectionListController", ["$scope", "CollectionServic
                 page: $stateParams.page
                 }).then(function (data) {
                 $scope.collections = data.collections;
+                $scope.count = data.count;
+                $scope.page = $stateParams.page;
                 $log.log(data);
             });
         }

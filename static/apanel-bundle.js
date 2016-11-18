@@ -534,6 +534,8 @@ apanelApp.controller("AllCollectionListController", ["$scope", "CollectionServic
                 page: $stateParams.page
                 }).then(function (data) {
                 $scope.collections = data.collections;
+                $scope.count = data.count;
+                $scope.page = $stateParams.page;
                 $log.log(data);
             });
         }
@@ -611,7 +613,7 @@ apanelApp.factory("CollectionService", ['$http',
             params.limit = params.limit || 1;
             params.page = params.page || 1;
             return $http.get(CollectionApiEndpoint,{params: params}).then(function (resp) {
-                return resp.data.data;
+                return resp.data;
             });
         };
 
