@@ -1,6 +1,7 @@
 var Collection = require("../models/collection");
 var Word = require("../models/word");
 var async = require("async");
+var Promise=require("bluebird");
 
 var CollectionRepository = {};
 
@@ -21,13 +22,23 @@ CollectionRepository.getCollection = function (params) {
     };
 };
 
-CollectionRepository.getAll = function (callback) {
-    Collection.find({}).exec(function (err, collections) {
-        if (err) {
-            return callback(err);
-        }
-        callback(null, collections);
+CollectionRepository.getAll = function (params) {
+    var page = params.page || 1;
+    var limit = params.limit || 5;
+    var skip = (page - 1) * limit || 0;
+    var query = Word.find().skip(skip).limit(limit).sort({'_id': -1});
+    return Promise.props({
+       collections:query.exec(),
+       page:page,
+       count:Collection.count().exec()
     });
+
+    // Collection.find({}).exec(function (err, collections) {
+    //     if (err) {
+    //         return callback(err);
+    //     }
+    //     callback(null, collections);
+    // });
 };
 
 CollectionRepository.getAcceptedPublic = function (callback) {

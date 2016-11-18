@@ -1,11 +1,15 @@
-apanelApp.controller("AllCollectionListController", ["$scope", "CollectionService", "$uibModal", "$log",
-    function ($scope, CollectionService, $uibModal, $log) {
+apanelApp.controller("AllCollectionListController", ["$scope", "CollectionService", "$uibModal", "$log","$stateParams",
+    function ($scope, CollectionService, $uibModal, $log, $stateParams) {
         $scope.orderByField = 'created_at';
         $scope.reverseSort =true;
-
+        $scope.limit = 20;
+        $scope.count = 0;
 
         function fetchAllCollectionList() {
-            CollectionService.getAllCollectionList().then(function (data) {
+            CollectionService.getAllCollectionList({
+                limit: $scope.limit,
+                page: $stateParams.page
+                }).then(function (data) {
                 $scope.collections = data.collections;
                 $log.log(data);
             });
@@ -32,6 +36,10 @@ apanelApp.controller("AllCollectionListController", ["$scope", "CollectionServic
                 fetchAllCollectionList();
             });
 
+        };
+
+        $scope.changePage = function () {
+            $state.go(".", {page: $scope.page});
         };
     }
 ]);

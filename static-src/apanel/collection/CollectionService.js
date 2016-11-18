@@ -5,8 +5,10 @@ apanelApp.factory("CollectionService", ['$http',
         var CollectionApiEndpoint = "/apanel/api/collection/";
         var OneCollectionApiEndpoint="/api/collection/";
 
-        CollectionService.getAllCollectionList = function () {
-            return $http.get(CollectionApiEndpoint).then(function (resp) {
+        CollectionService.getAllCollectionList = function (params) {
+            params.limit = params.limit || 1;
+            params.page = params.page || 1;
+            return $http.get(CollectionApiEndpoint,{params: params}).then(function (resp) {
                 return resp.data.data;
             });
         };
