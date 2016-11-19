@@ -39,7 +39,7 @@
                         <div class="form-group">
                             <label>
                                 <input type="text" class="form-control pr-input" ng-model="inputWord" id="inputWord"
-                                       >
+                                >
                             </label>
                         </div>
                         <div class="form-group">
@@ -54,14 +54,31 @@
 
         <div ng-show="currentStage===3">
             <div class="pr-info">
-                <br> <strong>ტესტირება დასრულებულია.</strong>
-                <br>
-                <br> სტატისტიკა:
-                <br> დახარჯული დრო - {{timeSpent}}
-                <br> სწორი პასუხები - {{correct}}
-                <br> შეცდომა - {{wrong}}
-                <br> შეფასება - {{getPoints()}} (100-დან)
+                <div class="text-center well well-sm"><strong>ტესტირება დასრულებულია.</strong></div>
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">შედეგები</h3>
+                    </div>
+                    <div class="list-group">
+                        <div class="list-group-item">დახარჯული დრო - {{timeSpent}}</div>
+                        <div class="list-group-item">სწორი პასუხები - {{correct}}</div>
+                        <div class="list-group-item">შეცდომა - {{wrong}}</div>
+                        <div class="list-group-item">შეფასება - {{getPoints()}} (100-დან)</div>
+                    </div>
+                </div>
+                <div class="panel panel-default" ng-show="mistakesFinal.length > 0">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">შეცდომები</h3>
+                    </div>
+                    <div class="list-group">
+                        <div class="list-group-item" ng-repeat="mistake in mistakesFinal">
+                            {{mistake.word.value}} - {{mistake.word.description}} - {{mistake.count}} შეცდომა
+                        </div>
+                    </div>
+                </div>
             </div>
+
             <div class="text-center">
                 <button class="btn btn-info pr-start-btn" ng-click="goToCollection()">დახურვა</button>
             </div>

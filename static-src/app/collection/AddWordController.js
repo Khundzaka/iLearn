@@ -1,19 +1,26 @@
-app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance", "InfoModal",'$log',
-    function ($scope, Collection, WordService, collectionId, $uibModalInstance, InfoModal,$log) {
+app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance", "InfoModal", '$log',
+    function ($scope, Collection, WordService, collectionId, $uibModalInstance, InfoModal, $log) {
         $scope.wordName = "";
         $scope.wordDescription = "";
         $scope.words = [];
         $scope.noWordsFound = false;
         //console.log(collectionId);
         $scope.findInput = "";
+        $scope.newWordPending = false;
+
+
         $scope.addNewWord = function () {
+            if ($scope.newWordPending) return;
             var valid = $scope.wordName != "" && $scope.wordDescription != "";
             if (valid) {
+                $scope.newWordPending = true;
+
                 Collection.addNewWord({
                     collectionId: collectionId,
                     wordName: $scope.wordName,
                     wordDescription: $scope.wordDescription
                 }).then(function (data) {
+                    $scope.newWordPending = false;
                     $log.log(data);
                     $uibModalInstance.close();
                 });

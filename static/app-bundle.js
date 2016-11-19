@@ -329,22 +329,29 @@ app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootS
         }
     }
 ]);
-app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance", "InfoModal",'$log',
-    function ($scope, Collection, WordService, collectionId, $uibModalInstance, InfoModal,$log) {
+app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance", "InfoModal", '$log',
+    function ($scope, Collection, WordService, collectionId, $uibModalInstance, InfoModal, $log) {
         $scope.wordName = "";
         $scope.wordDescription = "";
         $scope.words = [];
         $scope.noWordsFound = false;
         //console.log(collectionId);
         $scope.findInput = "";
+        $scope.newWordPending = false;
+
+
         $scope.addNewWord = function () {
+            if ($scope.newWordPending) return;
             var valid = $scope.wordName != "" && $scope.wordDescription != "";
             if (valid) {
+                $scope.newWordPending = true;
+
                 Collection.addNewWord({
                     collectionId: collectionId,
                     wordName: $scope.wordName,
                     wordDescription: $scope.wordDescription
                 }).then(function (data) {
+                    $scope.newWordPending = false;
                     $log.log(data);
                     $uibModalInstance.close();
                 });
@@ -474,7 +481,7 @@ app.controller("CollectionController", ["$scope","Collection","$log",
 ]);
 app.controller("CreateCollectionController", ["$scope", "Collection", "$state", "InfoModal",
     function ($scope, Collection, $state, InfoModal) {
-        $scope.collectionType = 'public';
+        $scope.collectionType = 'private';
         $scope.collectionName = '';
         $scope.collectionDescription = '';
 
@@ -717,6 +724,8 @@ app.controller("PracticeController", [
         var words = [];
         var mistakesList = [];
         var startDate = null;
+
+        $scope.mistakesFinal = {};
         // $scope.focused = true; //
         $scope.message = {
             show: false,
@@ -906,6 +915,8 @@ app.controller("PracticeController", [
                 correct: $scope.correct,
                 wrong: $scope.wrong,
                 points: $scope.getPoints()
+            }).then(function (res) {
+                $scope.mistakesFinal = res.data.data.result.mistakes;
             });
         }
 

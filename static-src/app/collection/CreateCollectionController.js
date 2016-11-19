@@ -1,6 +1,6 @@
 app.controller("CreateCollectionController", ["$scope", "Collection", "$state", "InfoModal",
     function ($scope, Collection, $state, InfoModal) {
-        $scope.collectionType = 'public';
+        $scope.collectionType = 'private';
         $scope.collectionName = '';
         $scope.collectionDescription = '';
 

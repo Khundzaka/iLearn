@@ -11,14 +11,14 @@ PracticeRepository.saveResult = function (params, callback) {
     var user = params.user;
 
     function getCollection(cb) {
-        Collection.findById(collectionId).exec().then(function (collection) {
+        return Collection.findById(collectionId).exec().then(function (collection) {
             return cb(null, collection);
         }).catch(cb);
     }
 
     function getWordsList(collection, cb) {
         var wordsList = [];
-        cb(null, collection, wordsList);
+        return cb(null, collection, wordsList);
     }
 
     function createPracticeResult(collection, wordsList, cb) {
@@ -31,9 +31,9 @@ PracticeRepository.saveResult = function (params, callback) {
         result.spent = practiceData.spent;
         result.correct = practiceData.correct;
         result.wrong = practiceData.wrong;
-        result.save(function (err) {
-            return cb(err, result);
-        });
+        return result.save().then(function () {
+            return cb(null, result);
+        }).catch(cb);
     }
 
     async.waterfall([
@@ -43,6 +43,10 @@ PracticeRepository.saveResult = function (params, callback) {
     ], function (err, result) {
         return callback(err, result);
     });
+};
+
+PracticeRepository.getOne = function (params) {
+    return PracticeResult.findById(params.uid).populate("_collection mistakes.word").exec();
 };
 
 module.exports = {PracticeRepository: PracticeRepository};

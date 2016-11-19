@@ -4,6 +4,8 @@ app.controller("PracticeController", [
         var words = [];
         var mistakesList = [];
         var startDate = null;
+
+        $scope.mistakesFinal = {};
         // $scope.focused = true; //
         $scope.message = {
             show: false,
@@ -193,6 +195,8 @@ app.controller("PracticeController", [
                 correct: $scope.correct,
                 wrong: $scope.wrong,
                 points: $scope.getPoints()
+            }).then(function (res) {
+                $scope.mistakesFinal = res.data.data.result.mistakes;
             });
         }
 

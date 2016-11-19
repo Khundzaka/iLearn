@@ -7,9 +7,16 @@ practiceRouter.post("/submit", function (req, res, next) {
         if (err) {
             return next(err);
         }
-
-        return res.json({status: "ok", data: {result: result}});
+        PracticeRepository.getOne({uid: result._id}).then(function (practiceResult) {
+            return res.json({status: "ok", data: {result: practiceResult}});
+        }).catch(next);
     });
+});
+
+practiceRouter.get("/fetch/:uid", function (req, res, next) {
+    PracticeRepository.getOne({uid: req.params.uid}).then(function (practiceResult) {
+        return res.json({status: "ok", data: {result: practiceResult}});
+    }).catch(next);
 });
 
 module.exports = practiceRouter;
