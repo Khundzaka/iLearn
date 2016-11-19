@@ -1,7 +1,7 @@
-apanelApp.controller("AllCollectionListController", ["$scope", "CollectionService", "$uibModal", "$log","$stateParams",
-    function ($scope, CollectionService, $uibModal, $log, $stateParams) {
+apanelApp.controller("AllCollectionListController", ["$scope", "CollectionService", "$uibModal", "$log", "$stateParams", "$state",
+    function ($scope, CollectionService, $uibModal, $log, $stateParams, $state) {
         $scope.orderByField = 'created_at';
-        $scope.reverseSort =true;
+        $scope.reverseSort = true;
         $scope.limit = 20;
         $scope.count = 0;
 
@@ -9,7 +9,7 @@ apanelApp.controller("AllCollectionListController", ["$scope", "CollectionServic
             CollectionService.getAllCollectionList({
                 limit: $scope.limit,
                 page: $stateParams.page
-                }).then(function (data) {
+            }).then(function (data) {
                 $scope.collections = data.collections;
                 $scope.count = data.count;
                 $scope.page = $stateParams.page;

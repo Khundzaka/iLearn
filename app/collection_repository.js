@@ -26,7 +26,7 @@ CollectionRepository.getAll = function (params) {
     var page = params.page || 1;
     var limit = params.limit || 5;
     var skip = (page - 1) * limit || 0;
-    var query = Collection.find().skip(skip).limit(limit).sort({'_id': -1});
+    var query = Collection.find().skip(skip).limit(parseInt(limit)).sort({'_id': -1});
     return Promise.props({
        collections:query.exec(),
        page:page,
