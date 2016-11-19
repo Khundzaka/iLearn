@@ -2,7 +2,6 @@
     <div class="panel-heading">
         <h3 class="panel-title">კოლექციები</h3>
     </div>
-    <div class="panel-body">Ordered By: {{orderByField}}, Reverse Sort: {{reverseSort}}</div>
     <table class="table">
         <tr>
             <th><a ng-click="orderByField='is_public'; reverseSort = !reverseSort">
@@ -56,5 +55,7 @@
             </td>
         </tr>
     </table>
-
+    <ul uib-pagination items-per-page="limit" boundary-links="true" ng-change="changePage()"
+        total-items="count" ng-model="page" class="pagination-sm" max-size="8" force-ellipses="true"
+        previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
 </div>

@@ -4,12 +4,15 @@ var CollectionRepository = require('../../app/collection_repository').Collection
 var apanelCollectionRouter = Router();
 
 apanelCollectionRouter.get("/", function (req, res, next) {
-    CollectionRepository.getAll(function (err, collections) {
-        if (err) {
-            return next(err);
-        }
-        res.json({status: "ok", data: {collections: collections}});
-    });
+    // CollectionRepository.getAll(function (err, collections) {
+    //     if (err) {
+    //         return next(err);
+    //     }
+    //     res.json({status: "ok", data: {collections: collections}});
+    // });
+    CollectionRepository.getAll(req.query).then(function (data) {
+        return res.json(data);
+    }).catch(next);
 });
 
 apanelCollectionRouter.get("/pending", function (req, res, next) {

@@ -120,7 +120,13 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller: "CollectionController"
         })
         .state("app.collection.all-collection-list", {
-            url: "/all",
+            url: "/all?page",
+            params: {
+                page: {
+                    value: '1',
+                    squash: true
+                }
+            },
             templateUrl: _st + "collection/all-collection-list.html",
             controller: "AllCollectionListController"
         })
@@ -515,15 +521,21 @@ apanelApp.factory("UserAccess", function ($http) {
 
     return UserAccess;
 });
-apanelApp.controller("AllCollectionListController", ["$scope", "CollectionService", "$uibModal", "$log",
-    function ($scope, CollectionService, $uibModal, $log) {
+apanelApp.controller("AllCollectionListController", ["$scope", "CollectionService", "$uibModal", "$log","$stateParams",
+    function ($scope, CollectionService, $uibModal, $log, $stateParams) {
         $scope.orderByField = 'created_at';
         $scope.reverseSort =true;
-
+        $scope.limit = 20;
+        $scope.count = 0;
 
         function fetchAllCollectionList() {
-            CollectionService.getAllCollectionList().then(function (data) {
+            CollectionService.getAllCollectionList({
+                limit: $scope.limit,
+                page: $stateParams.page
+                }).then(function (data) {
                 $scope.collections = data.collections;
+                $scope.count = data.count;
+                $scope.page = $stateParams.page;
                 $log.log(data);
             });
         }
@@ -549,6 +561,10 @@ apanelApp.controller("AllCollectionListController", ["$scope", "CollectionServic
                 fetchAllCollectionList();
             });
 
+        };
+
+        $scope.changePage = function () {
+            $state.go(".", {page: $scope.page});
         };
     }
 ]);
@@ -593,9 +609,11 @@ apanelApp.factory("CollectionService", ['$http',
         var CollectionApiEndpoint = "/apanel/api/collection/";
         var OneCollectionApiEndpoint="/api/collection/";
 
-        CollectionService.getAllCollectionList = function () {
-            return $http.get(CollectionApiEndpoint).then(function (resp) {
-                return resp.data.data;
+        CollectionService.getAllCollectionList = function (params) {
+            params.limit = params.limit || 1;
+            params.page = params.page || 1;
+            return $http.get(CollectionApiEndpoint,{params: params}).then(function (resp) {
+                return resp.data;
             });
         };
 
