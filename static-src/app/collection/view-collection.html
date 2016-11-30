@@ -20,7 +20,13 @@
         <h3 class="panel-title">კოლექციის სიტყვები ({{collection.words.length}})</h3>
     </div>
     <ul class="list-group">
-        <li class="list-group-item" ng-repeat="word in collection.words">{{word.value}} - {{word.description}}
+        <li uib-dropdown class="list-group-item" ng-repeat="word in collection.words">{{word.value}} - {{word.description}}
+            <a uib-dropdown-toggle ng-class="{'glyphicon':true, 'glyphicon glyphicon-option-horizontal':!collection.is_public,
+             'glyphicon glyphicon-option-horizontal':collection.is_public}">
+            </a>
+            <ul class="dropdown-menu" role="menu">
+                <li role="menuitem"><a ng-click="getList(word._id)">ჩემს კოლექციაში დამატება</a></li>
+            </ul>
         </li>
     </ul>
 </div>
