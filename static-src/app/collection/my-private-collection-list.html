@@ -1,14 +1,19 @@
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        <h3 class="panel-title">კოლექციები</h3>
-    </div>
-    <div class="list-group" ng-repeat="collection in collections">
-        <a ng-click="addWord(collection._id)" ng-click="confirm()" class="list-group-item" >
-            <h4 class="list-group-item-heading">{{collection.name}}</h4>
-            <p class="list-group-item-text">{{collection.description}}</p>
-        </a>
-        <!--<a href="javascript:void(0)" ng-click="view(user._id)" class="list-group-item"-->
-        <!--ng-repeat="user in users_list | filter : search">{{ user.local.email }}</a>-->
-    </div>
+<div class="modal-header">
+    <h3 class="modal-title">პირად კოლექციაში დამატება</h3>
+</div>
+<div class="modal-body">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">პირადი კოლექციები</h3>
+        </div>
+        <div class="list-group" ng-repeat="collection in collections">
+            <a style="cursor: pointer;" ng-click="addWord(collection._id)" class="list-group-item">
+                <h4 class="list-group-item-heading">{{collection.name}}</h4>
+                <p class="list-group-item-text">{{collection.description}}</p>
+            </a>
+            <!--<a href="javascript:void(0)" ng-click="view(user._id)" class="list-group-item"-->
+            <!--ng-repeat="user in users_list | filter : search">{{ user.local.email }}</a>-->
+        </div>
 
+    </div>
 </div>

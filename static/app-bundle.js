@@ -579,13 +579,15 @@ app.controller("MyCollectionController", ["$scope", "Collection", "$log",
         });
     }
 ]);
-app.controller("MyPrivateCollectionListController",
-    ["$scope", "Collection","$log","WordService","wordId","$uibModal","$uibModalInstance",
-    function ($scope, Collection, $log,WordService,wordId,$uibModal,$uibModalInstance) {
+app.controller("MyPrivateCollectionListController", [
+    "$scope", "Collection", "$log", "WordService", "wordId", "InfoModal", "$uibModalInstance",
+    function ($scope, Collection, $log, WordService, wordId, InfoModal, $uibModalInstance) {
         function fetchMyPrivateCollectionList() {
             Collection.getUserCollections().then(function (data) {
-                $scope.collections = data.collections.filter(function(el){return el.is_public===false});
-                $log.log(data);
+                $scope.collections = data.collections.filter(function (el) {
+                    return el.is_public === false
+                });
+                // $log.log(data);
             });
         }
 
@@ -593,19 +595,20 @@ app.controller("MyPrivateCollectionListController",
 
         $scope.addWord = function (collectionId) {
             Collection.addWord({wordId: wordId, collectionId: collectionId}).then(function (data) {
-                $log.log(data);
-                $uibModal.open({
-                    animation: true,
-                    templateUrl: '/static/app/collection/confirmation.html',
-                    size: "sm"
-                });
+                // $log.log(data);
+                InfoModal.show({message: "სიტყვა დამატებულია პირად კოლექციაში."});
                 $uibModalInstance.close();
-            })
-        }
+            });
+        };
+
+        $scope.close = function () {
+            $uibModalInstance.close();
+        };
     }
 ]);
 
-app.controller("ViewCollectionController", ["$scope", "Collection", "$stateParams", "$state", "AuthService", "$log", "$uibModal",
+app.controller("ViewCollectionController", [
+    "$scope", "Collection", "$stateParams", "$state", "AuthService", "$log", "$uibModal",
     function ($scope, Collection, $stateParams, $state, AuthService, $log, $uibModal) {
         Collection.getOne($stateParams.collection).then(function (data) {
             $scope.collection = data.collection;
@@ -615,10 +618,9 @@ app.controller("ViewCollectionController", ["$scope", "Collection", "$stateParam
             $scope.getList = function (wordId) {
 
                 $uibModal.open({
-                    animation: true,
                     templateUrl: '/static/app/collection/my-private-collection-list.html',
                     controller: 'MyPrivateCollectionListController',
-                    size: "lg",
+                    size: "md",
                     resolve: {
                         wordId: function () {
                             return wordId;
@@ -628,6 +630,16 @@ app.controller("ViewCollectionController", ["$scope", "Collection", "$stateParam
             };
             // $log.log(data.collection);
         });
+    }
+]);
+app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope', '$log',
+    function ($scope, AuthService, $location, $rootScope, $log) {
+        // $log.log(AuthService);
+        $scope.hasFacebook = AuthService.facebook.name !== null;
+        $scope.hasLocal = AuthService.local.email !== null;
+        $scope.facebookName = AuthService.facebook.name;
+        $scope.localEmail = AuthService.local.email;
+        $scope.localUserName = AuthService.local.username;
     }
 ]);
 app.controller('HeaderController', ["$scope", "$rootScope", "AuthService", "$state", "$log",
@@ -740,6 +752,11 @@ app.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateParams'
                 fetchPosts();
             });
         };
+
+    }
+]);
+app.controller('HomeController', ['$scope', '$uibModal', '$log',
+    function ($scope, $uibModal, $log) {
 
     }
 ]);
@@ -985,24 +1002,6 @@ app.controller("PracticeController", [
 
     }
 ]);
-app.controller('HomeController', ['$scope', '$uibModal', '$log',
-    function ($scope, $uibModal, $log) {
-
-    }
-]);
-app.factory("WordService", ["$http",
-    function ($http) {
-        var wordPath = "/api/word/";
-        var WordService = {};
-        WordService.find = function (word) {
-            return $http.post(wordPath + "find", {value: word}).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        return WordService;
-    }
-]);
 app.service("InfoModal", ["$uibModal", function ($uibModal) {
     return {
         show: function (passedData) {
@@ -1032,13 +1031,16 @@ app.service("InfoModal", ["$uibModal", function ($uibModal) {
         }
     };
 }]);
-app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope', '$log',
-    function ($scope, AuthService, $location, $rootScope, $log) {
-        // $log.log(AuthService);
-        $scope.hasFacebook = AuthService.facebook.name !== null;
-        $scope.hasLocal = AuthService.local.email !== null;
-        $scope.facebookName = AuthService.facebook.name;
-        $scope.localEmail = AuthService.local.email;
-        $scope.localUserName = AuthService.local.username;
+app.factory("WordService", ["$http",
+    function ($http) {
+        var wordPath = "/api/word/";
+        var WordService = {};
+        WordService.find = function (word) {
+            return $http.post(wordPath + "find", {value: word}).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return WordService;
     }
 ]);

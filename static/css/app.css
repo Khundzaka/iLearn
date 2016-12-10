@@ -168,3 +168,13 @@ body {
   padding-top: 2px;
   padding-bottom: 2px;
 }
+.collection-word-menu {
+  background: transparent;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+.collection-word-menu:focus,
+.collection-word-menu:active {
+  outline: 0 !important;
+}

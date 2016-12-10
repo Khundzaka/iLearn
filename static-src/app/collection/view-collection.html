@@ -21,11 +21,11 @@
     </div>
     <ul class="list-group">
         <li uib-dropdown class="list-group-item dropup" ng-repeat="word in collection.words">{{word.value}} - {{word.description}}
-            <span uib-dropdown-toggle ng-class="{'glyphicon':true, 'glyphicon glyphicon-option-vertical':!collection.is_public,
-             'glyphicon glyphicon-option-vertical':collection.is_public}" class="pull-right">
-            </span>
+            <button uib-dropdown-toggle ng-show="collection.is_public" class="pull-right collection-word-menu btn btn-sm">
+                <span class="glyphicon glyphicon-option-vertical"></span>
+            </button>
             <ul class="dropdown-menu pull-right" role="menu">
-                <li role="menuitem"><a ng-click="getList(word._id)">ჩემს კოლექციაში დამატება</a></li>
+                <li role="menuitem" style="cursor: pointer;"><a ng-click="getList(word._id)">პირად კოლექციაში დამატება</a></li>
             </ul>
         </li>
     </ul>
