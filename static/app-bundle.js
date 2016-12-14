@@ -381,12 +381,12 @@ app.controller("AddWordController", ["$scope", "Collection", "WordService", "col
         }
     }
 ]);
-app.factory("Collection", ["$http",'$log',
-    function ($http,$log) {
+app.factory("Collection", ["$http", '$log',
+    function ($http, $log) {
         var collectionPath = "/api/collection/";
         var Collection = {};
-        Collection.getList = function () {
-            return $http.get(collectionPath).then(function (resp) {
+        Collection.getList = function (params) {
+            return $http.get(collectionPath + "/find", {params: params}).then(function (resp) {
                 return resp.data.data;
             });
         };
@@ -471,12 +471,21 @@ app.factory("Collection", ["$http",'$log',
         return Collection;
     }
 ]);
-app.controller("CollectionController", ["$scope","Collection","$log",
-    function ($scope, Collection,$log) {
-        Collection.getList().then(function (data) {
-            $scope.collections = data.collections;
-            $log.log(data);
-        });
+app.controller("CollectionController", ["$scope", "Collection", "$log",
+    function ($scope, Collection, $log) {
+
+        function fetchCollections(query) {
+            Collection.getList({query: query}).then(function (data) {
+                $scope.collections = data.collections;
+                $log.log(data);
+            });
+        }
+
+        fetchCollections("");
+
+        $scope.find = function () {
+            fetchCollections($scope.query);
+        };
     }
 ]);
 app.controller("CreateCollectionController", ["$scope", "Collection", "$state", "InfoModal",

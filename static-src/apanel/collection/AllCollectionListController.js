@@ -1,4 +1,5 @@
-apanelApp.controller("AllCollectionListController", ["$scope", "CollectionService", "$uibModal", "$log", "$stateParams", "$state",
+apanelApp.controller("AllCollectionListController", [
+    "$scope", "CollectionService", "$uibModal", "$log", "$stateParams", "$state",
     function ($scope, CollectionService, $uibModal, $log, $stateParams, $state) {
         $scope.orderByField = 'created_at';
         $scope.reverseSort = true;

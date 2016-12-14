@@ -7,8 +7,8 @@ var defaultFailResponse = {status: "failed"};
 
 // todo: router needs auth
 
-collectionRouter.get("/", function (req, res) {
-    CollectionRepository.getAcceptedPublic(function (err, collections) {
+collectionRouter.get("/find", function (req, res) {
+    CollectionRepository.getAcceptedPublic(req.query, function (err, collections) {
         if (err) {
             console.log(err);
             return res.json(defaultFailResponse);

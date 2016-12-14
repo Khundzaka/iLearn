@@ -2,21 +2,32 @@
     <div class="panel-heading">
         <h3 class="panel-title">კოლექციები</h3>
     </div>
-    <!--<div class="panel-body">-->
-        <!--<div class="form-group">-->
-            <!--<label for="searchField">მომხმარებელი :</label>-->
-            <!--<input type="text" class="form-control" id="searchField" ng-model="search.local.email">-->
-        <!--</div>-->
-    <!--</div>-->
+    <div class="panel-body">
+        <form ng-submit="find()" class="form-inline">
+            <div class="form-group">
+                <label>
+                    <input type="text" class="form-control" id="searchField" ng-model="query"
+                           placeholder="კოლექციის სახელი...">
+                </label>
+            </div>
+                <button class="btn btn-primary">ძებნა</button>
+        </form>
+
+    </div>
 
 
-    <div class="list-group">
-        <a ui-sref="collection.view({collection:collection._id})" class="list-group-item" ng-repeat="collection in collections">
+    <div class="list-group" ng-show="collections.length > 0">
+        <a ui-sref="collection.view({collection:collection._id})" class="list-group-item"
+           ng-repeat="collection in collections">
             <h4 class="list-group-item-heading">{{collection.name}}</h4>
             <p class="list-group-item-text">{{collection.description}}</p>
         </a>
         <!--<a href="javascript:void(0)" ng-click="view(user._id)" class="list-group-item"-->
-           <!--ng-repeat="user in users_list | filter : search">{{ user.local.email }}</a>-->
+        <!--ng-repeat="user in users_list | filter : search">{{ user.local.email }}</a>-->
+    </div>
+
+    <div class="panel-body" ng-hide="collections.length > 0">
+        ვერ მოიძებნა
     </div>
 
 </div>

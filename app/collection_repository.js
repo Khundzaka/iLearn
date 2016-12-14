@@ -1,7 +1,7 @@
 var Collection = require("../models/collection");
 var Word = require("../models/word");
 var async = require("async");
-var Promise=require("bluebird");
+var Promise = require("bluebird");
 
 var CollectionRepository = {};
 
@@ -28,9 +28,9 @@ CollectionRepository.getAll = function (params) {
     var skip = (page - 1) * limit || 0;
     var query = Collection.find().skip(skip).limit(parseInt(limit)).sort({'_id': -1});
     return Promise.props({
-       collections:query.exec(),
-       page:page,
-       count:Collection.count().exec()
+        collections: query.exec(),
+        page: page,
+        count: Collection.count().exec()
     });
 
     // Collection.find({}).exec(function (err, collections) {
@@ -41,13 +41,20 @@ CollectionRepository.getAll = function (params) {
     // });
 };
 
-CollectionRepository.getAcceptedPublic = function (callback) {
-    Collection.find({is_public: true, accepted: true}).sort({_id: -1}).exec(function (err, collections) {
-        if (err) {
-            return callback(err);
-        }
-        callback(null, collections);
-    });
+CollectionRepository.getAcceptedPublic = function (params, callback) {
+    Collection.find({
+        is_public: true,
+        accepted: true,
+        "$or": [{name: {"$regex": params.query}}, {description: {"$regex": params.query}}]
+    })
+        .limit(20)
+        .sort({_id: -1})
+        .exec(function (err, collections) {
+            if (err) {
+                return callback(err);
+            }
+            callback(null, collections);
+        });
 };
 
 

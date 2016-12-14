@@ -1,9 +1,9 @@
-app.factory("Collection", ["$http",'$log',
-    function ($http,$log) {
+app.factory("Collection", ["$http", '$log',
+    function ($http, $log) {
         var collectionPath = "/api/collection/";
         var Collection = {};
-        Collection.getList = function () {
-            return $http.get(collectionPath).then(function (resp) {
+        Collection.getList = function (params) {
+            return $http.get(collectionPath + "/find", {params: params}).then(function (resp) {
                 return resp.data.data;
             });
         };
