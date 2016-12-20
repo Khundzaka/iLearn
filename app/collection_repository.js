@@ -45,7 +45,7 @@ CollectionRepository.getAcceptedPublic = function (params, callback) {
     Collection.find({
         is_public: true,
         accepted: true,
-        "$or": [{name: {"$regex": params.query}}, {description: {"$regex": params.query}}]
+        "$or": [{name: {"$regex": params.query, "$options": "i"}}, {description: {"$regex": params.query}}]
     })
         .limit(20)
         .sort({_id: -1})
