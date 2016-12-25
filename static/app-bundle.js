@@ -175,6 +175,16 @@ app.directive('capitalize', function () {
         }
     };
 });
+app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope', '$log',
+    function ($scope, AuthService, $location, $rootScope, $log) {
+        // $log.log(AuthService);
+        $scope.hasFacebook = AuthService.facebook.name !== null;
+        $scope.hasLocal = AuthService.local.email !== null;
+        $scope.facebookName = AuthService.facebook.name;
+        $scope.localEmail = AuthService.local.email;
+        $scope.localUserName = AuthService.local.username;
+    }
+]);
 app.factory("AuthService", ['$http','$log',
     function ($http,$log) {
         var AuthService = {
@@ -641,33 +651,6 @@ app.controller("ViewCollectionController", [
         });
     }
 ]);
-app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope', '$log',
-    function ($scope, AuthService, $location, $rootScope, $log) {
-        // $log.log(AuthService);
-        $scope.hasFacebook = AuthService.facebook.name !== null;
-        $scope.hasLocal = AuthService.local.email !== null;
-        $scope.facebookName = AuthService.facebook.name;
-        $scope.localEmail = AuthService.local.email;
-        $scope.localUserName = AuthService.local.username;
-    }
-]);
-app.controller('HeaderController', ["$scope", "$rootScope", "AuthService", "$state", "$log",
-    function ($scope, $rootScope, AuthService, $state, $log) {
-        $scope.authenticated = AuthService.authenticated;
-        $scope.navCollapsed = true;
-        $scope.$on('authentication', function () {
-            $scope.authenticated = AuthService.authenticated;
-        });
-
-        $scope.logOut = function () {
-            AuthService.logOut(function (status) {
-                if (status) {
-                    $state.go('app');
-                    $scope.authenticated = AuthService.authenticated;
-                }
-            });
-        };
-    }]);
 app.factory("Forum", ["$http", '$log',
     function ($http, $log) {
         var forumPath = "/api/forum/";
@@ -769,6 +752,65 @@ app.controller('HomeController', ['$scope', '$uibModal', '$log',
 
     }
 ]);
+app.factory("WordService", ["$http",
+    function ($http) {
+        var wordPath = "/api/word/";
+        var WordService = {};
+        WordService.find = function (word) {
+            return $http.post(wordPath + "find", {value: word}).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return WordService;
+    }
+]);
+app.service("InfoModal", ["$uibModal", function ($uibModal) {
+    return {
+        show: function (passedData) {
+            var message = passedData.message || "";
+            var title = passedData.title || false;
+            var size = passedData.size || "sm";
+
+            $uibModal.open({
+                animation: true,
+                templateUrl: '/static/app/services/info-modal.html',
+                controller: ["$scope", "passedObject", "$uibModalInstance",
+                    function ($scope, passedObject, $uibModalInstance) {
+                        $scope.message = passedObject.message;
+                        $scope.title = passedObject.title;
+                        $scope.close = function () {
+                            $uibModalInstance.close();
+                        }
+                    }
+                ],
+                size: size,
+                resolve: {
+                    passedObject: function () {
+                        return {message: message, title: title};
+                    }
+                }
+            });
+        }
+    };
+}]);
+app.controller('HeaderController', ["$scope", "$rootScope", "AuthService", "$state", "$log",
+    function ($scope, $rootScope, AuthService, $state, $log) {
+        $scope.authenticated = AuthService.authenticated;
+        $scope.navCollapsed = true;
+        $scope.$on('authentication', function () {
+            $scope.authenticated = AuthService.authenticated;
+        });
+
+        $scope.logOut = function () {
+            AuthService.logOut(function (status) {
+                if (status) {
+                    $state.go('app');
+                    $scope.authenticated = AuthService.authenticated;
+                }
+            });
+        };
+    }]);
 app.controller("PracticeController", [
     "$scope", "$timeout", "$state", "$stateParams", "$http", "Collection", "AuthService", "$log",
     function ($scope, $timeout, $state, $stateParams, $http, Collection, AuthService, $log) {
@@ -1009,47 +1051,5 @@ app.controller("PracticeController", [
             resetScope();
         };
 
-    }
-]);
-app.service("InfoModal", ["$uibModal", function ($uibModal) {
-    return {
-        show: function (passedData) {
-            var message = passedData.message || "";
-            var title = passedData.title || false;
-            var size = passedData.size || "sm";
-
-            $uibModal.open({
-                animation: true,
-                templateUrl: '/static/app/services/info-modal.html',
-                controller: ["$scope", "passedObject", "$uibModalInstance",
-                    function ($scope, passedObject, $uibModalInstance) {
-                        $scope.message = passedObject.message;
-                        $scope.title = passedObject.title;
-                        $scope.close = function () {
-                            $uibModalInstance.close();
-                        }
-                    }
-                ],
-                size: size,
-                resolve: {
-                    passedObject: function () {
-                        return {message: message, title: title};
-                    }
-                }
-            });
-        }
-    };
-}]);
-app.factory("WordService", ["$http",
-    function ($http) {
-        var wordPath = "/api/word/";
-        var WordService = {};
-        WordService.find = function (word) {
-            return $http.post(wordPath + "find", {value: word}).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        return WordService;
     }
 ]);

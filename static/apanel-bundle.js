@@ -143,6 +143,179 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
     ;
 })
 ;
+apanelApp.controller("AllCollectionListController", [
+    "$scope", "CollectionService", "$uibModal", "$log", "$stateParams", "$state",
+    function ($scope, CollectionService, $uibModal, $log, $stateParams, $state) {
+        $scope.orderByField = 'created_at';
+        $scope.reverseSort = true;
+        $scope.limit = 20;
+        $scope.count = 0;
+
+        function fetchAllCollectionList() {
+            CollectionService.getAllCollectionList({
+                limit: $scope.limit,
+                page: $stateParams.page
+            }).then(function (data) {
+                $scope.collections = data.collections;
+                $scope.count = data.count;
+                $scope.page = $stateParams.page;
+                $log.log(data);
+            });
+        }
+
+        fetchAllCollectionList();
+
+        $scope.modify = function (collection_id) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/collection/modify-collection.html',
+                controller: 'ModifyCollectionController',
+                size: "lg",
+                resolve: {
+                    collection_id: function () {
+                        return collection_id;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                $log.log("Done");
+                fetchAllCollectionList();
+            });
+
+        };
+
+        $scope.changePage = function () {
+            $state.go(".", {page: $scope.page});
+        };
+    }
+]);
+apanelApp.controller("CollectionController", ["$scope", "ForumService", "$uibModal", "CollectionService", "$log",
+    function ($scope, ForumService, $uibModal, CollectionService, $log) {
+
+        function fetchCollectionList() {
+            CollectionService.getCollectionList().then(function (data) {
+                $scope.collections = data.collections;
+                $log.log(data);
+            });
+        }
+
+        fetchCollectionList();
+
+        $scope.modify = function (collection_id) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/collection/modify-collection.html',
+                controller: 'ModifyCollectionController',
+                size: "lg",
+                resolve: {
+                    collection_id: function () {
+                        return collection_id;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                $log.log("Done");
+                fetchCollectionList();
+            });
+
+        };
+    }
+]);
+apanelApp.factory("CollectionService", ['$http',
+    function ($http) {
+        var CollectionService = {};
+
+        var CollectionApiEndpoint = "/apanel/api/collection/";
+        var OneCollectionApiEndpoint="/api/collection/";
+
+        CollectionService.getAllCollectionList = function (params) {
+            params.limit = params.limit || 1;
+            params.page = params.page || 1;
+            return $http.get(CollectionApiEndpoint,{params: params}).then(function (resp) {
+                return resp.data;
+            });
+        };
+
+        CollectionService.getCollectionList = function () {
+            return $http.get(CollectionApiEndpoint+"pending").then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        CollectionService.getOne = function (CollectionId) {
+            return $http.get(OneCollectionApiEndpoint + CollectionId).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        CollectionService.validate=function (params) {
+            return $http.post(CollectionApiEndpoint + "validate", {
+                uid: params.uid,
+                accepted: params.accepted,
+                name:params.name,
+                description:params.description
+            }).then(function (resp) {
+                return resp.data.status;
+            });
+        }
+
+        return CollectionService;
+    }
+]);
+apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance", "CollectionService","collection_id","$log",
+    function ($scope, $uibModalInstance, CollectionService,collection_id ,$log) {
+        $scope.collectionTypeText = "";
+        $scope.active="";
+
+        function fetchCollection() {
+            CollectionService.getOne(collection_id).then(function (data) {
+                $scope.collection = data.collection;
+                $scope.collectionName = data.collection.name;
+                $scope.collectionDescription = data.collection.description;
+                $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
+                $scope.active=data.collection.accepted?"ვალიდური":"არა ვალიდური";
+                $scope.accepted=data.collection.accepted;
+                $log.log(data.collection);
+            });
+        }
+
+        fetchCollection();
+
+        $scope.editCollection=function () {
+            CollectionService.validate({
+                uid: collection_id,
+                name: $scope.collectionName,
+                description: $scope.collectionDescription,
+                accepted:$scope.accepted
+            }).then(function () {
+                $uibModalInstance.close();
+            });
+        };
+        // $scope.approve = function (CollectionId) {
+        //     CollectionService.validate({uid: CollectionId, accepted:true}).then(function (data) {
+        //         fetchCollection();
+        //     });
+        // };
+        //
+        // $scope.reject = function (CollectionId) {
+        //     CollectionService.validate({uid: CollectionId, accepted:false}).then(function (data) {
+        //         fetchCollection();
+        //         $scope.close();
+        //     });
+        // };
+
+        $scope.close = function () {
+            $uibModalInstance.close();
+        };
+
+
+    }
+]);
+
 apanelApp.controller("AccessGroupsController", function ($scope, GroupAccess, $uibModal,$log) {
     var getAll = function () {
         GroupAccess.getList().then(function (data) {
@@ -521,178 +694,17 @@ apanelApp.factory("UserAccess", function ($http) {
 
     return UserAccess;
 });
-apanelApp.controller("AllCollectionListController", ["$scope", "CollectionService", "$uibModal", "$log", "$stateParams", "$state",
-    function ($scope, CollectionService, $uibModal, $log, $stateParams, $state) {
-        $scope.orderByField = 'created_at';
-        $scope.reverseSort = true;
-        $scope.limit = 20;
-        $scope.count = 0;
-
-        function fetchAllCollectionList() {
-            CollectionService.getAllCollectionList({
-                limit: $scope.limit,
-                page: $stateParams.page
-            }).then(function (data) {
-                $scope.collections = data.collections;
-                $scope.count = data.count;
-                $scope.page = $stateParams.page;
-                $log.log(data);
-            });
-        }
-
-        fetchAllCollectionList();
-
-        $scope.modify = function (collection_id) {
-
-            var groupModal = $uibModal.open({
-                animation: true,
-                templateUrl: '/static/apanel/collection/modify-collection.html',
-                controller: 'ModifyCollectionController',
-                size: "lg",
-                resolve: {
-                    collection_id: function () {
-                        return collection_id;
-                    }
-                }
-            });
-
-            groupModal.result.then(function () {
-                $log.log("Done");
-                fetchAllCollectionList();
-            });
-
-        };
-
-        $scope.changePage = function () {
-            $state.go(".", {page: $scope.page});
-        };
+apanelApp.controller('HeaderController', ["$scope", function ($scope) {
+        $scope.navCollapsed = 1;
+    }]
+);
+apanelApp.controller('HomeController', ["$scope", "StatsService",
+    function ($scope, StatsService) {
+        StatsService.summary().then(function (data) {
+            $scope.stats = data;
+        });
     }
 ]);
-apanelApp.controller("CollectionController", ["$scope", "ForumService", "$uibModal", "CollectionService", "$log",
-    function ($scope, ForumService, $uibModal, CollectionService, $log) {
-
-        function fetchCollectionList() {
-            CollectionService.getCollectionList().then(function (data) {
-                $scope.collections = data.collections;
-                $log.log(data);
-            });
-        }
-
-        fetchCollectionList();
-
-        $scope.modify = function (collection_id) {
-
-            var groupModal = $uibModal.open({
-                animation: true,
-                templateUrl: '/static/apanel/collection/modify-collection.html',
-                controller: 'ModifyCollectionController',
-                size: "lg",
-                resolve: {
-                    collection_id: function () {
-                        return collection_id;
-                    }
-                }
-            });
-
-            groupModal.result.then(function () {
-                $log.log("Done");
-                fetchCollectionList();
-            });
-
-        };
-    }
-]);
-apanelApp.factory("CollectionService", ['$http',
-    function ($http) {
-        var CollectionService = {};
-
-        var CollectionApiEndpoint = "/apanel/api/collection/";
-        var OneCollectionApiEndpoint="/api/collection/";
-
-        CollectionService.getAllCollectionList = function (params) {
-            params.limit = params.limit || 1;
-            params.page = params.page || 1;
-            return $http.get(CollectionApiEndpoint,{params: params}).then(function (resp) {
-                return resp.data;
-            });
-        };
-
-        CollectionService.getCollectionList = function () {
-            return $http.get(CollectionApiEndpoint+"pending").then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        CollectionService.getOne = function (CollectionId) {
-            return $http.get(OneCollectionApiEndpoint + CollectionId).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        CollectionService.validate=function (params) {
-            return $http.post(CollectionApiEndpoint + "validate", {
-                uid: params.uid,
-                accepted: params.accepted,
-                name:params.name,
-                description:params.description
-            }).then(function (resp) {
-                return resp.data.status;
-            });
-        }
-
-        return CollectionService;
-    }
-]);
-apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance", "CollectionService","collection_id","$log",
-    function ($scope, $uibModalInstance, CollectionService,collection_id ,$log) {
-        $scope.collectionTypeText = "";
-        $scope.active="";
-
-        function fetchCollection() {
-            CollectionService.getOne(collection_id).then(function (data) {
-                $scope.collection = data.collection;
-                $scope.collectionName = data.collection.name;
-                $scope.collectionDescription = data.collection.description;
-                $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
-                $scope.active=data.collection.accepted?"ვალიდური":"არა ვალიდური";
-                $scope.accepted=data.collection.accepted;
-                $log.log(data.collection);
-            });
-        }
-
-        fetchCollection();
-
-        $scope.editCollection=function () {
-            CollectionService.validate({
-                uid: collection_id,
-                name: $scope.collectionName,
-                description: $scope.collectionDescription,
-                accepted:$scope.accepted
-            }).then(function () {
-                $uibModalInstance.close();
-            });
-        };
-        // $scope.approve = function (CollectionId) {
-        //     CollectionService.validate({uid: CollectionId, accepted:true}).then(function (data) {
-        //         fetchCollection();
-        //     });
-        // };
-        //
-        // $scope.reject = function (CollectionId) {
-        //     CollectionService.validate({uid: CollectionId, accepted:false}).then(function (data) {
-        //         fetchCollection();
-        //         $scope.close();
-        //     });
-        // };
-
-        $scope.close = function () {
-            $uibModalInstance.close();
-        };
-
-
-    }
-]);
-
 apanelApp.controller("DeletePostConfirmationController",
     ["$scope", "ForumService", "post_id", "$uibModalInstance", "$log",
         function ($scope, ForumService, post_id, $uibModalInstance, $log) {
@@ -925,17 +937,6 @@ apanelApp.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateP
             });
 
         };
-    }
-]);
-apanelApp.controller('HeaderController', ["$scope", function ($scope) {
-        $scope.navCollapsed = 1;
-    }]
-);
-apanelApp.controller('HomeController', ["$scope", "StatsService",
-    function ($scope, StatsService) {
-        StatsService.summary().then(function (data) {
-            $scope.stats = data;
-        });
     }
 ]);
 apanelApp.factory("StatsService", ['$http',
