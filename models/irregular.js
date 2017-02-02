@@ -1,10 +1,10 @@
-var mongoose=require("mongoose"),
-    Schema=mongoose.Schema;
+var mongoose = require("mongoose"),
+    Schema = mongoose.Schema;
 
 var Irregular = new Schema({
-    form_one:String,
-    form_two:String,
-    form_three:String,
+    form_one: String,
+    form_two: String,
+    form_three: String,
     description: String,
     created_at: Date,
     updated_at: Date

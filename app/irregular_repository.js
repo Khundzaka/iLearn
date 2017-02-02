@@ -5,11 +5,16 @@ var IrregularRepository = {};
 
 IrregularRepository.create = function (params, callback) {
     var description = params.description;
-    var form_one=params.form_one;
-    var form_two=params.form_two;
-    var form_three=params.form_three;
+    var form_one = params.form_one;
+    var form_two = params.form_two;
+    var form_three = params.form_three;
 
-    var irregular = new Irregular({form_one: form_one,form_two: form_two,form_three: form_three, description: description});
+    var irregular = new Irregular({
+        form_one: form_one,
+        form_two: form_two,
+        form_three: form_three,
+        description: description
+    });
     irregular.save(function (err) {
         callback(err, irregular);
     });
@@ -42,13 +47,13 @@ IrregularRepository.one = function (params, callback) {
 };
 
 IrregularRepository.modify = function (params, callback) {
-    Irregular.findById(params.uid).exec(function (err,irregular) {
+    Irregular.findById(params.uid).exec(function (err, irregular) {
         if (err) {
             return (err);
         }
-        irregular.form_one=params.form_one;
-        irregular.form_two=params.form_two;
-        irregular.form_three=params.form_three;
+        irregular.form_one = params.form_one;
+        irregular.form_two = params.form_two;
+        irregular.form_three = params.form_three;
         irregular.description = params.description;
 
         irregular.save(function (err) {
