@@ -11,7 +11,7 @@ apanelApp.factory("IrregularService", ['$http',
         };
 
         IrregularService.getOne = function (IrregularId) {
-            return $http.get(IrregularApiEndpoint + IrregularId).then(function (resp) {
+            return $http.get(IrregularApiEndpoint +"one/"+ IrregularId).then(function (resp) {
                 return resp.data.data;
             });
         };

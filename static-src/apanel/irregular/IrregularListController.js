@@ -1,5 +1,5 @@
-apanelApp.controller("IrregularListController", ["$scope", "IrregularService", "$uibModal", "$log",
-    function ($scope, IrregularService, $uibModal, $log) {
+apanelApp.controller("IrregularListController", ["$scope",  "$uibModal","IrregularService", "$log",
+    function ($scope,  $uibModal,IrregularService, $log) {
 
         function fetchIrregularList() {
             IrregularService.getIrregularList().then(function (data) {

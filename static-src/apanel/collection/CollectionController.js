@@ -1,5 +1,5 @@
-apanelApp.controller("CollectionController", ["$scope", "ForumService", "$uibModal", "CollectionService", "$log",
-    function ($scope, ForumService, $uibModal, CollectionService, $log) {
+apanelApp.controller("CollectionController", ["$scope", "$uibModal", "CollectionService", "$log",
+    function ($scope, $uibModal, CollectionService, $log) {
 
         function fetchCollectionList() {
             CollectionService.getCollectionList().then(function (data) {
