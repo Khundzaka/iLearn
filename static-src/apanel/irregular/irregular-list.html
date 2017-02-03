@@ -1,0 +1,27 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">არაწესიერი ზმნები</h3>
+    </div>
+
+    <table class="table">
+        <tr ng-repeat="irregular in irregulars">
+            <td class="col-md-2">
+                <a ng-click="modify(irregular._id)">{{irregular.form_one}}</a>
+            </td>
+            <td class="col-md-4">
+                <a ng-click="modify(irregular._id)">{{irregular.form_two}}</a>
+            </td>
+            <td class="col-md-4">
+                <a ng-click="modify(irregular._id)">{{irregular.form_three}}</a>
+            </td>
+            <td class="col-md-6">
+                <a ng-click="modify(collection._id)">{{irregular.description}}</a>
+            </td>
+            <td>
+                <button  class="btn btn-xs btn-primary" ng-click="modify(irregular._id)">
+                    <span class="glyphicon glyphicon-pencil"></span></button>
+            </td>
+        </tr>
+    </table>
+
+</div>

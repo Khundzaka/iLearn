@@ -4,9 +4,12 @@ var IrregularRepository = require('../../app/irregular_repository').IrregularRep
 var apanelIrregularRouter = Router();
 
 apanelIrregularRouter.get("/list", function (req, res, next) {
-    IrregularRepository.list(req.query).then(function (data) {
-        return res.json(data);
-    }).catch(next);
+    IrregularRepository.list(function (err, irregulars) {
+        if (err) {
+            return next(err);
+        }
+        res.json({status: "ok", data: {irregulars: irregulars}});
+    });
 });
 
 apanelIrregularRouter.get("/one/:irregular", function (req, res, next) {
@@ -25,6 +28,16 @@ apanelIrregularRouter.post("/modify", function (req, res, next) {
             return next(err);
         }
         res.json({status: "ok"});
+    });
+});
+
+apanelIrregularRouter.post("/", function (req, res) {
+    var params = req.body;
+    IrregularRepository.create(params, function (err, irregular) {
+        if (err) {
+            return res.json({status:"failed"});
+        }
+        res.json({status: "ok", data: {id: irregular._id}});
     });
 });
 

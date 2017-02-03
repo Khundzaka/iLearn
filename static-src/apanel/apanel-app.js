@@ -140,6 +140,21 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "user/user-list.html",
             controller: "UserListController"
         })
+        .state("app.irregular", {
+            url: "/irregular",
+            templateUrl: _st + "irregular/irregular.html",
+            abstract:true
+        })
+        .state("app.irregular.irregular-list", {
+            url: "/",
+            templateUrl: _st + "irregular/irregular-list.html",
+            controller: "IrregularListController"
+        })
+        .state("app.irregular.new-irregular", {
+            url: "/new-irregular",
+            templateUrl: _st + "irregular/new-irregular.html",
+            controller: "NewIrregularController"
+        })
     ;
 })
 ;

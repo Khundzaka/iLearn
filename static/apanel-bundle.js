@@ -140,416 +140,24 @@ apanelApp.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             templateUrl: _st + "user/user-list.html",
             controller: "UserListController"
         })
+        .state("app.irregular", {
+            url: "/irregular",
+            templateUrl: _st + "irregular/irregular.html",
+            abstract:true
+        })
+        .state("app.irregular.irregular-list", {
+            url: "/",
+            templateUrl: _st + "irregular/irregular-list.html",
+            controller: "IrregularListController"
+        })
+        .state("app.irregular.new-irregular", {
+            url: "/new-irregular",
+            templateUrl: _st + "irregular/new-irregular.html",
+            controller: "NewIrregularController"
+        })
     ;
 })
 ;
-apanelApp.controller("AllCollectionListController", [
-    "$scope", "CollectionService", "$uibModal", "$log", "$stateParams", "$state",
-    function ($scope, CollectionService, $uibModal, $log, $stateParams, $state) {
-        $scope.orderByField = 'created_at';
-        $scope.reverseSort = true;
-        $scope.limit = 20;
-        $scope.count = 0;
-
-        function fetchAllCollectionList() {
-            CollectionService.getAllCollectionList({
-                limit: $scope.limit,
-                page: $stateParams.page
-            }).then(function (data) {
-                $scope.collections = data.collections;
-                $scope.count = data.count;
-                $scope.page = $stateParams.page;
-                $log.log(data);
-            });
-        }
-
-        fetchAllCollectionList();
-
-        $scope.modify = function (collection_id) {
-
-            var groupModal = $uibModal.open({
-                animation: true,
-                templateUrl: '/static/apanel/collection/modify-collection.html',
-                controller: 'ModifyCollectionController',
-                size: "lg",
-                resolve: {
-                    collection_id: function () {
-                        return collection_id;
-                    }
-                }
-            });
-
-            groupModal.result.then(function () {
-                $log.log("Done");
-                fetchAllCollectionList();
-            });
-
-        };
-
-        $scope.changePage = function () {
-            $state.go(".", {page: $scope.page});
-        };
-    }
-]);
-apanelApp.controller("CollectionController", ["$scope", "ForumService", "$uibModal", "CollectionService", "$log",
-    function ($scope, ForumService, $uibModal, CollectionService, $log) {
-
-        function fetchCollectionList() {
-            CollectionService.getCollectionList().then(function (data) {
-                $scope.collections = data.collections;
-                $log.log(data);
-            });
-        }
-
-        fetchCollectionList();
-
-        $scope.modify = function (collection_id) {
-
-            var groupModal = $uibModal.open({
-                animation: true,
-                templateUrl: '/static/apanel/collection/modify-collection.html',
-                controller: 'ModifyCollectionController',
-                size: "lg",
-                resolve: {
-                    collection_id: function () {
-                        return collection_id;
-                    }
-                }
-            });
-
-            groupModal.result.then(function () {
-                $log.log("Done");
-                fetchCollectionList();
-            });
-
-        };
-    }
-]);
-apanelApp.factory("CollectionService", ['$http',
-    function ($http) {
-        var CollectionService = {};
-
-        var CollectionApiEndpoint = "/apanel/api/collection/";
-        var OneCollectionApiEndpoint="/api/collection/";
-
-        CollectionService.getAllCollectionList = function (params) {
-            params.limit = params.limit || 1;
-            params.page = params.page || 1;
-            return $http.get(CollectionApiEndpoint,{params: params}).then(function (resp) {
-                return resp.data;
-            });
-        };
-
-        CollectionService.getCollectionList = function () {
-            return $http.get(CollectionApiEndpoint+"pending").then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        CollectionService.getOne = function (CollectionId) {
-            return $http.get(OneCollectionApiEndpoint + CollectionId).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        CollectionService.validate=function (params) {
-            return $http.post(CollectionApiEndpoint + "validate", {
-                uid: params.uid,
-                accepted: params.accepted,
-                name:params.name,
-                description:params.description
-            }).then(function (resp) {
-                return resp.data.status;
-            });
-        }
-
-        return CollectionService;
-    }
-]);
-apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance", "CollectionService","collection_id","$log",
-    function ($scope, $uibModalInstance, CollectionService,collection_id ,$log) {
-        $scope.collectionTypeText = "";
-        $scope.active="";
-
-        function fetchCollection() {
-            CollectionService.getOne(collection_id).then(function (data) {
-                $scope.collection = data.collection;
-                $scope.collectionName = data.collection.name;
-                $scope.collectionDescription = data.collection.description;
-                $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
-                $scope.active=data.collection.accepted?"ვალიდური":"არა ვალიდური";
-                $scope.accepted=data.collection.accepted;
-                $log.log(data.collection);
-            });
-        }
-
-        fetchCollection();
-
-        $scope.editCollection=function () {
-            CollectionService.validate({
-                uid: collection_id,
-                name: $scope.collectionName,
-                description: $scope.collectionDescription,
-                accepted:$scope.accepted
-            }).then(function () {
-                $uibModalInstance.close();
-            });
-        };
-        // $scope.approve = function (CollectionId) {
-        //     CollectionService.validate({uid: CollectionId, accepted:true}).then(function (data) {
-        //         fetchCollection();
-        //     });
-        // };
-        //
-        // $scope.reject = function (CollectionId) {
-        //     CollectionService.validate({uid: CollectionId, accepted:false}).then(function (data) {
-        //         fetchCollection();
-        //         $scope.close();
-        //     });
-        // };
-
-        $scope.close = function () {
-            $uibModalInstance.close();
-        };
-
-
-    }
-]);
-
-apanelApp.controller("DeletePostConfirmationController",
-    ["$scope", "ForumService", "post_id", "$uibModalInstance", "$log",
-        function ($scope, ForumService, post_id, $uibModalInstance, $log) {
-
-            $scope.deletePost = function () {
-                ForumService.deletePost({
-                    postId: post_id
-                }).then(function () {
-                    $uibModalInstance.close();
-                });
-            };
-
-            $scope.close = function () {
-                $uibModalInstance.dismiss();
-            }
-        }
-    ]);
-apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id", "$uibModalInstance", "$log",
-    function ($scope, ForumService, topic_id, $uibModalInstance, $log) {
-        $scope.topicTitle = "";
-        $scope.topicDescription = "";
-        $scope.active = null;
-
-        function fetchTopic() {
-            ForumService.getOne(topic_id).then(function (data) {
-                $log.log(data);
-                $scope.topicTitle = data.topic.title;
-                $scope.topicDescription = data.topic.description;
-            });
-        }
-
-        fetchTopic();
-
-
-        $scope.editTopic = function () {
-            ForumService.update({
-                title: $scope.topicTitle,
-                description: $scope.topicDescription,
-                active: $scope.active,
-                uid: topic_id
-            }).then(function () {
-                fetchTopic();
-                $uibModalInstance.close();
-            });
-
-        };
-
-
-    }
-]);
-apanelApp.controller("ForumController", ["$scope", "ForumService", "$uibModal", "$log",
-    function ($scope, ForumService, $uibModal, $log) {
-
-        function fetchTopicList() {
-            ForumService.getTopicList().then(function (data) {
-                $scope.topics = data.topics;
-                $log.log(data);
-            });
-        }
-
-        fetchTopicList();
-
-        $scope.modify = function (topic_id) {
-
-            var groupModal = $uibModal.open({
-                animation: true,
-                templateUrl: '/static/apanel/forum/edit-topic.html',
-                controller: 'EditTopicController',
-                size: "lg",
-                resolve: {
-                    topic_id: function () {
-                        return topic_id;
-                    }
-                }
-            });
-
-            groupModal.result.then(function () {
-                fetchTopicList();
-            });
-
-        };
-    }
-]);
-apanelApp.factory("ForumService", ["$http", "$log",
-    function ($http, $log) {
-        var ForumService = {};
-        var forumApanelEndpoint = "/apanel/api/forum/";
-        var newTopicEndpoint = "/apanel/api/forum/";
-        var updateTopicEndpoint = "/apanel/api/forum/";
-        var getOneApiEndpoint = "/api/forum/topic/one/";
-        var forumApiEndpoint = "/api/forum/";
-
-        ForumService.getTopicPosts = function (params) {
-            var topicId = params.topicId;
-            return $http.get(forumApiEndpoint + "topic/posts/" + topicId).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        ForumService.getLatestPosts=function () {
-            return $http.get(forumApanelEndpoint+"posts").then(function (resp) {
-                $log.log(resp);
-                return resp.data.data;
-            })
-        }
-
-        ForumService.deletePost = function (params) {
-            var postId = params.postId;
-            return $http.delete(forumApanelEndpoint + "post/" + postId).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        ForumService.getOneTopic = function (params) {
-            var topicId = params.topicId;
-            return $http.get(forumApiEndpoint + "topic/one/" + topicId).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-
-        ForumService.getTopicList = function () {
-            return $http.get(forumApanelEndpoint).then(function (response) {
-                $log.log(response);
-                return response.data.data;
-            });
-        };
-
-        ForumService.getOne = function (topic_id) {
-            return $http.get(getOneApiEndpoint + topic_id).then(function (response) {
-                $log.log(response);
-                $log.log(response.data.data);
-                return response.data.data;
-            })
-        };
-
-        ForumService.addNewTopic = function (params) {
-            return $http.post(newTopicEndpoint, {
-                title: params.title,
-                description: params.description,
-                active: params.active
-            }).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        ForumService.update = function (params) {
-            return $http.put(updateTopicEndpoint, {
-                title: params.title,
-                description: params.description,
-                active: params.active,
-                uid: params.uid
-            }).then(function (response) {
-                return response.data.status;
-            });
-        };
-
-        return ForumService;
-    }
-]);
-apanelApp.controller("LastPostsController", ["$scope", "ForumService", "$log",
-    function ($scope, ForumService, $log) {
-        function fetchlatestPosts() {
-            ForumService.getLatestPosts().then(function (data) {
-                $scope.posts = data.posts;
-            });
-        }
-
-        fetchlatestPosts();
-    }
-]);
-apanelApp.controller("NewTopicController",["$scope","ForumService","$state","$log",
-    function ($scope,ForumService,$state,$log) {
-        $scope.topicTitle='';
-        $scope.topicDescription='';
-        $scope.active;
-
-        $scope.submit = function () {
-            ForumService.addNewTopic({
-                title: $scope.topicTitle,
-                description: $scope.topicDescription,
-                active:$scope.active
-            }).then(function () {
-                $state.go('app.forum.list');
-            })
-        };
-
-    }
-]);
-apanelApp.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateParams', 'ForumService',
-    function ($scope, $uibModal, $log, $stateParams, ForumService) {
-        $scope.posts = [];
-
-        function fetchTopic() {
-            ForumService.getOneTopic({topicId: $stateParams.topicId}).then(function (data) {
-                $scope.topic = data.topic;
-                $log.log(data);
-            })
-
-        }
-
-        fetchTopic();
-
-        function fetchPosts() {
-            ForumService.getTopicPosts({topicId: $stateParams.topicId}).then(function (data) {
-                $scope.posts = data.posts;
-            });
-        }
-
-        fetchPosts();
-
-
-        $scope.deletePost = function (post_id) {
-
-            var groupModal = $uibModal.open({
-                animation: true,
-                templateUrl: '/static/apanel/forum/delete-post.html',
-                controller: 'DeletePostConfirmationController',
-                size: "md",
-                resolve: {
-                    post_id: function () {
-                        return post_id;
-                    }
-                }
-            });
-
-            groupModal.result.then(function () {
-                $log.log("Done");
-                fetchPosts();
-            });
-
-        };
-    }
-]);
 apanelApp.controller("AccessGroupsController", function ($scope, GroupAccess, $uibModal,$log) {
     var getAll = function () {
         GroupAccess.getList().then(function (data) {
@@ -928,19 +536,520 @@ apanelApp.factory("UserAccess", function ($http) {
 
     return UserAccess;
 });
-apanelApp.factory("StatsService", ['$http',
-    function ($http) {
-        var StatsService = {};
+apanelApp.controller("DeletePostConfirmationController",
+    ["$scope", "ForumService", "post_id", "$uibModalInstance", "$log",
+        function ($scope, ForumService, post_id, $uibModalInstance, $log) {
 
-        var StatsApiEndpoint = "/apanel/api/stats";
+            $scope.deletePost = function () {
+                ForumService.deletePost({
+                    postId: post_id
+                }).then(function () {
+                    $uibModalInstance.close();
+                });
+            };
 
-        StatsService.summary = function () {
-            return $http.get(StatsApiEndpoint + "/summary").then(function (resp) {
+            $scope.close = function () {
+                $uibModalInstance.dismiss();
+            }
+        }
+    ]);
+apanelApp.controller("EditTopicController", ["$scope", "ForumService", "topic_id", "$uibModalInstance", "$log",
+    function ($scope, ForumService, topic_id, $uibModalInstance, $log) {
+        $scope.topicTitle = "";
+        $scope.topicDescription = "";
+        $scope.active = null;
+
+        function fetchTopic() {
+            ForumService.getOne(topic_id).then(function (data) {
+                $log.log(data);
+                $scope.topicTitle = data.topic.title;
+                $scope.topicDescription = data.topic.description;
+            });
+        }
+
+        fetchTopic();
+
+
+        $scope.editTopic = function () {
+            ForumService.update({
+                title: $scope.topicTitle,
+                description: $scope.topicDescription,
+                active: $scope.active,
+                uid: topic_id
+            }).then(function () {
+                fetchTopic();
+                $uibModalInstance.close();
+            });
+
+        };
+
+
+    }
+]);
+apanelApp.controller("ForumController", ["$scope", "ForumService", "$uibModal", "$log",
+    function ($scope, ForumService, $uibModal, $log) {
+
+        function fetchTopicList() {
+            ForumService.getTopicList().then(function (data) {
+                $scope.topics = data.topics;
+                $log.log(data);
+            });
+        }
+
+        fetchTopicList();
+
+        $scope.modify = function (topic_id) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/forum/edit-topic.html',
+                controller: 'EditTopicController',
+                size: "lg",
+                resolve: {
+                    topic_id: function () {
+                        return topic_id;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                fetchTopicList();
+            });
+
+        };
+    }
+]);
+apanelApp.factory("ForumService", ["$http", "$log",
+    function ($http, $log) {
+        var ForumService = {};
+        var forumApanelEndpoint = "/apanel/api/forum/";
+        var newTopicEndpoint = "/apanel/api/forum/";
+        var updateTopicEndpoint = "/apanel/api/forum/";
+        var getOneApiEndpoint = "/api/forum/topic/one/";
+        var forumApiEndpoint = "/api/forum/";
+
+        ForumService.getTopicPosts = function (params) {
+            var topicId = params.topicId;
+            return $http.get(forumApiEndpoint + "topic/posts/" + topicId).then(function (resp) {
                 return resp.data.data;
             });
         };
 
-        return StatsService;
+        ForumService.getLatestPosts=function () {
+            return $http.get(forumApanelEndpoint+"posts").then(function (resp) {
+                $log.log(resp);
+                return resp.data.data;
+            })
+        }
+
+        ForumService.deletePost = function (params) {
+            var postId = params.postId;
+            return $http.delete(forumApanelEndpoint + "post/" + postId).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        ForumService.getOneTopic = function (params) {
+            var topicId = params.topicId;
+            return $http.get(forumApiEndpoint + "topic/one/" + topicId).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+
+        ForumService.getTopicList = function () {
+            return $http.get(forumApanelEndpoint).then(function (response) {
+                $log.log(response);
+                return response.data.data;
+            });
+        };
+
+        ForumService.getOne = function (topic_id) {
+            return $http.get(getOneApiEndpoint + topic_id).then(function (response) {
+                $log.log(response);
+                $log.log(response.data.data);
+                return response.data.data;
+            })
+        };
+
+        ForumService.addNewTopic = function (params) {
+            return $http.post(newTopicEndpoint, {
+                title: params.title,
+                description: params.description,
+                active: params.active
+            }).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        ForumService.update = function (params) {
+            return $http.put(updateTopicEndpoint, {
+                title: params.title,
+                description: params.description,
+                active: params.active,
+                uid: params.uid
+            }).then(function (response) {
+                return response.data.status;
+            });
+        };
+
+        return ForumService;
+    }
+]);
+apanelApp.controller("LastPostsController", ["$scope", "ForumService", "$log",
+    function ($scope, ForumService, $log) {
+        function fetchlatestPosts() {
+            ForumService.getLatestPosts().then(function (data) {
+                $scope.posts = data.posts;
+            });
+        }
+
+        fetchlatestPosts();
+    }
+]);
+apanelApp.controller("NewTopicController",["$scope","ForumService","$state","$log",
+    function ($scope,ForumService,$state,$log) {
+        $scope.topicTitle='';
+        $scope.topicDescription='';
+        $scope.active;
+
+        $scope.submit = function () {
+            ForumService.addNewTopic({
+                title: $scope.topicTitle,
+                description: $scope.topicDescription,
+                active:$scope.active
+            }).then(function () {
+                $state.go('app.forum.list');
+            })
+        };
+
+    }
+]);
+apanelApp.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateParams', 'ForumService',
+    function ($scope, $uibModal, $log, $stateParams, ForumService) {
+        $scope.posts = [];
+
+        function fetchTopic() {
+            ForumService.getOneTopic({topicId: $stateParams.topicId}).then(function (data) {
+                $scope.topic = data.topic;
+                $log.log(data);
+            })
+
+        }
+
+        fetchTopic();
+
+        function fetchPosts() {
+            ForumService.getTopicPosts({topicId: $stateParams.topicId}).then(function (data) {
+                $scope.posts = data.posts;
+            });
+        }
+
+        fetchPosts();
+
+
+        $scope.deletePost = function (post_id) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/forum/delete-post.html',
+                controller: 'DeletePostConfirmationController',
+                size: "md",
+                resolve: {
+                    post_id: function () {
+                        return post_id;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                $log.log("Done");
+                fetchPosts();
+            });
+
+        };
+    }
+]);
+apanelApp.controller("AllCollectionListController", [
+    "$scope", "CollectionService", "$uibModal", "$log", "$stateParams", "$state",
+    function ($scope, CollectionService, $uibModal, $log, $stateParams, $state) {
+        $scope.orderByField = 'created_at';
+        $scope.reverseSort = true;
+        $scope.limit = 20;
+        $scope.count = 0;
+
+        function fetchAllCollectionList() {
+            CollectionService.getAllCollectionList({
+                limit: $scope.limit,
+                page: $stateParams.page
+            }).then(function (data) {
+                $scope.collections = data.collections;
+                $scope.count = data.count;
+                $scope.page = $stateParams.page;
+                $log.log(data);
+            });
+        }
+
+        fetchAllCollectionList();
+
+        $scope.modify = function (collection_id) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/collection/modify-collection.html',
+                controller: 'ModifyCollectionController',
+                size: "lg",
+                resolve: {
+                    collection_id: function () {
+                        return collection_id;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                $log.log("Done");
+                fetchAllCollectionList();
+            });
+
+        };
+
+        $scope.changePage = function () {
+            $state.go(".", {page: $scope.page});
+        };
+    }
+]);
+apanelApp.controller("CollectionController", ["$scope", "ForumService", "$uibModal", "CollectionService", "$log",
+    function ($scope, ForumService, $uibModal, CollectionService, $log) {
+
+        function fetchCollectionList() {
+            CollectionService.getCollectionList().then(function (data) {
+                $scope.collections = data.collections;
+                $log.log(data);
+            });
+        }
+
+        fetchCollectionList();
+
+        $scope.modify = function (collection_id) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/collection/modify-collection.html',
+                controller: 'ModifyCollectionController',
+                size: "lg",
+                resolve: {
+                    collection_id: function () {
+                        return collection_id;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                $log.log("Done");
+                fetchCollectionList();
+            });
+
+        };
+    }
+]);
+apanelApp.factory("CollectionService", ['$http',
+    function ($http) {
+        var CollectionService = {};
+
+        var CollectionApiEndpoint = "/apanel/api/collection/";
+        var OneCollectionApiEndpoint="/api/collection/";
+
+        CollectionService.getAllCollectionList = function (params) {
+            params.limit = params.limit || 1;
+            params.page = params.page || 1;
+            return $http.get(CollectionApiEndpoint,{params: params}).then(function (resp) {
+                return resp.data;
+            });
+        };
+
+        CollectionService.getCollectionList = function () {
+            return $http.get(CollectionApiEndpoint+"pending").then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        CollectionService.getOne = function (CollectionId) {
+            return $http.get(OneCollectionApiEndpoint + CollectionId).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        CollectionService.validate=function (params) {
+            return $http.post(CollectionApiEndpoint + "validate", {
+                uid: params.uid,
+                accepted: params.accepted,
+                name:params.name,
+                description:params.description
+            }).then(function (resp) {
+                return resp.data.status;
+            });
+        }
+
+        return CollectionService;
+    }
+]);
+apanelApp.controller("ModifyCollectionController", ["$scope", "$uibModalInstance", "CollectionService","collection_id","$log",
+    function ($scope, $uibModalInstance, CollectionService,collection_id ,$log) {
+        $scope.collectionTypeText = "";
+        $scope.active="";
+
+        function fetchCollection() {
+            CollectionService.getOne(collection_id).then(function (data) {
+                $scope.collection = data.collection;
+                $scope.collectionName = data.collection.name;
+                $scope.collectionDescription = data.collection.description;
+                $scope.collectionTypeText = data.collection.is_public ? "ღია კოლექცია" : "პირადი კოლექცია";
+                $scope.active=data.collection.accepted?"ვალიდური":"არა ვალიდური";
+                $scope.accepted=data.collection.accepted;
+                $log.log(data.collection);
+            });
+        }
+
+        fetchCollection();
+
+        $scope.editCollection=function () {
+            CollectionService.validate({
+                uid: collection_id,
+                name: $scope.collectionName,
+                description: $scope.collectionDescription,
+                accepted:$scope.accepted
+            }).then(function () {
+                $uibModalInstance.close();
+            });
+        };
+        // $scope.approve = function (CollectionId) {
+        //     CollectionService.validate({uid: CollectionId, accepted:true}).then(function (data) {
+        //         fetchCollection();
+        //     });
+        // };
+        //
+        // $scope.reject = function (CollectionId) {
+        //     CollectionService.validate({uid: CollectionId, accepted:false}).then(function (data) {
+        //         fetchCollection();
+        //         $scope.close();
+        //     });
+        // };
+
+        $scope.close = function () {
+            $uibModalInstance.close();
+        };
+
+
+    }
+]);
+
+apanelApp.controller('HeaderController', ["$scope", function ($scope) {
+        $scope.navCollapsed = 1;
+    }]
+);
+apanelApp.controller('HomeController', ["$scope", "StatsService",
+    function ($scope, StatsService) {
+        StatsService.summary().then(function (data) {
+            $scope.stats = data;
+        });
+    }
+]);
+apanelApp.controller("IrregularListController", ["$scope", "IrregularService", "$uibModal", "$log",
+    function ($scope, IrregularService, $uibModal, $log) {
+
+        function fetchIrregularList() {
+            IrregularService.getIrregularList().then(function (data) {
+                $scope.irregulars = data.irregulars;
+                $log.log(data);
+            });
+        }
+
+        fetchIrregularList();
+
+        $scope.modify = function (irregular_id) {
+
+            var groupModal = $uibModal.open({
+                animation: true,
+                templateUrl: '/static/apanel/irregular/modify-irregular.html',
+                controller: 'ModifyIrregularController',
+                size: "lg",
+                resolve: {
+                    irregular_id: function () {
+                        return irregular_id;
+                    }
+                }
+            });
+
+            groupModal.result.then(function () {
+                $log.log("Done");
+                fetchIrregularList();
+            });
+
+        };
+    }
+]);
+apanelApp.factory("IrregularService", ['$http',
+    function ($http) {
+        var IrregularService = {};
+
+        var IrregularApiEndpoint = "/apanel/api/irregular/";
+
+        IrregularService.getIrregularList = function () {
+            return $http.get(IrregularApiEndpoint+"list").then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        IrregularService.getOne = function (IrregularId) {
+            return $http.get(IrregularApiEndpoint + IrregularId).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        IrregularService.modify = function (params) {
+            return $http.post(IrregularApiEndpoint + "modify", {
+                uid: params.uid,
+                form_one:params.form_one,
+                form_two:params.form_two,
+                form_three:params.form_three,
+                description: params.description
+            }).then(function (resp) {
+                return resp.data.status;
+            });
+        };
+
+        IrregularService.addNewIrregular = function (params) {
+            return $http.post(IrregularApiEndpoint, {
+                form_one:params.form_one,
+                form_two:params.form_two,
+                form_three:params.form_three,
+                description:params.description,
+            }).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return IrregularService;
+    }
+]);
+apanelApp.controller("NewIrregularController",["$scope","IrregularService","$state",
+    function ($scope,IrregularService,$state) {
+        $scope.form_one='';
+        $scope.form_two='';
+        $scope.form_three='';
+        $scope.description='';
+
+        $scope.submit = function () {
+            IrregularService.addNewIrregular({
+                form_one:$scope.form_one,
+                form_two:$scope.form_two,
+                form_three:$scope.form_three,
+                description:$scope.description
+            }).then(function () {
+               $state.go('app.irregular.irregular-list');
+            })
+        };
+
     }
 ]);
 apanelApp.controller("UserListController",["$scope", "UserService", "$uibModal", "$log",
@@ -971,15 +1080,19 @@ apanelApp.factory("UserService", ['$http',
         return UserService;
     }
 ]);
-apanelApp.controller('HeaderController', ["$scope", function ($scope) {
-        $scope.navCollapsed = 1;
-    }]
-);
-apanelApp.controller('HomeController', ["$scope", "StatsService",
-    function ($scope, StatsService) {
-        StatsService.summary().then(function (data) {
-            $scope.stats = data;
-        });
+apanelApp.factory("StatsService", ['$http',
+    function ($http) {
+        var StatsService = {};
+
+        var StatsApiEndpoint = "/apanel/api/stats";
+
+        StatsService.summary = function () {
+            return $http.get(StatsApiEndpoint + "/summary").then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return StatsService;
     }
 ]);
 apanelApp.controller("ModifyWordController", ["$scope", "WordService", "wordId", "$uibModalInstance",

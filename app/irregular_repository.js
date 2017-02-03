@@ -21,8 +21,10 @@ IrregularRepository.create = function (params, callback) {
 };
 
 IrregularRepository.list = function (callback) {
-    Irregular.find({active: true}).exec(function (err, topics) {
-        return callback(err, topics);
+    Irregular.find().exec(function (err, irregulars) {
+        return callback(null, irregulars);
+    }).catch(function (err) {
+        return callback(err);
     });
 };
 
