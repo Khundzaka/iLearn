@@ -124,6 +124,16 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             data: {requireLogin: true, pageTitle: "ფორუმი"},
             templateUrl: _st + "forum/topic.html",
             controller: "TopicController"
+        })
+        .state("irregular", {
+            abstract: true,
+            templateUrl: _st + "irregular/irregular.html"
+        })
+        .state("irregular.list", {
+            url:"/irregular",
+            data: {requireLogin: true, pageTitle: "არაწესიერი ზმნები"},
+            templateUrl: _st + "irregular/irregular-list.html",
+            controller:"IrregularListController"
         });
 });
 
@@ -175,16 +185,6 @@ app.directive('capitalize', function () {
         }
     };
 });
-app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope', '$log',
-    function ($scope, AuthService, $location, $rootScope, $log) {
-        // $log.log(AuthService);
-        $scope.hasFacebook = AuthService.facebook.name !== null;
-        $scope.hasLocal = AuthService.local.email !== null;
-        $scope.facebookName = AuthService.facebook.name;
-        $scope.localEmail = AuthService.local.email;
-        $scope.localUserName = AuthService.local.username;
-    }
-]);
 app.factory("AuthService", ['$http','$log',
     function ($http,$log) {
         var AuthService = {
@@ -339,23 +339,6 @@ app.controller("RegisterController", ['$scope', 'AuthService', '$state', '$rootS
         }
     }
 ]);
-app.controller('HeaderController', ["$scope", "$rootScope", "AuthService", "$state", "$log",
-    function ($scope, $rootScope, AuthService, $state, $log) {
-        $scope.authenticated = AuthService.authenticated;
-        $scope.navCollapsed = true;
-        $scope.$on('authentication', function () {
-            $scope.authenticated = AuthService.authenticated;
-        });
-
-        $scope.logOut = function () {
-            AuthService.logOut(function (status) {
-                if (status) {
-                    $state.go('app');
-                    $scope.authenticated = AuthService.authenticated;
-                }
-            });
-        };
-    }]);
 app.controller("AddWordController", ["$scope", "Collection", "WordService", "collectionId", "$uibModalInstance", "InfoModal", '$log',
     function ($scope, Collection, WordService, collectionId, $uibModalInstance, InfoModal, $log) {
         $scope.wordName = "";
@@ -668,6 +651,33 @@ app.controller("ViewCollectionController", [
         });
     }
 ]);
+app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope', '$log',
+    function ($scope, AuthService, $location, $rootScope, $log) {
+        // $log.log(AuthService);
+        $scope.hasFacebook = AuthService.facebook.name !== null;
+        $scope.hasLocal = AuthService.local.email !== null;
+        $scope.facebookName = AuthService.facebook.name;
+        $scope.localEmail = AuthService.local.email;
+        $scope.localUserName = AuthService.local.username;
+    }
+]);
+app.controller('HeaderController', ["$scope", "$rootScope", "AuthService", "$state", "$log",
+    function ($scope, $rootScope, AuthService, $state, $log) {
+        $scope.authenticated = AuthService.authenticated;
+        $scope.navCollapsed = true;
+        $scope.$on('authentication', function () {
+            $scope.authenticated = AuthService.authenticated;
+        });
+
+        $scope.logOut = function () {
+            AuthService.logOut(function (status) {
+                if (status) {
+                    $state.go('app');
+                    $scope.authenticated = AuthService.authenticated;
+                }
+            });
+        };
+    }]);
 app.factory("Forum", ["$http", '$log',
     function ($http, $log) {
         var forumPath = "/api/forum/";
@@ -769,48 +779,34 @@ app.controller('HomeController', ['$scope', '$uibModal', '$log',
 
     }
 ]);
-app.factory("WordService", ["$http",
+app.controller("IrregularListController", ["$scope", "IrregularService", "$log",
+    function ($scope, IrregularService, $log) {
+
+        function fetchIrregularList() {
+            IrregularService.getIrregularList().then(function (data) {
+                $scope.irregulars = data.irregulars;
+                $log.log(data);
+            });
+        }
+
+        fetchIrregularList();
+    }
+]);
+app.factory("IrregularService", ['$http',
     function ($http) {
-        var wordPath = "/api/word/";
-        var WordService = {};
-        WordService.find = function (word) {
-            return $http.post(wordPath + "find", {value: word}).then(function (resp) {
+        var IrregularService = {};
+
+        var IrregularApiEndpoint = "/apanel/api/irregular/";
+
+        IrregularService.getIrregularList = function () {
+            return $http.get(IrregularApiEndpoint+"list").then(function (resp) {
                 return resp.data.data;
             });
         };
 
-        return WordService;
+        return IrregularService;
     }
 ]);
-app.service("InfoModal", ["$uibModal", function ($uibModal) {
-    return {
-        show: function (passedData) {
-            var message = passedData.message || "";
-            var title = passedData.title || false;
-            var size = passedData.size || "sm";
-
-            $uibModal.open({
-                animation: true,
-                templateUrl: '/static/app/services/info-modal.html',
-                controller: ["$scope", "passedObject", "$uibModalInstance",
-                    function ($scope, passedObject, $uibModalInstance) {
-                        $scope.message = passedObject.message;
-                        $scope.title = passedObject.title;
-                        $scope.close = function () {
-                            $uibModalInstance.close();
-                        }
-                    }
-                ],
-                size: size,
-                resolve: {
-                    passedObject: function () {
-                        return {message: message, title: title};
-                    }
-                }
-            });
-        }
-    };
-}]);
 app.controller("PracticeController", [
     "$scope", "$timeout", "$state", "$stateParams", "$http", "Collection", "AuthService", "$log",
     function ($scope, $timeout, $state, $stateParams, $http, Collection, AuthService, $log) {
@@ -1051,5 +1047,47 @@ app.controller("PracticeController", [
             resetScope();
         };
 
+    }
+]);
+app.service("InfoModal", ["$uibModal", function ($uibModal) {
+    return {
+        show: function (passedData) {
+            var message = passedData.message || "";
+            var title = passedData.title || false;
+            var size = passedData.size || "sm";
+
+            $uibModal.open({
+                animation: true,
+                templateUrl: '/static/app/services/info-modal.html',
+                controller: ["$scope", "passedObject", "$uibModalInstance",
+                    function ($scope, passedObject, $uibModalInstance) {
+                        $scope.message = passedObject.message;
+                        $scope.title = passedObject.title;
+                        $scope.close = function () {
+                            $uibModalInstance.close();
+                        }
+                    }
+                ],
+                size: size,
+                resolve: {
+                    passedObject: function () {
+                        return {message: message, title: title};
+                    }
+                }
+            });
+        }
+    };
+}]);
+app.factory("WordService", ["$http",
+    function ($http) {
+        var wordPath = "/api/word/";
+        var WordService = {};
+        WordService.find = function (word) {
+            return $http.post(wordPath + "find", {value: word}).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return WordService;
     }
 ]);
