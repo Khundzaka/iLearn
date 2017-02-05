@@ -124,6 +124,16 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             data: {requireLogin: true, pageTitle: "ფორუმი"},
             templateUrl: _st + "forum/topic.html",
             controller: "TopicController"
+        })
+        .state("irregular", {
+            abstract: true,
+            templateUrl: _st + "irregular/irregular.html"
+        })
+        .state("irregular.list", {
+            url:"/irregular",
+            data: {requireLogin: true, pageTitle: "არაწესიერი ზმნები"},
+            templateUrl: _st + "irregular/irregular-list.html",
+            controller:"IrregularListController"
         });
 });
 
@@ -641,6 +651,33 @@ app.controller("ViewCollectionController", [
         });
     }
 ]);
+app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope', '$log',
+    function ($scope, AuthService, $location, $rootScope, $log) {
+        // $log.log(AuthService);
+        $scope.hasFacebook = AuthService.facebook.name !== null;
+        $scope.hasLocal = AuthService.local.email !== null;
+        $scope.facebookName = AuthService.facebook.name;
+        $scope.localEmail = AuthService.local.email;
+        $scope.localUserName = AuthService.local.username;
+    }
+]);
+app.controller('HeaderController', ["$scope", "$rootScope", "AuthService", "$state", "$log",
+    function ($scope, $rootScope, AuthService, $state, $log) {
+        $scope.authenticated = AuthService.authenticated;
+        $scope.navCollapsed = true;
+        $scope.$on('authentication', function () {
+            $scope.authenticated = AuthService.authenticated;
+        });
+
+        $scope.logOut = function () {
+            AuthService.logOut(function (status) {
+                if (status) {
+                    $state.go('app');
+                    $scope.authenticated = AuthService.authenticated;
+                }
+            });
+        };
+    }]);
 app.factory("Forum", ["$http", '$log',
     function ($http, $log) {
         var forumPath = "/api/forum/";
@@ -737,36 +774,37 @@ app.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateParams'
 
     }
 ]);
-app.controller('HeaderController', ["$scope", "$rootScope", "AuthService", "$state", "$log",
-    function ($scope, $rootScope, AuthService, $state, $log) {
-        $scope.authenticated = AuthService.authenticated;
-        $scope.navCollapsed = true;
-        $scope.$on('authentication', function () {
-            $scope.authenticated = AuthService.authenticated;
-        });
-
-        $scope.logOut = function () {
-            AuthService.logOut(function (status) {
-                if (status) {
-                    $state.go('app');
-                    $scope.authenticated = AuthService.authenticated;
-                }
-            });
-        };
-    }]);
-app.controller("ProfileController", ['$scope', 'AuthService', '$location', '$rootScope', '$log',
-    function ($scope, AuthService, $location, $rootScope, $log) {
-        // $log.log(AuthService);
-        $scope.hasFacebook = AuthService.facebook.name !== null;
-        $scope.hasLocal = AuthService.local.email !== null;
-        $scope.facebookName = AuthService.facebook.name;
-        $scope.localEmail = AuthService.local.email;
-        $scope.localUserName = AuthService.local.username;
-    }
-]);
 app.controller('HomeController', ['$scope', '$uibModal', '$log',
     function ($scope, $uibModal, $log) {
 
+    }
+]);
+app.controller("IrregularListController", ["$scope", "IrregularService", "$log",
+    function ($scope, IrregularService, $log) {
+
+        function fetchIrregularList() {
+            IrregularService.getIrregularList().then(function (data) {
+                $scope.irregulars = data.irregulars;
+                $log.log(data);
+            });
+        }
+
+        fetchIrregularList();
+    }
+]);
+app.factory("IrregularService", ['$http',
+    function ($http) {
+        var IrregularService = {};
+
+        var IrregularApiEndpoint = "/apanel/api/irregular/";
+
+        IrregularService.getIrregularList = function () {
+            return $http.get(IrregularApiEndpoint+"list").then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return IrregularService;
     }
 ]);
 app.controller("PracticeController", [

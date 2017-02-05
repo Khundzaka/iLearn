@@ -124,6 +124,16 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             data: {requireLogin: true, pageTitle: "ფორუმი"},
             templateUrl: _st + "forum/topic.html",
             controller: "TopicController"
+        })
+        .state("irregular", {
+            abstract: true,
+            templateUrl: _st + "irregular/irregular.html"
+        })
+        .state("irregular.list", {
+            url:"/irregular",
+            data: {requireLogin: true, pageTitle: "არაწესიერი ზმნები"},
+            templateUrl: _st + "irregular/irregular-list.html",
+            controller:"IrregularListController"
         });
 });
 
