@@ -16,6 +16,12 @@ var favicon = require('serve-favicon');
 
 var apanelRouter = require("./routes/apanel_router");
 
+Promise.config({
+    warnings: {
+        wForgottenReturn: false
+    }
+});
+
 // main config
 var app = module.exports.app = exports.app = express();
 app.set('port', process.env.PORT || 1337);
