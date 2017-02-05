@@ -1,20 +1,20 @@
-<div class="panel panel-default">
+<div class="panel panel-primary">
     <div class="panel-heading">
         <h3 class="panel-title">არაწესიერი ზმნები</h3>
     </div>
 
     <table class="table">
         <tr ng-repeat="irregular in irregulars">
-            <td class="col-md-3">
+            <td class="col-md-2">
                 <span ng-click="modify(irregular._id)">{{irregular.form_one}}</span>
             </td>
-            <td class="col-md-4">
+            <td class="col-md-2">
                 <span ng-click="modify(irregular._id)">{{irregular.form_two}}</span>
             </td>
-            <td class="col-md-4">
+            <td class="col-md-2">
                 <span ng-click="modify(irregular._id)">{{irregular.form_three}}</span>
             </td>
-            <td class="col-md-6">
+            <td class="col-md-2">
                 <span ng-click="modify(irregular._id)">{{irregular.description}}</span>
             </td>
         </tr>
