@@ -39,7 +39,12 @@ ForumRepository.fetchOnePost = function (params, callback) {
 };
 
 ForumRepository.fetchPostsByTopic = function (params, callback) {
-    ForumPost.find({topic: params.topicId, deleted: false}).populate('user').lean().exec(function (err, posts) {
+    var page = params.page || 1;
+    var limit = params.limit || 5;
+    var skip = (page - 1) * limit || 0;
+    var count=ForumPost.count({topic: params.topicId, deleted: false}).exec();
+
+    ForumPost.find({topic: params.topicId, deleted: false}).populate('user').lean().skip(skip).limit(parseInt(limit)).exec(function (err, posts) {
         posts.forEach(function (post) {
             var user = {_id: post.user._id};
             if (post.user.local) {
@@ -50,7 +55,8 @@ ForumRepository.fetchPostsByTopic = function (params, callback) {
             }
             post.user = user;
         });
-        return callback(err, posts);
+
+        callback(err,{posts:posts,page:page,count: count});
     });
 };
 

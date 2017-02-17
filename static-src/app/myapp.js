@@ -120,7 +120,13 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller: "ForumIndexController"
         })
         .state("forum.topic", {
-            url: "/forum/topic/:topicId",
+            url: "/forum/topic/:topicId?page",
+            params: {
+                page: {
+                    value: '1',
+                    squash: true
+                }
+            },
             data: {requireLogin: true, pageTitle: "ფორუმი"},
             templateUrl: _st + "forum/topic.html",
             controller: "TopicController"

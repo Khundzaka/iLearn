@@ -31,13 +31,13 @@ forumRouter.get("/topic/one/:topic", function (req, res) {
 });
 
 forumRouter.get("/topic/posts/:topic", function (req, res, next) {
-    ForumRepository.fetchPostsByTopic({topicId: req.params.topic}, function (err, posts) {
+    ForumRepository.fetchPostsByTopic({topicId: req.params.topic}, function (err, data) {
         if (err) {
             // console.log(err);
             return next();
         }
 
-        res.json({status: "ok", data: {posts: posts}});
+        res.json({status: "ok", data: data});
     });
 });
 

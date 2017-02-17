@@ -120,7 +120,13 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
             controller: "ForumIndexController"
         })
         .state("forum.topic", {
-            url: "/forum/topic/:topicId",
+            url: "/forum/topic/:topicId?page",
+            params: {
+                page: {
+                    value: '1',
+                    squash: true
+                }
+            },
             data: {requireLogin: true, pageTitle: "ფორუმი"},
             templateUrl: _st + "forum/topic.html",
             controller: "TopicController"
@@ -689,7 +695,9 @@ app.factory("Forum", ["$http", '$log',
         };
         Forum.getTopicPosts = function (params) {
             var topicId = params.topicId;
-            return $http.get(forumPath + "topic/posts/" + topicId).then(function (resp) {
+            params.limit = params.limit || 1;
+            params.page = params.page || 1;
+            return $http.get(forumPath + "topic/posts/" + topicId,{params:params}).then(function (resp) {
                 return resp.data.data;
             });
         };
@@ -739,10 +747,13 @@ app.controller('ForumIndexController', ['$scope', '$uibModal', '$state', 'Forum'
 
     }
 ]);
-app.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateParams', 'Forum', "InfoModal",
-    function ($scope, $uibModal, $log, $stateParams, Forum, InfoModal) {
+app.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateParams', 'Forum', "InfoModal",'$state',
+    function ($scope, $uibModal, $log, $stateParams, Forum, InfoModal,$state) {
         $scope.newPostText = "";
         $scope.posts = [];
+
+        $scope.limit = 10;
+        $scope.count = 0;
 
         function fetchTopic() {
             Forum.getOneTopic({topicId: $stateParams.topicId}).then(function (data) {
@@ -755,12 +766,24 @@ app.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateParams'
         fetchTopic();
 
         function fetchPosts() {
-            Forum.getTopicPosts({topicId: $stateParams.topicId}).then(function (data) {
+            Forum.getTopicPosts({
+                topicId: $stateParams.topicId,
+                limit: $scope.limit,
+                page: $stateParams.page
+            }).then(function (data) {
                 $scope.posts = data.posts;
+                $scope.count = data.count.fulfillmentValue;
+                $scope.page = $stateParams.page;
             });
         }
 
         fetchPosts();
+
+        $scope.changePage = function () {
+            $state.go(".", {page: $scope.page});
+        };
+
+
 
         $scope.createPost = function () {
             if ($scope.newPostText.length < 10) {
@@ -796,7 +819,7 @@ app.factory("IrregularService", ['$http',
     function ($http) {
         var IrregularService = {};
 
-        var IrregularApiEndpoint = "/apanel/api/irregular/";
+        var IrregularApiEndpoint = "/api/irregular/";
 
         IrregularService.getIrregularList = function () {
             return $http.get(IrregularApiEndpoint+"list").then(function (resp) {

@@ -9,7 +9,9 @@ app.factory("Forum", ["$http", '$log',
         };
         Forum.getTopicPosts = function (params) {
             var topicId = params.topicId;
-            return $http.get(forumPath + "topic/posts/" + topicId).then(function (resp) {
+            params.limit = params.limit || 1;
+            params.page = params.page || 1;
+            return $http.get(forumPath + "topic/posts/" + topicId,{params:params}).then(function (resp) {
                 return resp.data.data;
             });
         };

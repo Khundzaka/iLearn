@@ -1103,34 +1103,6 @@ apanelApp.factory("StatsService", ['$http',
         return StatsService;
     }
 ]);
-apanelApp.controller("UserListController",["$scope", "UserService", "$uibModal", "$log",
-    function ($scope, UserService, $uibModal, $log) {
-        function fetchUsersList() {
-            UserService.getUsersList().then(function (data) {
-                $scope.users = data.users;
-                $log.log(data);
-            });
-        }
-
-        fetchUsersList();
-
-    }
-]);
-apanelApp.factory("UserService", ['$http',
-    function ($http) {
-        var UserService = {};
-
-        var UserApiEndpoint = "/apanel/api/users";
-
-        UserService.getUsersList = function () {
-            return $http.get(UserApiEndpoint).then(function (resp) {
-                return resp.data.data;
-            });
-        };
-
-        return UserService;
-    }
-]);
 apanelApp.controller("ModifyWordController", ["$scope", "WordService", "wordId", "$uibModalInstance",
     function ($scope, WordService, WordId, $uibModalInstance) {
         $scope.wordName = "";
@@ -1321,5 +1293,33 @@ apanelApp.factory("WordService", ['$http',
             });
         };
         return WordService;
+    }
+]);
+apanelApp.controller("UserListController",["$scope", "UserService", "$uibModal", "$log",
+    function ($scope, UserService, $uibModal, $log) {
+        function fetchUsersList() {
+            UserService.getUsersList().then(function (data) {
+                $scope.users = data.users;
+                $log.log(data);
+            });
+        }
+
+        fetchUsersList();
+
+    }
+]);
+apanelApp.factory("UserService", ['$http',
+    function ($http) {
+        var UserService = {};
+
+        var UserApiEndpoint = "/apanel/api/users";
+
+        UserService.getUsersList = function () {
+            return $http.get(UserApiEndpoint).then(function (resp) {
+                return resp.data.data;
+            });
+        };
+
+        return UserService;
     }
 ]);
