@@ -25,6 +25,7 @@ app.controller('TopicController', ['$scope', '$uibModal', '$log', '$stateParams'
                 $scope.posts = data.posts;
                 $scope.count = data.count.fulfillmentValue;
                 $scope.page = $stateParams.page;
+                $log.log(data.page);
             });
         }
 
